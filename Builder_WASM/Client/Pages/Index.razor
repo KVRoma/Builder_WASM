@@ -1,0 +1,25 @@
+﻿@page "/"
+@using Builder_WASM.Shared.Models
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+<a class="btn btn-primary m-3" @onclick=POST>Test POST</a>
+
+
+@code{
+    async Task POST()
+    {
+        Person data = new Person() { Login = "admin@gmail.com", Password = "12345"}; 
+        var response = await Http.PostAsJsonAsync("Account",data);
+        var result = await response.Content.ReadFromJsonAsync<Response>();
+        var flag = true;
+    }
+}
