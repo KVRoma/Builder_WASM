@@ -1,10 +1,11 @@
 using Builder_WASM.Shared;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Builder_WASM.Server.Controllers
 {
-    [Authorize]
+    [Authorize]    
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase

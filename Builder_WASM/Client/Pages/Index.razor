@@ -2,6 +2,7 @@
 @using Builder_WASM.Shared.Models
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject ILocalStorage LocalStorage
 
 <PageTitle>Index</PageTitle>
 
@@ -9,17 +10,91 @@
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
 
-<a class="btn btn-primary m-3" @onclick=POST>Test POST</a>
+<div>
+    <a class="btn btn-primary m-3" @onclick=Creat>Creat JWT</a>
+    <a class="btn btn-danger m-3" @onclick=Clear>Clear JWT</a>
+</div>
+
+<div class="row">
+    <div class="col ">@msg</div>
+</div>
+
+<div>
+    <a class="btn btn-primary m-3" @onclick=TestJWT>Test JWT</a>
+</div>
+
+@foreach(var item in mess)
+{
+  <div class="row">
+    <div class="col-5 text-start">@item</div>
+  </div>
+}
+
 
 
 @code{
-    async Task POST()
+
+    private string msg = string.Empty;
+    private List<string> mess = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LocalStorage.ClearAsync();
+    }
+
+
+    async Task Creat()
     {
         Person data = new Person() { Login = "admin@gmail.com", Password = "12345"}; 
         var response = await Http.PostAsJsonAsync("Account",data);
-        var result = await response.Content.ReadFromJsonAsync<Response>();
-        var flag = true;
+        
+        Response token = await response.Content.ReadFromJsonAsync<Response>();
+        Person user = await response.RequestMessage.Content.ReadFromJsonAsync<Person>();
+
+        await LocalStorage.SaveStringAsync("token", token.Access_token);
+        await LocalStorage.SaveStringAsync("user",user.Login);
+
+        msg = await LocalStorage.GetStringAsync("token");
+    }
+
+    async Task Clear()
+    {        
+        await LocalStorage.ClearAsync();
+        msg = string.Empty;
+        mess.Clear();
+    }
+
+    async Task TestJWT()
+    {
+        var requestMsg = new HttpRequestMessage(HttpMethod.Get, "WeatherForecast");
+        requestMsg.Headers.Add("Authorization",$"Bearer {await LocalStorage.GetStringAsync("token")}"); 
+        var response = await Http.SendAsync(requestMsg);
+
+
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized) // NOTE: THEN TOKEN HAS EXPIRED
+        {            
+            mess.Add("Request token: ");           
+            mess.Add(requestMsg.Headers.Authorization.ToString());
+            mess.Add("................");
+            mess.Add("Response server:");  
+            mess.Add(response.StatusCode.ToString());
+        }
+        else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+        {            
+            mess.Add("Request token: ");
+            mess.Add(requestMsg.Headers.Authorization.ToString());
+            mess.Add("................");
+            mess.Add("Response server:");  
+            mess.Add(response.StatusCode.ToString());
+        }				
+        else if (response.IsSuccessStatusCode)
+        {
+            mess.Add("Request token: ");
+            mess.Add(requestMsg.Headers.Authorization.ToString());
+            mess.Add("................");
+            mess.Add("Response server:");  
+            mess.Add(response.StatusCode.ToString());
+        }
     }
 }
