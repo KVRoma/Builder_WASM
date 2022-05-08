@@ -1,3 +1,4 @@
+using System.Text;
 using Builder_WASM.Server;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -6,34 +7,35 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAuthorization();
+//builder.Services.AddAuthorization();
 
 builder.Services.AddAuthentication(aut=> 
 { 
     aut.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; 
     aut.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+    aut.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    
+    .AddJwtBearer(options =>
 {
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         // укзывает, будет ли валидироваться издатель при валидации токена
-        ValidateIssuer = true,
+        ValidateIssuer = false,
+        // будет ли валидироваться потребитель токена
+        ValidateAudience = false,
         // строка, представляющая издателя
         ValidIssuer = AuthOptions.ISSUER,
-
-        // будет ли валидироваться потребитель токена
-        ValidateAudience = true,
         // установка потребителя токена
         ValidAudience = AuthOptions.AUDIENCE,
         // будет ли валидироваться время существования
-        ValidateLifetime = true,
-
+        //ValidateLifetime = true,
         // установка ключа безопасности
-        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AuthOptions.KEY)),
         // валидация ключа безопасности
-        ValidateIssuerSigningKey = true,
+        //ValidateIssuerSigningKey = true,
     };
 });
 builder.Services.AddControllersWithViews();
@@ -54,12 +56,12 @@ else
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();

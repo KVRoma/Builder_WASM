@@ -68,7 +68,9 @@ Welcome to your new app.
     async Task TestJWT()
     {
         var requestMsg = new HttpRequestMessage(HttpMethod.Get, "WeatherForecast");
-        requestMsg.Headers.Add("Authorization",$"Bearer {await LocalStorage.GetStringAsync("token")}"); 
+        var tk = await LocalStorage.GetStringAsync("token");
+        requestMsg.Headers.Add("Authorization","Bearer "+tk); 
+        
         var response = await Http.SendAsync(requestMsg);
 
 
