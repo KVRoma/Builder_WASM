@@ -2,6 +2,7 @@
 using Microsoft.JSInterop;
 using System.IO.Compression;
 using System.Text;
+using System.Text.Json;
 
 namespace Builder_WASM.Client
 {
@@ -18,28 +19,14 @@ namespace Builder_WASM.Client
 		/// </summary>
 		/// <param name="key">The key to use to save to and retrieve from local storage.</param>
 		/// <param name="value">The string value to save to local storage.</param>
-		public Task SaveStringAsync(string key, string value);
+		public Task SetAsync<T>(string key, T value);
 
 		/// <summary>
 		/// Get a string value from browser local storage.
 		/// </summary>
 		/// <param name="key">The key previously used to save to local storage.</param>
 		/// <returns>The string previously saved to local storage.</returns>
-		public Task<string> GetStringAsync(string key);
-
-		/// <summary>
-		/// Save an array of string values to browser local storage.
-		/// </summary>
-		/// <param name="key">The key previously used to save to local storage.</param>
-		/// <param name="values">The array of string values to save to local storage.</param>
-		public Task SaveStringArrayAsync(string key, string[] values);
-
-		/// <summary>
-		/// Get an array of string values from browser local storage.
-		/// </summary>
-		/// <param name="key">The key previously used to save to local storage.</param>
-		/// <returns>The array of string values previously saved to local storage.</returns>
-		public Task<string[]> GetStringArrayAsync(string key);
+		public Task<T> GetAsync<T>(string key);
 		
 		/// <summary>
 		/// Clear value from browser local storage.
@@ -61,35 +48,24 @@ namespace Builder_WASM.Client
 			await jsruntime.InvokeVoidAsync("localStorage.removeItem", key).ConfigureAwait(false);
 		}
 
-		public async Task SaveStringAsync(string key, string value)
+		public async Task SetAsync<T>(string key, T value)
 		{
-            var compressedBytes = await Compressor.CompressBytesAsync(Encoding.UTF8.GetBytes(value));
-            await jsruntime.InvokeVoidAsync("localStorage.setItem", key, Convert.ToBase64String(compressedBytes)).ConfigureAwait(false);
-            //await jsruntime.InvokeVoidAsync("localStorage.setItem", key, value).ConfigureAwait(false);
+			var json = JsonSerializer.Serialize(value);
+
+			var compressedBytes = await Compressor.CompressBytesAsync(Encoding.UTF8.GetBytes(json));
+            await jsruntime.InvokeVoidAsync("localStorage.setItem", key, Convert.ToBase64String(compressedBytes)).ConfigureAwait(false);           
         }
 
-		public async Task<string> GetStringAsync(string key)
+		public async Task<T> GetAsync<T>(string key)
 		{
 			var str = await jsruntime.InvokeAsync<string>("localStorage.getItem", key).ConfigureAwait(false);
             if (str == null)
-                return null;
+                return default;
             var bytes = await Compressor.DecompressBytesAsync(Convert.FromBase64String(str));
-            return Encoding.UTF8.GetString(bytes);
-            //return str;
-        }
+			var value = Encoding.UTF8.GetString(bytes);
 
-		public async Task SaveStringArrayAsync(string key, string[] values)
-		{
-			await SaveStringAsync(key, values == null ? "" : string.Join('\0', values));
-		}
-
-		public async Task<string[]> GetStringArrayAsync(string key)
-		{
-			var data = await GetStringAsync(key);
-			if (!string.IsNullOrEmpty(data))
-				return data.Split('\0');
-			return null;
-		}
+			return JsonSerializer.Deserialize<T>(value);
+		}		
 
 		public async Task ClearAsync()
 		{

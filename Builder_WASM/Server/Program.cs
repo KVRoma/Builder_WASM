@@ -1,5 +1,6 @@
 using System.Text;
 using Builder_WASM.Server;
+using Builder_WASM.Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
@@ -7,7 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//builder.Services.AddAuthorization();
 
 builder.Services.AddAuthentication(aut=> 
 { 
@@ -22,24 +22,17 @@ builder.Services.AddAuthentication(aut=>
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        // укзывает, будет ли валидироваться издатель при валидации токена
         ValidateIssuer = false,
-        // будет ли валидироваться потребитель токена
         ValidateAudience = false,
-        // строка, представляющая издателя
         ValidIssuer = AuthOptions.ISSUER,
-        // установка потребителя токена
         ValidAudience = AuthOptions.AUDIENCE,
-        // будет ли валидироваться время существования
-        //ValidateLifetime = true,
-        // установка ключа безопасности
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AuthOptions.KEY)),
-        // валидация ключа безопасности
-        //ValidateIssuerSigningKey = true,
+        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()         
     };
 });
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

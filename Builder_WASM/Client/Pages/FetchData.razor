@@ -2,6 +2,7 @@
 @using Builder_WASM.Shared
 @using System.Net.Http.Headers
 @using System.Text
+@using Builder_WASM.Shared.Models
 @inject HttpClient Http
 @inject ILocalStorage LocalStorage
 
@@ -46,7 +47,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");        
-        
+        AuthenticateResponse resp = await LocalStorage.GetAsync<AuthenticateResponse>("user");
+
+        var requestMsg = new HttpRequestMessage(HttpMethod.Get, "WeatherForecast");        
+        requestMsg.Headers.Add("Authorization","Bearer " + resp?.Token); 
+        var response = await Http.SendAsync(requestMsg);
+
+        forecasts = await response.Content.ReadFromJsonAsync<WeatherForecast[]>();    
+
     }
 }

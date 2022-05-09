@@ -7,11 +7,11 @@ namespace Builder_WASM.Server
     {
         public const string ISSUER = "MyAuth"; // издатель токена
         public const string AUDIENCE = "MyAuth"; // потребитель токена
-        public const string KEY = "mysupersecret_secretkey!123";   // ключ для шифрации
-        public const int LIFETIME = 55; // время жизни токена - 1 минута
+        const string KEY = "mysupersecret_secretkey!123";   // ключ для шифрации
+        public const int LIFETIME = 1; // время жизни токена - 1 день
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {
-            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(KEY));
+            return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(KEY));
         }
     }
 }

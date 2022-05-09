@@ -1,5 +1,7 @@
 ﻿@page "/"
 @using Builder_WASM.Shared.Models
+@using System.Text.Json
+@using System.Text
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject ILocalStorage LocalStorage
@@ -27,7 +29,7 @@ Welcome to your new app.
 @foreach(var item in mess)
 {
   <div class="row">
-    <div class="col-5 text-start">@item</div>
+    <div class="col text-start">@item</div>
   </div>
 }
 
@@ -46,16 +48,19 @@ Welcome to your new app.
 
     async Task Creat()
     {
-        Person data = new Person() { Login = "admin@gmail.com", Password = "12345"}; 
-        var response = await Http.PostAsJsonAsync("Account",data);
-        
-        Response token = await response.Content.ReadFromJsonAsync<Response>();
-        Person user = await response.RequestMessage.Content.ReadFromJsonAsync<Person>();
+        AuthenticateRequest data = new AuthenticateRequest() {Username="Test", Password="123" };
+        var response = await Http.PostAsJsonAsync("account/authenticate",data);
+        AuthenticateResponse? responseUser = await response.Content.ReadFromJsonAsync<AuthenticateResponse>();       
+        await LocalStorage.SetAsync<AuthenticateResponse?>("user",responseUser);
 
-        await LocalStorage.SaveStringAsync("token", token.Access_token);
-        await LocalStorage.SaveStringAsync("user",user.Login);
 
-        msg = await LocalStorage.GetStringAsync("token");
+        AuthenticateResponse body = await LocalStorage.GetAsync<AuthenticateResponse>("user");
+        mess.Add("Id: " + body.Id.ToString());
+        mess.Add("Name: " + body.Name);
+        mess.Add("Role: " + body.Role);
+        mess.Add("Token: " + body.Token);
+        mess.Add("...............................");
+
     }
 
     async Task Clear()
@@ -67,17 +72,17 @@ Welcome to your new app.
 
     async Task TestJWT()
     {
-        var requestMsg = new HttpRequestMessage(HttpMethod.Get, "WeatherForecast");
-        var tk = await LocalStorage.GetStringAsync("token");
-        requestMsg.Headers.Add("Authorization","Bearer "+tk); 
-        
-        var response = await Http.SendAsync(requestMsg);
+        AuthenticateResponse resp = await LocalStorage.GetAsync<AuthenticateResponse>("user");
 
+        var requestMsg = new HttpRequestMessage(HttpMethod.Get, "WeatherForecast");        
+        requestMsg.Headers.Add("Authorization","Bearer " + resp?.Token); 
+        var response = await Http.SendAsync(requestMsg);        
+       
 
         if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized) // NOTE: THEN TOKEN HAS EXPIRED
         {            
             mess.Add("Request token: ");           
-            mess.Add(requestMsg.Headers.Authorization.ToString());
+            mess.Add(requestMsg.Headers?.Authorization?.ToString()!);
             mess.Add("................");
             mess.Add("Response server:");  
             mess.Add(response.StatusCode.ToString());
@@ -85,7 +90,7 @@ Welcome to your new app.
         else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
         {            
             mess.Add("Request token: ");
-            mess.Add(requestMsg.Headers.Authorization.ToString());
+            mess.Add(requestMsg.Headers?.Authorization?.ToString()!);
             mess.Add("................");
             mess.Add("Response server:");  
             mess.Add(response.StatusCode.ToString());
@@ -93,7 +98,7 @@ Welcome to your new app.
         else if (response.IsSuccessStatusCode)
         {
             mess.Add("Request token: ");
-            mess.Add(requestMsg.Headers.Authorization.ToString());
+            mess.Add(requestMsg.Headers?.Authorization?.ToString()!);
             mess.Add("................");
             mess.Add("Response server:");  
             mess.Add(response.StatusCode.ToString());
