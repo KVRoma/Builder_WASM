@@ -49,7 +49,7 @@ Welcome to your new app.
     async Task Creat()
     {
         AuthenticateRequest data = new AuthenticateRequest() {Username="Test", Password="123" };
-        var response = await Http.PostAsJsonAsync("account/authenticate",data);
+        var response = await Http.PostAsJsonAsync("account/authenticate",data);       
         AuthenticateResponse? responseUser = await response.Content.ReadFromJsonAsync<AuthenticateResponse>();       
         await LocalStorage.SetAsync<AuthenticateResponse?>("user",responseUser);
 
@@ -59,6 +59,7 @@ Welcome to your new app.
         mess.Add("Name: " + body.Name);
         mess.Add("Role: " + body.Role);
         mess.Add("Token: " + body.Token);
+        mess.Add("Message: " + body.Message);
         mess.Add("...............................");
 
     }

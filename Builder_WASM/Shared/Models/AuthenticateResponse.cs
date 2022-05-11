@@ -13,6 +13,7 @@ namespace Builder_WASM.Shared.Models
         public string Name { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public string Token { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
 
         public AuthenticateResponse()
         {
@@ -22,7 +23,7 @@ namespace Builder_WASM.Shared.Models
             Id = user.Id;
             Name = user.Name;
             Role = user.Role;            
-            Token = token;
+            Token = token;            
         }
     }
 }

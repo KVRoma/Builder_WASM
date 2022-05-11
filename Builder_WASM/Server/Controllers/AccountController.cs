@@ -26,7 +26,7 @@ namespace Builder_WASM.Server.Controllers
 
             if (response == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
-
+            response.Message = "User authentication was successful";
             return Ok(response);
         }        
     }
