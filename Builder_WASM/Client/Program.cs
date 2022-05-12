@@ -1,4 +1,5 @@
 using Builder_WASM.Client;
+using Builder_WASM.Client.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -7,6 +8,15 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
+//builder.Services.AddSingleton<ILocalStorageService, LocalStorageService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IHttpService, HttpService>();
+builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();
 
-await builder.Build().RunAsync();
+//await builder.Build().RunAsync();
+var host = builder.Build();
+
+var authenticationService = host.Services.GetRequiredService<IAuthenticationService>();
+await authenticationService.Initialize();
+
+await host.RunAsync();

@@ -1,10 +1,11 @@
 ﻿@page "/fetchdata"
 @using Builder_WASM.Shared
+@using Builder_WASM.Client.Services
 @using System.Net.Http.Headers
 @using System.Text
 @using Builder_WASM.Shared.Models
 @inject HttpClient Http
-@inject ILocalStorage LocalStorage
+@inject ILocalStorageService LocalStorage
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -47,13 +48,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        AuthenticateResponse resp = await LocalStorage.GetAsync<AuthenticateResponse>("user");
+        //AuthenticateResponse resp = await LocalStorage.GetAsync<AuthenticateResponse>("user");
 
-        var requestMsg = new HttpRequestMessage(HttpMethod.Get, "WeatherForecast");        
-        requestMsg.Headers.Add("Authorization","Bearer " + resp?.Token); 
-        var response = await Http.SendAsync(requestMsg);
+        //var requestMsg = new HttpRequestMessage(HttpMethod.Get, "WeatherForecast");        
+        //requestMsg.Headers.Add("Authorization","Bearer " + resp?.Token); 
+        //var response = await Http.SendAsync(requestMsg);
 
-        forecasts = await response.Content.ReadFromJsonAsync<WeatherForecast[]>();    
+        //forecasts = await response.Content.ReadFromJsonAsync<WeatherForecast[]>();    
 
     }
 }
