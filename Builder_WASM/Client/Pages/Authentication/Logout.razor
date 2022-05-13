@@ -1,0 +1,14 @@
+﻿
+<div class="row justify-content-end">
+    <div class=col>
+        <a class="btn btn-outline-danger w-auto" @onclick=@Log_out>
+            <span class="oi oi-account-logout"></span>                
+        </a>
+    </div>
+</div>
+@code{
+    async Task Log_out() 
+    { 
+        await AuthenticationService.Logout(); 
+    }
+}

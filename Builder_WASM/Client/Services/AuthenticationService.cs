@@ -1,6 +1,5 @@
 ﻿using Builder_WASM.Shared.Models;
 using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
 
 namespace Builder_WASM.Client.Services
 {
@@ -9,7 +8,7 @@ namespace Builder_WASM.Client.Services
         private IHttpService _httpService;
         private ILocalStorageService _localStorageService;
         private NavigationManager _navigationManager;
-        public AuthenticateResponse? User { get; private set; }
+        public AuthenticateResponse? User{ get; private set; }
         public AuthenticationService(
             IHttpService httpService,
             NavigationManager navigationManager,
@@ -22,8 +21,7 @@ namespace Builder_WASM.Client.Services
         }
 
         public async Task Initialize()
-        {
-            //User = await _localStorageService.GetAsync<AuthenticateResponse>("user");
+        {            
             await _localStorageService.ClearAsync();
         }
 
@@ -37,7 +35,7 @@ namespace Builder_WASM.Client.Services
         {
             User = null;
             await _localStorageService.RemoveAsync("user");
-            _navigationManager.NavigateTo("login");
+            _navigationManager.NavigateTo("/authenticate/login");
         }
     }
 }

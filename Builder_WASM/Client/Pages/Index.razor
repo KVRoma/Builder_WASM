@@ -6,27 +6,25 @@
 
 
 @code{
-
-    AuthenticateResponse? user;
+        
     string mess = string.Empty;
 
-    protected override async Task OnInitializedAsync()
-    {
-        user = await LocalStorageService.GetAsync<AuthenticateResponse>("user");
+    protected override void OnInitialized()
+    {        
 
-        if (user == null)
+        if (AuthenticationService.User == null)
         {
             NavigationManager.NavigateTo("/authenticate/login");
         }
-        else if (user?.Role == "Admin")
+        else if (AuthenticationService.User.Role == "Admin")
         {
             mess = "Hello, Admin!";
         }
-        else if(user?.Role == "User")
+        else if(AuthenticationService.User.Role == "User")
         {
             mess = "Hello, User!";
         }
-        else if(user?.Id != 0 && user?.Role == "")
+        else if(AuthenticationService.User.Role == "")
         {
             mess = $"Hello, you don't have a role!";
         }

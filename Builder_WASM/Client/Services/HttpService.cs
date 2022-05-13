@@ -1,15 +1,10 @@
 ﻿using Builder_WASM.Shared.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Builder_WASM.Client.Services
 {
@@ -17,8 +12,7 @@ namespace Builder_WASM.Client.Services
     {
         private HttpClient _httpClient;
         private NavigationManager _navigationManager;
-        private ILocalStorageService _localStorageService;
-        //private IConfiguration _configuration;
+        private ILocalStorageService _localStorageService;        
 
         public HttpService(
             HttpClient httpClient,
@@ -29,8 +23,7 @@ namespace Builder_WASM.Client.Services
         {
             _httpClient = httpClient;
             _navigationManager = navigationManager;
-            _localStorageService = localStorageService;
-           //_configuration = configuration;
+            _localStorageService = localStorageService;           
         }
 
         public async Task<T> Get<T>(string uri)
@@ -52,8 +45,8 @@ namespace Builder_WASM.Client.Services
         {
             // add jwt auth header if user is logged in and request is to the api url
             var user = await _localStorageService.GetAsync<AuthenticateResponse>("user");
-            var isApiUrl = !request.RequestUri.IsAbsoluteUri;
-            if (user != null && isApiUrl)
+            //var isApiUrl = !request.RequestUri?.IsAbsoluteUri;
+            if (user != null) //&& isApiUrl 
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user.Token);
 
             using var response = await _httpClient.SendAsync(request);
@@ -72,7 +65,7 @@ namespace Builder_WASM.Client.Services
                 throw new Exception(user?.Message);
             }
 
-            return await response.Content.ReadFromJsonAsync<T>();
+            return (await response.Content.ReadFromJsonAsync<T>())!;
         }
     }
 }
