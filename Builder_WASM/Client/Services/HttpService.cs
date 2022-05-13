@@ -62,7 +62,7 @@ namespace Builder_WASM.Client.Services
             // auto logout on 401 response
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                _navigationManager.NavigateTo("logout");
+                _navigationManager.NavigateTo("/authenticate/login");
                 return default!;
             }
             // throw exception on error response

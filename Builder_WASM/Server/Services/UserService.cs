@@ -10,7 +10,8 @@ namespace Builder_WASM.Server.Services
     {
         private List<UserRegistered> _users = new List<UserRegistered>
         {
-            new UserRegistered { Id = 1, Name = "Test", Role = "Admin", Password = "123" }
+            new UserRegistered { Id = 1, Name = "Test", Role = "Admin", Password = "123" },
+            new UserRegistered { Id = 2, Name = "Test2", Role = "User", Password = "123" }
         };
         
         

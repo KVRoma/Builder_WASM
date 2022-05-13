@@ -7,5 +7,13 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Http
 @using Microsoft.JSInterop
 @using Builder_WASM.Client
+@using Builder_WASM.Client.Services
 @using Builder_WASM.Client.Shared
 @using Builder_WASM.Shared
+@using Builder_WASM.Shared.Models
+
+@*@inject HttpClient Http*@  
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorageService
+@inject IAuthenticationService AuthenticationService
+@inject IHttpService HttpService

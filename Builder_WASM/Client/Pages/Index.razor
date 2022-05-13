@@ -1,120 +1,35 @@
 ﻿@page "/"
-@using Builder_WASM.Shared.Models
-@using Builder_WASM.Client.Services
-@using System.Text.Json
-@using System.Text
-@inject HttpClient Http
-@inject NavigationManager NavigationManager
-@inject ILocalStorageService LocalStorage
-@inject IAuthenticationService AuthenticationService
-@inject IHttpService HttpService
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-
-<div>
-    <a class="btn btn-primary m-3" @onclick=Creat>Creat JWT</a>
-    <a class="btn btn-danger m-3" @onclick=Clear>Clear JWT</a>
-</div>
-
-<div class="row">
-    <div class="col ">@msg</div>
-</div>
-
-<div>
-    <a class="btn btn-primary m-3" @onclick=TestJWT>Test JWT</a>
-</div>
-
-@foreach(var item in mess)
-{
-  <div class="row">
-    <div class="col text-start">@item</div>
-  </div>
-}
-
+<h1>@mess</h1>
 
 
 @code{
 
-    private string msg = string.Empty;
-    private List<string> mess = new List<string>();
+    AuthenticateResponse? user;
+    string mess = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        //await LocalStorage.ClearAsync();
-    }
+        user = await LocalStorageService.GetAsync<AuthenticateResponse>("user");
 
+        if (user == null)
+        {
+            NavigationManager.NavigateTo("/authenticate/login");
+        }
+        else if (user?.Role == "Admin")
+        {
+            mess = "Hello, Admin!";
+        }
+        else if(user?.Role == "User")
+        {
+            mess = "Hello, User!";
+        }
+        else if(user?.Id != 0 && user?.Role == "")
+        {
+            mess = $"Hello, you don't have a role!";
+        }
 
-    async Task Creat()
-    {
-        AuthenticateRequest data = new AuthenticateRequest() {Username="Test", Password="123" };
-        //var response = await Http.PostAsJsonAsync("account/authenticate",data);       
-        //AuthenticateResponse? responseUser = await response.Content.ReadFromJsonAsync<AuthenticateResponse>();       
-        //await LocalStorage.SetAsync<AuthenticateResponse?>("user",responseUser);
-
-
-        //AuthenticateResponse body = await LocalStorage.GetAsync<AuthenticateResponse>("user");
-        //mess.Add("Id: " + body.Id.ToString());
-        //mess.Add("Name: " + body.Name);
-        //mess.Add("Role: " + body.Role);
-        //mess.Add("Token: " + body.Token);
-        //mess.Add("Message: " + body.Message);
-        //mess.Add("...............................");
-
-        await AuthenticationService.Login(data);
-        //mess.Add("Id: " + body.Id.ToString());
-        //mess.Add("Name: " + body.Name);
-        //mess.Add("Role: " + body.Role);
-        //mess.Add("Token: " + body.Token);
-        //mess.Add("Message: " + body.Message);
-        //mess.Add("...............................");
-    }
-
-    async Task Clear()
-    {        
-        await LocalStorage.ClearAsync();
-        msg = string.Empty;
-        mess.Clear();
-    }
-
-    async Task TestJWT()
-    {
-        var resp = await HttpService.Get<WeatherForecast[]>("WeatherForecast");
-
-        //AuthenticateResponse resp = await LocalStorage.GetAsync<AuthenticateResponse>("user");
-
-        //var requestMsg = new HttpRequestMessage(HttpMethod.Get, "WeatherForecast");        
-        //requestMsg.Headers.Add("Authorization","Bearer " + resp?.Token); 
-        //var response = await Http.SendAsync(requestMsg);        
-       
-
-        //if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized) // NOTE: THEN TOKEN HAS EXPIRED
-        //{            
-        //    mess.Add("Request token: ");           
-        //    mess.Add(requestMsg.Headers?.Authorization?.ToString()!);
-        //    mess.Add("................");
-        //    mess.Add("Response server:");  
-        //    mess.Add(response.StatusCode.ToString());
-        //}
-        //else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
-        //{            
-        //    mess.Add("Request token: ");
-        //    mess.Add(requestMsg.Headers?.Authorization?.ToString()!);
-        //    mess.Add("................");
-        //    mess.Add("Response server:");  
-        //    mess.Add(response.StatusCode.ToString());
-        //}				
-        //else if (response.IsSuccessStatusCode)
-        //{
-        //    mess.Add("Request token: ");
-        //    mess.Add(requestMsg.Headers?.Authorization?.ToString()!);
-        //    mess.Add("................");
-        //    mess.Add("Response server:");  
-        //    mess.Add(response.StatusCode.ToString());
-        //}
-    }
+    }    
 }
