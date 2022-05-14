@@ -1,20 +1,20 @@
 ﻿@page "/authenticate/login"
 
 <div class="row justify-content-center">
-    <div class="col-md-4 col-sm-12">
-        <div class="card">
-            <h4 class="card-header text-center">Blazor WebAssembly JWT Login Example</h4>
+    <div class="col-xl-4 col-md-6 col-sm-12">
+        <div class="card text-white bg-secondary">
+            <h4 class="card-header text-center">Builder - 2022 (web version)</h4>
             <div class="card-body">
                 <EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
                     <DataAnnotationsValidator />
-                    <div class="form-group">
-                        <label>Username</label>
-                        <InputText @bind-Value="model.Username" class="form-control" />
+                    <div class="form-group mb-3">
+                        
+                        <InputText @bind-Value="model.Username" class="form-control" placeholder="Username"/>
                         <ValidationMessage For="@(() => model.Username)" />
                     </div>
                     <div class="form-group mb-3">
-                        <label>Password</label>
-                        <InputText @bind-Value="model.Password" type="password" class="form-control" />
+                        
+                        <InputText @bind-Value="model.Password" type="password" class="form-control" placeholder="Password" />
                         <ValidationMessage For="@(() => model.Password)" />
                     </div>
                     <button class="btn btn-primary">

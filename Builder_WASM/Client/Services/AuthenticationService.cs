@@ -21,8 +21,8 @@ namespace Builder_WASM.Client.Services
         }
 
         public async Task Initialize()
-        {            
-            await _localStorageService.ClearAsync();
+        {           
+            User = await _localStorageService.GetAsync<AuthenticateResponse>("user");
         }
 
         public async Task Login(AuthenticateRequest data)
