@@ -14,6 +14,9 @@ namespace Builder_WASM.Shared.Entities
         public string Role { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public string Password { get; set; } = string.Empty;        
+        public string Password { get; set; } = string.Empty;
+
+        public int? CompanyId { get; set; }
+        public Company? Company { get; set; }
     }
 }

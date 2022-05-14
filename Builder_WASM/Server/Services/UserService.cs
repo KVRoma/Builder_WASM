@@ -8,16 +8,23 @@ namespace Builder_WASM.Server.Services
 {
     public class UserService : IUserService
     {
-        private List<UserRegistered> _users = new List<UserRegistered>
-        {
-            new UserRegistered { Id = 1, Name = "Test", Role = "Admin", Password = "123" },
-            new UserRegistered { Id = 2, Name = "Test2", Role = "User", Password = "123" }
-        };
         
-        
-        public AuthenticateResponse Authenticate(AuthenticateRequest model)
+        //private List<UserRegistered> _users = new List<UserRegistered>
+        //{
+        //    new UserRegistered { Id = 1, Name = "Test", Role = "Admin", Password = "123" },
+        //    new UserRegistered { Id = 2, Name = "Test2", Role = "User", Password = "123" }
+        //};
+        private readonly IUnitOfWork _context;
+        public UserService(IUnitOfWork context)
         {
-            var user = _users.SingleOrDefault(x => x.Name == model.Username && x.Password == model.Password);
+            _context = context;
+        }
+
+        public async Task <AuthenticateResponse> Authenticate(AuthenticateRequest model)
+        {
+            //var user = _users.SingleOrDefault(x => x.Name == model.Username && x.Password == model.Password);
+            var result = await _context.UserRegisteredRepository.GetAsync(x=>x.Name == model.Username && x.Password == model.Password);
+            var user = result.FirstOrDefault();
             // return null if user not found
             if (user == null) return null!;
             // authentication successful so generate jwt token            

@@ -10,7 +10,7 @@ namespace Builder_WASM.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AccountController : Controller
+    public class AccountController : ControllerBase
     {
         private IUserService _user;        
         public AccountController(IUserService user)
@@ -20,9 +20,9 @@ namespace Builder_WASM.Server.Controllers
 
 
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(AuthenticateRequest model)
+        public async Task<IActionResult> Authenticate(AuthenticateRequest model)
         {
-            var response = _user.Authenticate(model);
+            var response = await _user.Authenticate(model);
 
             if (response == null)
                 return BadRequest(new { message = "Username or password is incorrect" });

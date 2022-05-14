@@ -1,0 +1,56 @@
+﻿@page "/adminpanel/userlist"
+
+<h3>UserList</h3>
+
+@if (load)
+{
+    <h3>
+        <span class="spinner-border spinner-border-sm mr-1"></span>   
+        Loading...
+    </h3>
+}
+else
+{
+    <table class="table table-striped align-middle">
+    <caption>Count customers: @userRegistereds?.Count()</caption>
+    <thead>
+        <tr>                
+            <th scope="col">Name</th>
+            <th scope="col">Password</th>
+            <th scope="col">Role</th> 
+            <th></th>
+        </tr>
+    </thead>
+    <tbody> 
+        @foreach(var item in userRegistereds!)
+        {
+            <tr>
+                <td>@item?.Name</td>
+                <td>@item?.Password</td>
+                <td>@item?.Role</td>
+                <td class="text-center text-nowrap">
+                   @* <a type="button" class="btn btn-outline-primary" @onclick="@(()=>Edit(item?.Id))">Edit</a>
+                    <a type="button" class="btn btn-outline-danger" @onclick="@(()=>Delete(item?.Id))">Delete</a> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+
+
+@code {
+    IEnumerable<UserRegistered?> userRegistereds = null!;
+    bool load = true;
+
+    protected override async Task OnInitializedAsync()
+    {       
+        if (AuthenticationService.User?.Role == "Admin")
+        {
+            userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered?>>("api/UserRegistereds")) ?? null!;
+            load = false;
+        }
+        
+    }
+
+}

@@ -45,7 +45,7 @@ else
         
         if (AuthenticationService.User?.Role == "Admin")
         {
-            forecasts = await HttpService.Get<WeatherForecast[]>("WeatherForecast");            
+            forecasts = await HttpService.Get<WeatherForecast[]>("api/WeatherForecast");            
         }
 
     }

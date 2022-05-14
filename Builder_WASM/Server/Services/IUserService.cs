@@ -4,6 +4,6 @@ namespace Builder_WASM.Server.Services
 {
     public interface IUserService
     {
-        AuthenticateResponse Authenticate(AuthenticateRequest model);
+        Task<AuthenticateResponse> Authenticate(AuthenticateRequest model);
     }
 }
