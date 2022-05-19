@@ -36,6 +36,7 @@ else
         }
     </tbody>
 </table>
+<a class="btn btn-success" @onclick=@test>TEST</a>
 }
 
 
@@ -50,7 +51,11 @@ else
             userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered?>>("api/UserRegistereds")) ?? null!;
             load = false;
         }
-        
+
     }
 
+    async Task test()
+    {
+        //IEnumerable<Company?> companies = (await HttpService.Get<IEnumerable<Company?>>("api/Companies")) ?? null!;
+    }
 }

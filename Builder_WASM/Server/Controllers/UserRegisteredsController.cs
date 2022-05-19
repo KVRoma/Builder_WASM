@@ -31,7 +31,7 @@ namespace Builder_WASM.Server.Controllers
           if (_context.UserRegisteredRepository == null)
           {
               return NotFound();
-          }
+          }            
           var result = await _context.UserRegisteredRepository.GetAsync(x => x.Role != "Admin");
           return Ok(result);
         }
@@ -71,8 +71,15 @@ namespace Builder_WASM.Server.Controllers
                 await _context.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
-            {                
-                throw;                
+            {
+                if (!UserRegisteredExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
             return NoContent();
