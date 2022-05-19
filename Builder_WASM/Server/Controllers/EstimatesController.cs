@@ -28,23 +28,29 @@ namespace Builder_WASM.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Estimate>>> GetEstimates()
         {
-          if (_context.EstimateRepository == null)
-          {
-              return NotFound();
-          }
-          var result = await _context.EstimateRepository.GetAsync();
-          return Ok(result);
+            if (_context.EstimateRepository == null)
+            {
+                return NotFound();
+            }
+            int? id = await GetClientId();
+            var result = await _context.EstimateRepository.GetAsync(x=>x.ClientJobId == id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
 
         // GET: api/Estimates/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Estimate>> GetEstimate(int id)
         {
-          if (_context.EstimateRepository == null)
-          {
-              return NotFound();
-          }
-            var estimate = await _context.EstimateRepository.GetByIdAsync(id);
+            if (_context.EstimateRepository == null)
+            {
+                return NotFound();
+            }
+            int? clientId = await GetClientId();
+            var estimate = (await _context.EstimateRepository.GetAsync(x=>x.ClientJobId == clientId && x.Id == id)).FirstOrDefault();
 
             if (estimate == null)
             {
@@ -90,10 +96,10 @@ namespace Builder_WASM.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Estimate>> PostEstimate(Estimate estimate)
         {
-          if (_context.EstimateRepository == null)
-          {
-              return Problem("Entity set 'Estimates'  is null.");
-          }
+            if (_context.EstimateRepository == null)
+            {
+                return Problem("Entity set 'Estimates'  is null.");
+            }
             _context.EstimateRepository.Insert(estimate);
             await _context.SaveAsync();
 
@@ -123,6 +129,14 @@ namespace Builder_WASM.Server.Controllers
         private bool EstimateExists(int id)
         {
             return _context.EstimateRepository.Exist(id);
+        }
+
+        private async Task<int?> GetClientId()
+        {
+            var userName = User?.Identity?.Name;
+            var companyId = (await _context.UserRegisteredRepository.GetAsync(x => x.Name == userName)).FirstOrDefault()?.CompanyId;
+            var clientId = (await _context.ClientJobRepository.GetAsync(x => x.CompanyId == companyId)).FirstOrDefault()?.Id;
+            return clientId;
         }
     }
 }
