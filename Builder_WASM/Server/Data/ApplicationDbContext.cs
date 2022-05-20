@@ -42,18 +42,35 @@ namespace Builder_WASM.Server.Data
                 .HasData(
                     new UserRegistered
                     {
-                        Id = 1,                        
-                        Name = "Test",                         
+                        Id = 1,
+                        Name = "Test",
                         Password = "123",
                         Role = "Admin"
                     },
                     new UserRegistered
                     {
                         Id = 2,
-                        Name = "Test2",                       
+                        Name = "Test2",
                         Password = "123",
                         Role = "User",
                     });
+            builder.Entity<Company>()
+                .HasData(
+                new Company 
+                {
+                    Id = 1,
+                    HeaderName = "CMO"                    
+                },
+                new Company
+                {
+                    Id = 2,
+                    HeaderName = "NL"
+                },
+                new Company
+                {
+                    Id = 3,
+                    HeaderName = "Test Company"
+                });            
         }
     }
 }

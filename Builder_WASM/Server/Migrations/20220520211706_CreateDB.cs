@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Builder_WASM.Server.Migrations
 {
-    public partial class Initialize : Migration
+    public partial class CreateDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -37,64 +37,6 @@ namespace Builder_WASM.Server.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Companies", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DContractors",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Specialty = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DContractors", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DGroupes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NameGroupe = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DGroupes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DMethodPayments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PercentMethod = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    NameMethod = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DMethodPayments", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DSuppliers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NameSupplier = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddressSupplier = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DSuppliers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -139,6 +81,92 @@ namespace Builder_WASM.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DContractors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Specialty = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DContractors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DContractors_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DGroupes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NameGroupe = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DGroupes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DGroupes_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DMethodPayments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PercentMethod = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    NameMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DMethodPayments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DMethodPayments_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DSuppliers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NameSupplier = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressSupplier = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DSuppliers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DSuppliers_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRegistereds",
                 columns: table => new
                 {
@@ -156,33 +184,6 @@ namespace Builder_WASM.Server.Migrations
                         name: "FK_UserRegistereds_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DItems",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NameItem = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DGroupeId = table.Column<int>(type: "int", nullable: false),
-                    DSapplierId = table.Column<int>(type: "int", nullable: true),
-                    DSupplierId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DItems_DGroupes_DGroupeId",
-                        column: x => x.DGroupeId,
-                        principalTable: "DGroupes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DItems_DSuppliers_DSupplierId",
-                        column: x => x.DSupplierId,
-                        principalTable: "DSuppliers",
                         principalColumn: "Id");
                 });
 
@@ -219,24 +220,30 @@ namespace Builder_WASM.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DDescriptions",
+                name: "DItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NameDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RateDescription = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    DItemId = table.Column<int>(type: "int", nullable: false)
+                    NameItem = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DGroupeId = table.Column<int>(type: "int", nullable: false),
+                    DSapplierId = table.Column<int>(type: "int", nullable: true),
+                    DSupplierId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DDescriptions", x => x.Id);
+                    table.PrimaryKey("PK_DItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DDescriptions_DItems_DItemId",
-                        column: x => x.DItemId,
-                        principalTable: "DItems",
+                        name: "FK_DItems_DGroupes_DGroupeId",
+                        column: x => x.DGroupeId,
+                        principalTable: "DGroupes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DItems_DSuppliers_DSupplierId",
+                        column: x => x.DSupplierId,
+                        principalTable: "DSuppliers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -288,15 +295,45 @@ namespace Builder_WASM.Server.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "DDescriptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NameDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RateDescription = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DItemId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DDescriptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DDescriptions_DItems_DItemId",
+                        column: x => x.DItemId,
+                        principalTable: "DItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
-                table: "UserRegistereds",
-                columns: new[] { "Id", "CompanyId", "Name", "Password", "Role" },
-                values: new object[] { 1, null, "Test", "123", "Admin" });
+                table: "Companies",
+                columns: new[] { "Id", "ContractPath", "GST", "GSTpercent", "HeaderAdditional", "HeaderAddress", "HeaderCompanyName", "HeaderEmail", "HeaderName", "HeaderPhone", "HeaderPost", "HeaderWebSite", "Incorporation", "Liability", "Licence", "LogoPath", "PST", "TAXpercent", "WCB" },
+                values: new object[,]
+                {
+                    { 1, "", "", 5, "", "", "", "", "CMO", "", "", "", "", "", "", "", "", 12, "" },
+                    { 2, "", "", 5, "", "", "", "", "NL", "", "", "", "", "", "", "", "", 12, "" },
+                    { 3, "", "", 5, "", "", "", "", "Test Company", "", "", "", "", "", "", "", "", 12, "" }
+                });
 
             migrationBuilder.InsertData(
                 table: "UserRegistereds",
                 columns: new[] { "Id", "CompanyId", "Name", "Password", "Role" },
-                values: new object[] { 2, null, "Test2", "123", "User" });
+                values: new object[,]
+                {
+                    { 1, null, "Test", "123", "Admin" },
+                    { 2, null, "Test2", "123", "User" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClientJobs_CompanyId",
@@ -304,9 +341,19 @@ namespace Builder_WASM.Server.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DContractors_CompanyId",
+                table: "DContractors",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DDescriptions_DItemId",
                 table: "DDescriptions",
                 column: "DItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DGroupes_CompanyId",
+                table: "DGroupes",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DItems_DGroupeId",
@@ -317,6 +364,16 @@ namespace Builder_WASM.Server.Migrations
                 name: "IX_DItems_DSupplierId",
                 table: "DItems",
                 column: "DSupplierId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DMethodPayments_CompanyId",
+                table: "DMethodPayments",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DSuppliers_CompanyId",
+                table: "DSuppliers",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EstimateLines_EstimateId",

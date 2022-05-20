@@ -24,5 +24,8 @@ namespace Builder_WASM.Shared.Entities.Dictionary
         }
         [Required]
         public string Color { get; set; } = "Black";
+
+        public int CompanyId { get; set; }
+        public Company Company { get; set; } = new Company();
     }
 }

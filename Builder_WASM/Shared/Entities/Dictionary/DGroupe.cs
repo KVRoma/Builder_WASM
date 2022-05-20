@@ -15,5 +15,8 @@ namespace Builder_WASM.Shared.Entities.Dictionary
         public EstimateLineType Type { get; set; }
 
         public List<DItem> DItems { get; set; } = new List<DItem>();
+
+        public int CompanyId { get; set; }
+        public Company Company { get; set; } = new Company();
     }
 }

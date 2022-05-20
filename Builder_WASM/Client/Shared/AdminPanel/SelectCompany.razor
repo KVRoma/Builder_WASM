@@ -1,0 +1,26 @@
+﻿<select @bind="UserData.CompanyId" >
+    <option value="">Select</option>
+    @foreach(var item in Companies)
+    {
+        <option value="@item.Id">@item.HeaderName</option>
+    }
+</select>
+
+<a class="btn btn-outline-primary" @onclick=Save>Hire</a>
+            
+
+@code {
+    
+    [Parameter]
+    public UserRegistered UserData { get; set; } = null!;
+    [Parameter]
+    public IEnumerable<Company> Companies { get; set; } = null!;
+    [Parameter]
+    public EventCallback<UserRegistered> OnClickCallback { get; set; }
+
+    void Save()
+    {        
+        OnClickCallback.InvokeAsync(UserData);
+    }
+
+}

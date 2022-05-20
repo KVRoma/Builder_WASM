@@ -1,0 +1,65 @@
+﻿<h3>Administrator List</h3>
+
+@if (userRegistereds == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+    <table class="table table-striped align-middle">
+        <caption>Count user: @userRegistereds?.Count()</caption>
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Company</th>
+                <th scope="col">Hire</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var user in userRegistereds!)
+            {
+                <tr>
+                    <td>@user.Name</td>
+                    <td class="text-nowrap">
+                        <SelectCompany UserData=@user Companies=@companies OnClickCallback=UpdateUserRegistered></SelectCompany>
+                    </td>
+                    <td>@NameHire(@user?.CompanyId)</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+
+@code
+{
+    IEnumerable<UserRegistered> userRegistereds = new List<UserRegistered>();
+    IEnumerable<Company> companies = new List<Company>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered>>("api/UserRegistereds")) ?? null!;
+            companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;
+        }
+        catch (Exception ex)
+        {
+            Console.Write(ex.Message);
+        }
+    }
+
+    async Task UpdateUserRegistered(UserRegistered user)
+    {        
+        var res = await HttpService.Put<UserRegistered>("api/UserRegistereds/" + user.Id, user);
+    }
+
+    string NameHire(int? id)
+    {
+        return companies?.FirstOrDefault(x => x.Id == id)?.HeaderCompanyName?.ToString()!;
+    }
+    }

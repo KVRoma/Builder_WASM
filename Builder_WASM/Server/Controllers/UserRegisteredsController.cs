@@ -85,6 +85,8 @@ namespace Builder_WASM.Server.Controllers
             return NoContent();
         }
 
+
+
         // POST: api/UserRegistereds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -124,5 +126,6 @@ namespace Builder_WASM.Server.Controllers
         {
             return _context.UserRegisteredRepository.Exist(id);
         }
+                
     }
 }

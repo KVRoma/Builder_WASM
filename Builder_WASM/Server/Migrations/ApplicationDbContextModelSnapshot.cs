@@ -209,6 +209,74 @@ namespace Builder_WASM.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ContractPath = "",
+                            GST = "",
+                            GSTpercent = 5,
+                            HeaderAdditional = "",
+                            HeaderAddress = "",
+                            HeaderCompanyName = "",
+                            HeaderEmail = "",
+                            HeaderName = "CMO",
+                            HeaderPhone = "",
+                            HeaderPost = "",
+                            HeaderWebSite = "",
+                            Incorporation = "",
+                            Liability = "",
+                            Licence = "",
+                            LogoPath = "",
+                            PST = "",
+                            TAXpercent = 12,
+                            WCB = ""
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ContractPath = "",
+                            GST = "",
+                            GSTpercent = 5,
+                            HeaderAdditional = "",
+                            HeaderAddress = "",
+                            HeaderCompanyName = "",
+                            HeaderEmail = "",
+                            HeaderName = "NL",
+                            HeaderPhone = "",
+                            HeaderPost = "",
+                            HeaderWebSite = "",
+                            Incorporation = "",
+                            Liability = "",
+                            Licence = "",
+                            LogoPath = "",
+                            PST = "",
+                            TAXpercent = 12,
+                            WCB = ""
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ContractPath = "",
+                            GST = "",
+                            GSTpercent = 5,
+                            HeaderAdditional = "",
+                            HeaderAddress = "",
+                            HeaderCompanyName = "",
+                            HeaderEmail = "",
+                            HeaderName = "Test Company",
+                            HeaderPhone = "",
+                            HeaderPost = "",
+                            HeaderWebSite = "",
+                            Incorporation = "",
+                            Liability = "",
+                            Licence = "",
+                            LogoPath = "",
+                            PST = "",
+                            TAXpercent = 12,
+                            WCB = ""
+                        });
                 });
 
             modelBuilder.Entity("Builder_WASM.Shared.Entities.Dictionary.DContractor", b =>
@@ -223,6 +291,9 @@ namespace Builder_WASM.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -236,6 +307,8 @@ namespace Builder_WASM.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("DContractors");
                 });
@@ -273,6 +346,9 @@ namespace Builder_WASM.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("NameGroupe")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -281,6 +357,8 @@ namespace Builder_WASM.Server.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("DGroupes");
                 });
@@ -323,6 +401,9 @@ namespace Builder_WASM.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("NameMethod")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -331,6 +412,8 @@ namespace Builder_WASM.Server.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("DMethodPayments");
                 });
@@ -347,11 +430,16 @@ namespace Builder_WASM.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("NameSupplier")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("DSuppliers");
                 });
@@ -546,6 +634,17 @@ namespace Builder_WASM.Server.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("Builder_WASM.Shared.Entities.Dictionary.DContractor", b =>
+                {
+                    b.HasOne("Builder_WASM.Shared.Entities.Company", "Company")
+                        .WithMany("DContractors")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("Builder_WASM.Shared.Entities.Dictionary.DDescription", b =>
                 {
                     b.HasOne("Builder_WASM.Shared.Entities.Dictionary.DItem", "DItem")
@@ -555,6 +654,17 @@ namespace Builder_WASM.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("DItem");
+                });
+
+            modelBuilder.Entity("Builder_WASM.Shared.Entities.Dictionary.DGroupe", b =>
+                {
+                    b.HasOne("Builder_WASM.Shared.Entities.Company", "Company")
+                        .WithMany("DGroupes")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Builder_WASM.Shared.Entities.Dictionary.DItem", b =>
@@ -572,6 +682,28 @@ namespace Builder_WASM.Server.Migrations
                     b.Navigation("DGroupe");
 
                     b.Navigation("DSupplier");
+                });
+
+            modelBuilder.Entity("Builder_WASM.Shared.Entities.Dictionary.DMethodPayment", b =>
+                {
+                    b.HasOne("Builder_WASM.Shared.Entities.Company", "Company")
+                        .WithMany("DMethodPayments")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Builder_WASM.Shared.Entities.Dictionary.DSupplier", b =>
+                {
+                    b.HasOne("Builder_WASM.Shared.Entities.Company", "Company")
+                        .WithMany("DSuppliers")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Builder_WASM.Shared.Entities.Estimate", b =>
@@ -624,6 +756,14 @@ namespace Builder_WASM.Server.Migrations
             modelBuilder.Entity("Builder_WASM.Shared.Entities.Company", b =>
                 {
                     b.Navigation("ClientJobs");
+
+                    b.Navigation("DContractors");
+
+                    b.Navigation("DGroupes");
+
+                    b.Navigation("DMethodPayments");
+
+                    b.Navigation("DSuppliers");
 
                     b.Navigation("UserRegistered");
                 });

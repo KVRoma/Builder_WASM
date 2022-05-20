@@ -49,6 +49,7 @@ namespace Builder_WASM.Server.Services
         {
             return (await dbSet.FindAsync(id))!;
         }
+               
 
         public virtual void Insert(TEntity entity)
         {
@@ -84,7 +85,7 @@ namespace Builder_WASM.Server.Services
 
         public virtual void Update(TEntity entityToUpdate)
         {
-            dbSet.Attach(entityToUpdate);
+            dbSet.Attach(entityToUpdate); 
             context.Entry(entityToUpdate).State = EntityState.Modified;
         }
 

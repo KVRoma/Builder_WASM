@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Builder_WASM.Shared.Entities.Dictionary;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -52,7 +53,12 @@ namespace Builder_WASM.Shared.Entities
         public int GSTpercent { get; set; } = 5;
 
         public List<UserRegistered> UserRegistered { get; set; } = new List<UserRegistered>();
+
         public List<ClientJob> ClientJobs { get; set; } = new List<ClientJob>();
+        public List<DContractor> DContractors { get; set; } = new List<DContractor>();
+        public List<DGroupe> DGroupes { get; set; } = new List<DGroupe>();
+        public List<DMethodPayment> DMethodPayments { get; set; } = new List<DMethodPayment>();
+        public List<DSupplier> DSuppliers { get; set; } = new List<DSupplier>();
 
     }
 }

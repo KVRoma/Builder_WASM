@@ -39,6 +39,14 @@ namespace Builder_WASM.Client.Services
             return await sendRequest<T>(request);
         }
 
+        public async Task<T> Put<T>(string uri,object value)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Put, uri);
+            request.Content = new StringContent(JsonSerializer.Serialize(value), Encoding.UTF8, "application/json");
+            
+            return await sendRequest<T>(request);
+        }
+
         // helper methods
 
         private async Task<T> sendRequest<T>(HttpRequestMessage request)

@@ -15,5 +15,8 @@ namespace Builder_WASM.Shared.Entities.Dictionary
         [Display(Name = "Name method payment")]
         [Required(ErrorMessage = "The field cannot be null !!! Please, write the name method. ")]
         public string NameMethod { get; set; } = string.Empty;
+
+        public int CompanyId { get; set; }
+        public Company Company { get; set; } = new Company();
     }
 }
