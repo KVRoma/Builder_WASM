@@ -46,7 +46,7 @@ namespace Builder_WASM.Server.Services
         }
 
         public virtual async Task<TEntity> GetByIdAsync(object id)
-        {
+        {          
             return (await dbSet.FindAsync(id))!;
         }
                

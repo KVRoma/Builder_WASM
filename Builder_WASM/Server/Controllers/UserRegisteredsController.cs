@@ -63,8 +63,10 @@ namespace Builder_WASM.Server.Controllers
             {
                 return BadRequest();
             }
+            var user = await _context.UserRegisteredRepository.GetByIdAsync(id);                     
+            user.CopyWithoutPassword(userRegistered);
 
-            _context.UserRegisteredRepository.Update(userRegistered);
+            _context.UserRegisteredRepository.Update(user);
 
             try
             {
@@ -82,7 +84,7 @@ namespace Builder_WASM.Server.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(new { message = "Hire was successful!" });
         }
 
 

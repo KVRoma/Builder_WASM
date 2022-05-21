@@ -13,10 +13,22 @@ namespace Builder_WASM.Shared.Entities
         public string Name { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
 
-        //[JsonIgnore]
+        [JsonIgnore]
         public string Password { get; set; } = string.Empty;
 
         public int? CompanyId { get; set; }
         public Company? Company { get; set; }
+
+        /// <summary>
+        /// Copies all fields except the password
+        /// </summary>
+        /// <param name="user"></param>
+        public void CopyWithoutPassword(UserRegistered user)
+        {
+            Name = user.Name;
+            Role = user.Role;
+            CompanyId = user.CompanyId;
+            Company = user.Company;
+        }
     }
 }

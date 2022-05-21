@@ -1,12 +1,17 @@
-﻿<h3>Administrator List</h3>
+﻿@page "/adminlist"
+
+@using Builder_WASM.Client.Shared.Admin
+<h3>Administrator List</h3>
 
 @if (userRegistereds == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>
+        <span class="spinner-border spinner-border-sm mr-1"></span>
+        Loading
+     </em></p>
 }
 else
 {
-
     <table class="table table-striped align-middle">
         <caption>Count user: @userRegistereds?.Count()</caption>
         <thead>
@@ -31,14 +36,15 @@ else
 
         </tbody>
     </table>
+
 }
 
 
 @code
 {
-    IEnumerable<UserRegistered> userRegistereds = new List<UserRegistered>();
-    IEnumerable<Company> companies = new List<Company>();
-
+    IEnumerable<UserRegistered> userRegistereds = null; 
+    IEnumerable<Company> companies = null; 
+    string message = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,12 +60,12 @@ else
     }
 
     async Task UpdateUserRegistered(UserRegistered user)
-    {        
-        var res = await HttpService.Put<UserRegistered>("api/UserRegistereds/" + user.Id, user);
+    {
+        message = await HttpService.Put<string>("api/UserRegistereds/" + user.Id, user);
     }
 
     string NameHire(int? id)
     {
         return companies?.FirstOrDefault(x => x.Id == id)?.HeaderCompanyName?.ToString()!;
     }
-    }
+}

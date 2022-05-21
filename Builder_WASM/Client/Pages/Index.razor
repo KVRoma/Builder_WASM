@@ -1,48 +1,43 @@
 ﻿@page "/"
-@using Builder_WASM.Client.Shared.AdminPanel
 @using Builder_WASM.Client.Shared.Authentication
 
 <PageTitle>Index</PageTitle>
 
 <h1>@mess</h1>
 
-@if (role == "Admin")
-{
-    <AdminList></AdminList>
-}
-@if (role == "null")
+
+@if (role == "null" || role == "")
 {
     <Login></Login>
 }
 
 
-@code{
+@code {
 
-    string mess = string.Empty;    
+    string mess = string.Empty;
     string role = string.Empty;
 
     protected override void OnInitialized()
-    {        
+    {
 
         if (AuthenticationService.User == null)
         {
-            //NavigationManager.NavigateTo("/authenticate/login");
             role = "null";
         }
         else if (AuthenticationService.User.Role == "Admin")
-        {           
+        {
             role = "Admin";
+            NavigationManager.NavigateTo("/adminlist");
         }
-        else if(AuthenticationService.User.Role == "User")
+        else if (AuthenticationService.User.Role == "User")
         {
             role = "User";
             mess = "Hello, User!";
         }
-        else if(AuthenticationService.User.Role == "")
+        else if (AuthenticationService.User.Role == "")
         {
-            role = "";
-            mess = $"Hello, you don't have a role!";
+            role = "";            
         }
 
-    }    
+    }
 }
