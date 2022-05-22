@@ -1,6 +1,5 @@
 ﻿@page "/adminlist"
 
-@using Builder_WASM.Client.Shared.Admin
 <h3>Administrator List</h3>
 
 @if (userRegistereds == null)
@@ -42,8 +41,8 @@ else
 
 @code
 {
-    IEnumerable<UserRegistered> userRegistereds = null; 
-    IEnumerable<Company> companies = null; 
+    IEnumerable<UserRegistered> userRegistereds = null!; 
+    IEnumerable<Company> companies = null!; 
     string message = string.Empty;
 
     protected override async Task OnInitializedAsync()
