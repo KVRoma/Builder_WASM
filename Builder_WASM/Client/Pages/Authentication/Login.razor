@@ -3,7 +3,10 @@
 <div class="row justify-content-center">
     <div class="col-xl-4 col-md-6 col-sm-12">
         <div class="card text-white bg-secondary">
-            <h4 class="card-header text-center">Builder - 2022 (web version)</h4>
+            <div class="card-header text-center">
+                <h4>Builder - 2022</h4> 
+                <h6>(web version)</h6>
+            </div>
             <div class="card-body">
                 <EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
                     <DataAnnotationsValidator />
@@ -28,6 +31,10 @@
                     }
                 </EditForm>
             </div>
+            <div class="card-footer text-center bg-white text-black">
+                <h6>----- Don't have an Builder account? -----</h6>
+                <a class="btn btn-outline-secondary" @onclick=@Signup>Sign Up</a>
+            </div>
         </div>
     </div>
 </div>
@@ -36,7 +43,7 @@
     AuthenticateRequest model = new AuthenticateRequest();
     private bool loading;
     private string error = string.Empty;
-        
+
     private async void HandleValidSubmit()
     {
         loading = true;
@@ -59,5 +66,10 @@
             loading = false;
             StateHasChanged();
         }
+    }
+
+    private void Signup()
+    {
+        NavigationManager.NavigateTo("/authenticate/signup");
     }
 }
