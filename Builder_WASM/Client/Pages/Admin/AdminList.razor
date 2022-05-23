@@ -4,46 +4,38 @@
 
 @if (userRegistereds == null)
 {
-    <p><em>
-        <span class="spinner-border spinner-border-sm mr-1"></span>
-        Loading
-     </em></p>
+    <p>
+        <em>
+            <span class="spinner-border spinner-border-sm mr-1"></span>
+            Loading...
+        </em>
+    </p>
 }
 else
 {
-    <table class="table table-striped align-middle">
-        <caption>Count user: @userRegistereds?.Count()</caption>
-        <thead>
-            <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Company</th>
-                <th scope="col">Hire</th>
-            </tr>
-        </thead>
-        <tbody>
+    <h5>Count user: @userRegistereds?.Count()</h5>
 
-            @foreach (var user in userRegistereds!)
-            {
-                <tr>
-                    <td>@user.Name</td>
-                    <td class="text-nowrap">
-                        <SelectCompany UserData=@user Companies=@companies OnClickCallback=UpdateUserRegistered></SelectCompany>
-                    </td>
-                    <td>@NameHire(@user?.CompanyId)</td>
-                </tr>
-            }
 
-        </tbody>
-    </table>
+    @foreach (var user in userRegistereds!)
+    {
+        <SelectCompany UserData=@user
+               Companies=@companies
+               Hiring=@HireCompany(user.CompanyId)
+               OnClickCallback=UpdateUserRegistered>
+        </SelectCompany>
+        <p class="mb-2" />
+    }
+
 
 }
 
 
 @code
 {
-    IEnumerable<UserRegistered> userRegistereds = null!; 
-    IEnumerable<Company> companies = null!; 
-    string message = string.Empty;
+    IEnumerable<UserRegistered> userRegistereds = null!;
+    IEnumerable<Company> companies = null!;
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -60,11 +52,13 @@ else
 
     async Task UpdateUserRegistered(UserRegistered user)
     {
-        message = await HttpService.Put<string>("api/UserRegistereds/" + user.Id, user);
+        string message = await HttpService.Put<string>("api/UserRegistereds/" + user.Id, user);
+
     }
 
-    string NameHire(int? id)
+    private string HireCompany(int? id)
     {
         return companies?.FirstOrDefault(x => x.Id == id)?.HeaderCompanyName?.ToString()!;
     }
+
 }

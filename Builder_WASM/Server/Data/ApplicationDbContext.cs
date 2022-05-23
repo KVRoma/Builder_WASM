@@ -11,8 +11,9 @@ namespace Builder_WASM.Server.Data
         {
         }
 
-
+        
         public DbSet<UserRegistered> UserRegistereds { get; set; } = null!;
+        public DbSet<UserMessage> UserMessages { get; set; } = null!;
         public DbSet<Company> Companies  { get; set; } = null!;
         public DbSet<ClientJob> ClientJobs { get; set; } = null!;
         public DbSet<Estimate> Estimates { get; set; } = null!;
@@ -43,14 +44,14 @@ namespace Builder_WASM.Server.Data
                     new UserRegistered
                     {
                         Id = 1,
-                        Name = "Test",
+                        Name = "Admin",
                         Password = "123",
                         Role = "Admin"
                     },
                     new UserRegistered
                     {
                         Id = 2,
-                        Name = "Test2",
+                        Name = "User",
                         Password = "123",
                         Role = "User",
                     });
@@ -59,17 +60,20 @@ namespace Builder_WASM.Server.Data
                 new Company 
                 {
                     Id = 1,
-                    HeaderName = "CMO"                    
+                    HeaderName = "CMO",
+                    HeaderCompanyName = "CMO full name"
                 },
                 new Company
                 {
                     Id = 2,
-                    HeaderName = "NL"
+                    HeaderName = "NL",
+                    HeaderCompanyName = "NL full name"
                 },
                 new Company
                 {
                     Id = 3,
-                    HeaderName = "Test Company"
+                    HeaderName = "Test Company",
+                    HeaderCompanyName = "Test Company full name"
                 });            
         }
     }

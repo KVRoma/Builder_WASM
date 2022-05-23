@@ -9,6 +9,7 @@ namespace Builder_WASM.Server.Services
         private ApplicationDbContext context;
 
         private Repository<UserRegistered> userRegisteredRepository = null!;
+        private Repository<UserMessage> userMessageRepository = null!;
         private Repository<Company> companyRepository = null!;
         private Repository<ClientJob> clientJobRepository = null!;
         private Repository<Estimate> estimateRepository = null!;
@@ -40,6 +41,17 @@ namespace Builder_WASM.Server.Services
                     this.userRegisteredRepository = new Repository<UserRegistered>(context);
                 }
                 return this.userRegisteredRepository;
+            }
+        }
+        public Repository<UserMessage> UserMessageRepository
+        {
+            get
+            {
+                if(this.userMessageRepository == null)
+                {
+                    this.userMessageRepository = new Repository<UserMessage>(context);
+                }
+                return this.userMessageRepository;
             }
         }
         public Repository<Company> CompanyRepository

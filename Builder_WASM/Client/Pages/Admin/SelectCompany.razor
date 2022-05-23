@@ -1,26 +1,60 @@
-﻿<select @bind="UserData.CompanyId" >
-    <option value="">Select</option>
-    @foreach(var item in Companies)
-    {
-        <option value="@item.Id">@item.HeaderName</option>
-    }
-</select>
+﻿<div class="card text-white bg-secondary">
+    <div class="card-header text-center">
+        <h4>@UserData.Name</h4>
+        <h5>Company: @Hiring</h5>
+    </div>
+    <div class="card-body">
+        <select @bind="UserData.CompanyId">
+            <option value="">Select</option>
+            @foreach (var item in Companies)
+            {
+                <option value="@item.Id">@item.HeaderName</option>
+            }
+        </select>
 
-<a class="btn btn-outline-primary" @onclick=Save>Hire</a>
-            
+        <a class="btn btn-outline-primary" @onclick=Save>Hire</a>
+
+    </div>
+    <div class="card-footer text-center bg-white text-black">
+        <h6>----- Message -----</h6>
+        @if (Messages != null)
+        {
+            @foreach (var item in Messages)
+            {
+                <h6>@item.Created.ToShortTimeString() : @item.Message</h6>
+            }
+        }
+    </div>
+</div>
+
+
+
+
+
 
 @code {
-    
+
     [Parameter]
-    public UserRegistered UserData { get; set; } = null!;
+    public UserRegistered UserData { get; set; } = null!;    
     [Parameter]
     public IEnumerable<Company> Companies { get; set; } = null!;
     [Parameter]
     public EventCallback<UserRegistered> OnClickCallback { get; set; }
+    [Parameter]
+    public string Hiring { get; set; } = string.Empty;
+
+    public IEnumerable<UserMessage> Messages { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = (await HttpService.Get<IEnumerable<UserMessage>>("api/UserMessages/user/" + UserData.Id)) ?? null!;
+        Messages = (result?.Where(x => x.IsDeleted == false)?.OrderBy(x=>x.Created)) ?? null!;
+    }
 
     void Save()
-    {        
+    {
         OnClickCallback.InvokeAsync(UserData);
     }
+    
 
 }

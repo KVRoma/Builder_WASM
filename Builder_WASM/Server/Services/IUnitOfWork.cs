@@ -6,6 +6,7 @@ namespace Builder_WASM.Server.Services
     public interface IUnitOfWork
     {
         Repository<UserRegistered> UserRegisteredRepository { get; }
+        Repository<UserMessage> UserMessageRepository { get; }
         Repository<Company> CompanyRepository { get; }
         Repository<ClientJob> ClientJobRepository { get; }
         Repository<Estimate> EstimateRepository { get; }

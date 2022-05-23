@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Builder_WASM.Server.Migrations
 {
-    public partial class CreateDB : Migration
+    public partial class Start : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -247,6 +247,28 @@ namespace Builder_WASM.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserMessages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserRegisteredId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserMessages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserMessages_UserRegistereds_UserRegisteredId",
+                        column: x => x.UserRegisteredId,
+                        principalTable: "UserRegistereds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EstimateLines",
                 columns: table => new
                 {
@@ -321,9 +343,9 @@ namespace Builder_WASM.Server.Migrations
                 columns: new[] { "Id", "ContractPath", "GST", "GSTpercent", "HeaderAdditional", "HeaderAddress", "HeaderCompanyName", "HeaderEmail", "HeaderName", "HeaderPhone", "HeaderPost", "HeaderWebSite", "Incorporation", "Liability", "Licence", "LogoPath", "PST", "TAXpercent", "WCB" },
                 values: new object[,]
                 {
-                    { 1, "", "", 5, "", "", "", "", "CMO", "", "", "", "", "", "", "", "", 12, "" },
-                    { 2, "", "", 5, "", "", "", "", "NL", "", "", "", "", "", "", "", "", 12, "" },
-                    { 3, "", "", 5, "", "", "", "", "Test Company", "", "", "", "", "", "", "", "", 12, "" }
+                    { 1, "", "", 5, "", "", "CMO full name", "", "CMO", "", "", "", "", "", "", "", "", 12, "" },
+                    { 2, "", "", 5, "", "", "NL full name", "", "NL", "", "", "", "", "", "", "", "", 12, "" },
+                    { 3, "", "", 5, "", "", "Test Company full name", "", "Test Company", "", "", "", "", "", "", "", "", 12, "" }
                 });
 
             migrationBuilder.InsertData(
@@ -331,8 +353,8 @@ namespace Builder_WASM.Server.Migrations
                 columns: new[] { "Id", "CompanyId", "Name", "Password", "Role" },
                 values: new object[,]
                 {
-                    { 1, null, "Test", "123", "Admin" },
-                    { 2, null, "Test2", "123", "User" }
+                    { 1, null, "Admin", "123", "Admin" },
+                    { 2, null, "User", "123", "User" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -391,6 +413,11 @@ namespace Builder_WASM.Server.Migrations
                 column: "EstimateId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserMessages_UserRegisteredId",
+                table: "UserMessages",
+                column: "UserRegisteredId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserRegistereds_CompanyId",
                 table: "UserRegistereds",
                 column: "CompanyId");
@@ -414,13 +441,16 @@ namespace Builder_WASM.Server.Migrations
                 name: "Payments");
 
             migrationBuilder.DropTable(
-                name: "UserRegistereds");
+                name: "UserMessages");
 
             migrationBuilder.DropTable(
                 name: "DItems");
 
             migrationBuilder.DropTable(
                 name: "Estimates");
+
+            migrationBuilder.DropTable(
+                name: "UserRegistereds");
 
             migrationBuilder.DropTable(
                 name: "DGroupes");

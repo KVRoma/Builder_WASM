@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Builder_WASM.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220520211706_CreateDB")]
-    partial class CreateDB
+    [Migration("20220523123919_Start")]
+    partial class Start
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -221,7 +221,7 @@ namespace Builder_WASM.Server.Migrations
                             GSTpercent = 5,
                             HeaderAdditional = "",
                             HeaderAddress = "",
-                            HeaderCompanyName = "",
+                            HeaderCompanyName = "CMO full name",
                             HeaderEmail = "",
                             HeaderName = "CMO",
                             HeaderPhone = "",
@@ -243,7 +243,7 @@ namespace Builder_WASM.Server.Migrations
                             GSTpercent = 5,
                             HeaderAdditional = "",
                             HeaderAddress = "",
-                            HeaderCompanyName = "",
+                            HeaderCompanyName = "NL full name",
                             HeaderEmail = "",
                             HeaderName = "NL",
                             HeaderPhone = "",
@@ -265,7 +265,7 @@ namespace Builder_WASM.Server.Migrations
                             GSTpercent = 5,
                             HeaderAdditional = "",
                             HeaderAddress = "",
-                            HeaderCompanyName = "",
+                            HeaderCompanyName = "Test Company full name",
                             HeaderEmail = "",
                             HeaderName = "Test Company",
                             HeaderPhone = "",
@@ -579,6 +579,34 @@ namespace Builder_WASM.Server.Migrations
                     b.ToTable("Payments");
                 });
 
+            modelBuilder.Entity("Builder_WASM.Shared.Entities.UserMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserRegisteredId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserRegisteredId");
+
+                    b.ToTable("UserMessages");
+                });
+
             modelBuilder.Entity("Builder_WASM.Shared.Entities.UserRegistered", b =>
                 {
                     b.Property<int>("Id")
@@ -612,14 +640,14 @@ namespace Builder_WASM.Server.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Test",
+                            Name = "Admin",
                             Password = "123",
                             Role = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Test2",
+                            Name = "User",
                             Password = "123",
                             Role = "User"
                         });
@@ -741,6 +769,17 @@ namespace Builder_WASM.Server.Migrations
                     b.Navigation("Estimate");
                 });
 
+            modelBuilder.Entity("Builder_WASM.Shared.Entities.UserMessage", b =>
+                {
+                    b.HasOne("Builder_WASM.Shared.Entities.UserRegistered", "UserRegistered")
+                        .WithMany("Messages")
+                        .HasForeignKey("UserRegisteredId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserRegistered");
+                });
+
             modelBuilder.Entity("Builder_WASM.Shared.Entities.UserRegistered", b =>
                 {
                     b.HasOne("Builder_WASM.Shared.Entities.Company", "Company")
@@ -790,6 +829,11 @@ namespace Builder_WASM.Server.Migrations
                     b.Navigation("EstimateLines");
 
                     b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("Builder_WASM.Shared.Entities.UserRegistered", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

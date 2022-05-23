@@ -107,16 +107,23 @@ namespace Builder_WASM.Server.Controllers
                 return BadRequest(new {message = "This username already exists!" } );
             }
 
+            UserMessage mess = new UserMessage()
+            {
+                Message = response.MessageNewUser                
+            };
+
             user = new UserRegistered() 
             {
                 Name = response.Username,
                 Password = response.Password,
-                Role = "User"
-            };           
+                Role = "User"                
+            };
+            user.Messages.Add(mess);
 
             _context.UserRegisteredRepository.Insert(user);
             await _context.SaveAsync();
 
+           
             return CreatedAtAction("GetUserRegistered", new { id = user.Id }, user);
         }
 
