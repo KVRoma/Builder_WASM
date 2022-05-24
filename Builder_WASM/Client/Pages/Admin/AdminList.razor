@@ -1,5 +1,6 @@
 ﻿@page "/adminlist"
 
+
 <h3>Administrator List</h3>
 
 @if (userRegistereds == null)
@@ -15,18 +16,19 @@ else
 {
     <h5>Count user: @userRegistereds?.Count()</h5>
 
-
-    @foreach (var user in userRegistereds!)
-    {
-        <SelectCompany UserData=@user
-               Companies=@companies
-               Hiring=@HireCompany(user.CompanyId)
-               OnClickCallback=UpdateUserRegistered>
-        </SelectCompany>
-        <p class="mb-2" />
-    }
-
-
+    <div class="row justify-content-center">
+        <div class="col-xl-4 col-md-6 col-sm-12">
+            @foreach (var user in userRegistereds!)
+            {
+                <SelectCompany UserData=@user
+                       Companies=@companies
+                       Hiring=@HireCompany(user.CompanyId)
+                       OnClickCallback=UpdateUserRegistered>
+                </SelectCompany>
+                <p class="mb-2" />
+            }
+        </div>
+    </div>
 }
 
 

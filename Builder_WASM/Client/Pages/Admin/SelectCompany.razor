@@ -1,6 +1,9 @@
 ﻿<div class="card text-white bg-secondary">
     <div class="card-header text-center">
-        <h4>@UserData.Name</h4>
+        <h4>
+            <span class="oi oi-person"></span>
+            @UserData.Name
+        </h4>
         <h5>Company: @Hiring</h5>
     </div>
     <div class="card-body">
@@ -12,19 +15,34 @@
             }
         </select>
 
-        <a class="btn btn-outline-primary" @onclick=Save>Hire</a>
+        <a class="btn btn-success" @onclick=Save>Hire</a>
+        <a class="btn btn-danger">
+            <span class="oi oi-circle-x"></span>
+            User
+        </a>
 
     </div>
-    <div class="card-footer text-center bg-white text-black">
-        <h6>----- Message -----</h6>
-        @if (Messages != null)
-        {
-            @foreach (var item in Messages)
-            {
-                <h6>@item.Created.ToShortTimeString() : @item.Message</h6>
-            }
-        }
-    </div>
+    @if (Messages?.Count() != 0)
+    {
+        <div class="card-footer text-center bg-white text-black">
+            <h6>----- Message -----</h6>
+            <div class="text-start">
+                @if (Messages != null)
+                {
+                    @foreach (var item in Messages)
+                    {
+                        <h6>@item.Created.ToShortDateString() : @item.Message</h6>
+                    }
+                }
+            </div>
+            <div class="text-end">
+                <a class="btn btn-outline-primary">
+                    <span class="oi oi-check"></span>
+                    Ok
+                </a>
+            </div>
+        </div>
+    }
 </div>
 
 
@@ -35,7 +53,7 @@
 @code {
 
     [Parameter]
-    public UserRegistered UserData { get; set; } = null!;    
+    public UserRegistered UserData { get; set; } = null!;
     [Parameter]
     public IEnumerable<Company> Companies { get; set; } = null!;
     [Parameter]
@@ -48,13 +66,13 @@
     protected override async Task OnInitializedAsync()
     {
         var result = (await HttpService.Get<IEnumerable<UserMessage>>("api/UserMessages/user/" + UserData.Id)) ?? null!;
-        Messages = (result?.Where(x => x.IsDeleted == false)?.OrderBy(x=>x.Created)) ?? null!;
+        Messages = (result?.Where(x => x.IsDeleted == false)?.OrderBy(x => x.Created)) ?? null!;
     }
 
     void Save()
     {
         OnClickCallback.InvokeAsync(UserData);
     }
-    
+
 
 }
