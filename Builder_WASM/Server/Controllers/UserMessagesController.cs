@@ -32,7 +32,7 @@ namespace Builder_WASM.Server.Controllers
           {
               return NotFound();
           }
-            var result = await _context.UserMessageRepository.GetAsync(x=>x.UserRegisteredId == id);
+            var result = await _context.UserMessageRepository.GetAsync(x=>x.UserRegisteredId == id && !string.IsNullOrWhiteSpace(x.Message));
             return Ok(result);
         }
 

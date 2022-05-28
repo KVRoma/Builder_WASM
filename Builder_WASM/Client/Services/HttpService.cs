@@ -47,6 +47,12 @@ namespace Builder_WASM.Client.Services
             return await sendRequest<T>(request);
         }
 
+        public async Task<T> Delete<T>(string uri)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Delete, uri);
+            return await sendRequest<T>(request);
+        }
+
         // helper methods
 
         private async Task<T> sendRequest<T>(HttpRequestMessage request)

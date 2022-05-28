@@ -1,25 +1,37 @@
 ﻿<div class="card text-white bg-secondary">
     <div class="card-header text-center">
         <h4>
-            <span class="oi oi-person"></span>
+            <span class="oi oi-person @textColor"></span>
             @UserData.Name
         </h4>
-        <h5>Company: @Hiring</h5>
+        @if (!string.IsNullOrWhiteSpace(@Hiring))
+        {
+            <h5>Company: @Hiring</h5>
+        }
     </div>
     <div class="card-body">
-        <select @bind="UserData.CompanyId">
-            <option value="">Select</option>
-            @foreach (var item in Companies)
-            {
-                <option value="@item.Id">@item.HeaderName</option>
-            }
-        </select>
+        <div class="row">
+            <div class="col-6 d-grid gap-2 d-flex justify-content-start">
+                <select class="form-select" @bind="UserData.CompanyId">
+                    <option value="">Select</option>
+                    @foreach (var item in Companies)
+                    {
+                        <option value="@item.Id">@item.HeaderName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-6 d-grid gap-2 d-flex justify-content-end">
+                <button class="btn  btn-success" type="button" @onclick=Save>
+                    <span class="oi oi-circle-check"></span>
+                    Hire
+                </button>
+                <button class="btn  btn-danger" type="button" @onclick=Delete>
+                    <span class="oi oi-circle-x"></span>
+                    User
+                </button>
+            </div>
 
-        <a class="btn btn-success" @onclick=Save>Hire</a>
-        <a class="btn btn-danger">
-            <span class="oi oi-circle-x"></span>
-            User
-        </a>
+        </div>
 
     </div>
     @if (Messages?.Count() != 0)
@@ -57,22 +69,35 @@
     [Parameter]
     public IEnumerable<Company> Companies { get; set; } = null!;
     [Parameter]
-    public EventCallback<UserRegistered> OnClickCallback { get; set; }
+    public EventCallback<UserRegistered> SaveClickCallback { get; set; }
+    [Parameter]
+    public EventCallback<UserRegistered> DeleteClickCallback { get; set; }
     [Parameter]
     public string Hiring { get; set; } = string.Empty;
 
     public IEnumerable<UserMessage> Messages { get; set; } = null!;
 
+    string textColor = "";
+
     protected override async Task OnInitializedAsync()
     {
         var result = (await HttpService.Get<IEnumerable<UserMessage>>("api/UserMessages/user/" + UserData.Id)) ?? null!;
-        Messages = (result?.Where(x => x.IsDeleted == false)?.OrderBy(x => x.Created)) ?? null!;
+        Messages = (result?.Where(x => x.IsDeleted == false)?.OrderBy(x => x.Created)) ?? null!;        
+    }
+
+    protected override void OnParametersSet()
+    {
+        textColor = string.IsNullOrWhiteSpace(Hiring) ? "text-danger" : "";
     }
 
     void Save()
     {
-        OnClickCallback.InvokeAsync(UserData);
+        SaveClickCallback.InvokeAsync(UserData);
     }
 
+    void Delete()
+    {
+        DeleteClickCallback.InvokeAsync(UserData);
+    }
 
 }

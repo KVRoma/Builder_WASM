@@ -59,12 +59,17 @@ namespace Builder_WASM.Server.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUserRegistered(int id, UserRegistered userRegistered)
-        {
-            if (id != userRegistered.Id)
+        {            
+            if (id != userRegistered?.Id)
             {
                 return BadRequest();
             }
             var user = await _context.UserRegisteredRepository.GetByIdAsync(id);
+            if(user == null)
+            { 
+                return BadRequest(new { message = "This user is not in the database!" }); 
+            }
+            
             user.CopyWithoutPassword(userRegistered);
 
             _context.UserRegisteredRepository.Update(user);
@@ -81,7 +86,7 @@ namespace Builder_WASM.Server.Controllers
                 }
                 else
                 {
-                    throw;
+                    throw;                    
                 }
             }
 
@@ -106,6 +111,7 @@ namespace Builder_WASM.Server.Controllers
             {
                 return BadRequest(new {message = "This username already exists!" } );
             }
+                       
 
             UserMessage mess = new UserMessage()
             {
@@ -144,7 +150,7 @@ namespace Builder_WASM.Server.Controllers
             _context.UserRegisteredRepository.Delete(userRegistered);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new {message= "Delete user successful!" });
         }
 
         private bool UserRegisteredExists(int id)
