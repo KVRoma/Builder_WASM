@@ -10,6 +10,7 @@ using Builder_WASM.Shared.Entities;
 using Builder_WASM.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Builder_WASM.Shared.Models;
+using System.Text.Json;
 
 namespace Builder_WASM.Server.Controllers
 {
@@ -34,6 +35,7 @@ namespace Builder_WASM.Server.Controllers
                 return NotFound();
             }
             var result = await _context.UserRegisteredRepository.GetAsync(x => x.Role != "Admin");
+            
             return Ok(result);
         }
 

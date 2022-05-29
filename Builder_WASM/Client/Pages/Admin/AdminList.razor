@@ -22,9 +22,10 @@ else
             {
                 <SelectCompany UserData=@user
                        Companies=@companies
-                       Hiring=@HireCompany(user.CompanyId)
-                       SaveClickCallback=UpdateUserRegistered
-                       DeleteClickCallback="DeleteUserRegistered">
+                       Hiring=@HireCompany(@user.CompanyId)
+                       Messages=@GetUserMessage(@user.Id)
+                       SaveClickCallback=@UpdateUserRegistered
+                       DeleteClickCallback=@DeleteUserRegistered>
                 </SelectCompany>
                 <p class="mb-2" />
             }
@@ -35,9 +36,10 @@ else
 
 @code
 {
+
     IEnumerable<UserRegistered> userRegistereds = null!;
     IEnumerable<Company> companies = null!;
-
+    IEnumerable<UserMessage> messages = null!;
 
 
     protected override async Task OnInitializedAsync()
@@ -45,6 +47,7 @@ else
         try
         {
             userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered>>("api/UserRegistereds")) ?? null!;
+            messages = (await HttpService.Get<IEnumerable<UserMessage>>("api/UserMessages")) ?? null!;
             companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;
         }
         catch (Exception ex)
@@ -58,16 +61,21 @@ else
         string message = await HttpService.Put<string>("api/UserRegistereds/" + user.Id, user);
     }
 
-    Task DeleteUserRegistered(UserRegistered user)
+    async Task DeleteUserRegistered(UserRegistered user)
     {
-        Task.Run(async () => { string message = await HttpService.Delete<string>("api/UserRegistereds/" + user.Id); });
-        NavigationManager.NavigateTo("/");
-        return Task.CompletedTask;               
+        userRegistereds = userRegistereds.Where(x => x.Id != user.Id).ToList(); // любий другий варіант не обновлює UI
+        var result = await HttpService.Delete<string>("api/UserRegistereds/" + user.Id);
     }
+   
 
-    private string HireCompany(int? id)
+    string HireCompany(int? id)
     {        
         return companies?.FirstOrDefault(x => x.Id == id)?.HeaderCompanyName?.ToString()!;
     }
 
+    IEnumerable<UserMessage?> GetUserMessage(int userId)
+    {
+        var res = messages.Where(x => x.UserRegisteredId == userId)?.OrderBy(x => x.Created) ?? null!;
+        return res;
+    }
 }

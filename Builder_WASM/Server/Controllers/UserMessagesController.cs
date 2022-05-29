@@ -9,6 +9,7 @@ using Builder_WASM.Server.Data;
 using Builder_WASM.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Builder_WASM.Server.Services;
+using System.Text.Json;
 
 namespace Builder_WASM.Server.Controllers
 {
@@ -22,6 +23,17 @@ namespace Builder_WASM.Server.Controllers
         public UserMessagesController(IUnitOfWork context)
         {
             _context = context;
+        }
+        // GET: api/UserMessages
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserMessage>>> GetUserMessages()
+        {
+            if (_context.UserMessageRepository == null)
+            {
+                return NotFound();
+            }
+            var result = await _context.UserMessageRepository.GetAsync(x => !string.IsNullOrWhiteSpace(x.Message));            
+            return Ok(result);
         }
 
         // GET: api/UserMessages/user/5

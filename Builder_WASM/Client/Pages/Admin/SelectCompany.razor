@@ -68,26 +68,22 @@
     public UserRegistered UserData { get; set; } = null!;
     [Parameter]
     public IEnumerable<Company> Companies { get; set; } = null!;
+    
     [Parameter]
     public EventCallback<UserRegistered> SaveClickCallback { get; set; }
     [Parameter]
     public EventCallback<UserRegistered> DeleteClickCallback { get; set; }
     [Parameter]
     public string Hiring { get; set; } = string.Empty;
-
+    [Parameter]
     public IEnumerable<UserMessage> Messages { get; set; } = null!;
 
     string textColor = "";
-
-    protected override async Task OnInitializedAsync()
-    {
-        var result = (await HttpService.Get<IEnumerable<UserMessage>>("api/UserMessages/user/" + UserData.Id)) ?? null!;
-        Messages = (result?.Where(x => x.IsDeleted == false)?.OrderBy(x => x.Created)) ?? null!;        
-    }
+        
 
     protected override void OnParametersSet()
     {
-        textColor = string.IsNullOrWhiteSpace(Hiring) ? "text-danger" : "";
+        textColor = string.IsNullOrWhiteSpace(Hiring) ? "text-danger" : "";        
     }
 
     void Save()
@@ -97,7 +93,7 @@
 
     void Delete()
     {
-        DeleteClickCallback.InvokeAsync(UserData);
+        DeleteClickCallback.InvokeAsync(UserData);        
     }
 
 }
