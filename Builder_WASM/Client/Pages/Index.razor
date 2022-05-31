@@ -17,10 +17,12 @@
         {            
             NavigationManager.NavigateTo("/authenticate/login");
         }
+
         else if (AuthenticationService.User.Role == "Admin")
         {            
             NavigationManager.NavigateTo("/adminlist");
         }
+
         else if (AuthenticationService.User.Role == "User")
         {            
             mess = "Hello, User!";

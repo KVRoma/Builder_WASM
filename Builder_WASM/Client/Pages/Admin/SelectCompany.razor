@@ -47,11 +47,14 @@
                     }
                 }
             </div>
+            <div>
+                <input type="text"/>
+            </div>
             <div class="text-end">
-                <a class="btn btn-outline-primary">
+                <button class="btn btn-outline-primary" @onclick=OkMessage>
                     <span class="oi oi-check"></span>
                     Ok
-                </a>
+                </button>
             </div>
         </div>
     }
@@ -68,18 +71,20 @@
     public UserRegistered UserData { get; set; } = null!;
     [Parameter]
     public IEnumerable<Company> Companies { get; set; } = null!;
-    
+
     [Parameter]
     public EventCallback<UserRegistered> SaveClickCallback { get; set; }
     [Parameter]
     public EventCallback<UserRegistered> DeleteClickCallback { get; set; }
+    [Parameter]
+    public EventCallback<IEnumerable<UserMessage>> OkMessageCallback { get; set; }
     [Parameter]
     public string Hiring { get; set; } = string.Empty;
     [Parameter]
     public IEnumerable<UserMessage> Messages { get; set; } = null!;
 
     string textColor = "";
-        
+
 
     protected override void OnParametersSet()
     {
@@ -94,6 +99,11 @@
     void Delete()
     {
         DeleteClickCallback.InvokeAsync(UserData);        
+    }
+
+    void OkMessage()
+    {
+        OkMessageCallback.InvokeAsync(Messages);
     }
 
 }

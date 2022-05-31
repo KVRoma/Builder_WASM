@@ -1,0 +1,57 @@
+﻿@page "/companylist"
+
+<h3>Company List</h3>
+
+@if (companies == null)
+{
+    <p>
+        <em>
+            <span class="spinner-border spinner-border-sm mr-1"></span>
+            Loading Company...
+        </em>
+    </p>
+}
+else
+{
+    <h5>Count companies: @companies.Count()</h5>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in companies)
+            {
+                <tr>
+                    <td>@item.HeaderName</td>
+                    <td>@item.HeaderCompanyName</td>
+                    <td>
+                        <button class="btn btn-info" type="button">Edit</button>
+                        <button class="btn btn-danger" type="button">Delete</button>                        
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    IEnumerable<Company> companies = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;
+        }
+        catch (Exception ex)
+        {
+            Console.Write(ex.Message);
+        }
+    }
+
+}
