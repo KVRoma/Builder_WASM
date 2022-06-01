@@ -59,9 +59,8 @@ else
     async Task Delete(Company company)
     {
 
-        string res = await HttpService.Delete<string>("api/Companies/" + company.Id);
-        StateHasChanged();
-        
+        var res = await HttpService.Delete<Company>("api/Companies/" + company.Id);
+        companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;        
 
     }
 

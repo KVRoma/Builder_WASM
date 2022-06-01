@@ -102,14 +102,14 @@ namespace Builder_WASM.Server.Controllers
 
         // DELETE: api/Companies/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCompany(int id)
+        public async Task<ActionResult<Company>> DeleteCompany(int id)
         {
             if (_context.CompanyRepository == null)
             {
                 return NotFound();
             }
             //var company = await _context.CompanyRepository.GetByIdAsync(id);
-            var company = await _context.CompanyRepository.GetAsync(x=>x.Id == id,includeProperties: "UserRegistered");
+            var company = (await _context.CompanyRepository.GetAsync(x=>x.Id == id,includeProperties: "UserRegistered")).FirstOrDefault();
             if (company == null)
             {
                 return NotFound();
@@ -118,7 +118,7 @@ namespace Builder_WASM.Server.Controllers
             _context.CompanyRepository.Delete(company);
             await _context.SaveAsync();
 
-            return Ok(new { message = "The company deleted successfully!" });
+            return company; //Ok(new { message = "The company deleted successfully!" });
         }
 
         private bool CompanyExists(int id)
