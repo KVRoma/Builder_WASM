@@ -108,7 +108,8 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound();
             }
-            var company = await _context.CompanyRepository.GetByIdAsync(id);
+            //var company = await _context.CompanyRepository.GetByIdAsync(id);
+            var company = await _context.CompanyRepository.GetAsync(x=>x.Id == id,includeProperties: "UserRegistered");
             if (company == null)
             {
                 return NotFound();
@@ -117,7 +118,7 @@ namespace Builder_WASM.Server.Controllers
             _context.CompanyRepository.Delete(company);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new { message = "The company deleted successfully!" });
         }
 
         private bool CompanyExists(int id)

@@ -26,12 +26,14 @@ else
         <tbody>
             @foreach (var item in companies)
             {
+                //var temp = item;
+
                 <tr>
                     <td>@item.HeaderName</td>
                     <td>@item.HeaderCompanyName</td>
                     <td>
                         <button class="btn btn-info" type="button">Edit</button>
-                        <button class="btn btn-danger" type="button">Delete</button>                        
+                        <button class="btn btn-danger" type="button" @onclick=@(() => Delete(item))>Delete</button>
                     </td>
                 </tr>
             }
@@ -52,6 +54,15 @@ else
         {
             Console.Write(ex.Message);
         }
+    }
+
+    async Task Delete(Company company)
+    {
+
+        string res = await HttpService.Delete<string>("api/Companies/" + company.Id);
+        StateHasChanged();
+        
+
     }
 
 }
