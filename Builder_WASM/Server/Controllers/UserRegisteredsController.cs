@@ -47,7 +47,7 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound();
             }
-            var userRegistered = await _context.UserRegisteredRepository.GetByIdAsync(id);
+            var userRegistered = (await _context.UserRegisteredRepository.GetAsync(x=>x.Id == id, includeProperties: "Messages")).FirstOrDefault();
 
             if (userRegistered == null)
             {
@@ -66,7 +66,7 @@ namespace Builder_WASM.Server.Controllers
             {
                 return BadRequest();
             }
-            var user = await _context.UserRegisteredRepository.GetByIdAsync(id);
+            var user = (await _context.UserRegisteredRepository.GetAsync(x=>x.Id == id, includeProperties: "Messages")).FirstOrDefault();
             if(user == null)
             { 
                 return BadRequest(new { message = "This user is not in the database!" }); 
@@ -92,7 +92,7 @@ namespace Builder_WASM.Server.Controllers
                 }
             }
 
-            return Ok(new { message = "Hire was successful!" });
+            return Ok(new { message = "Update was successful!" });
         }
 
 

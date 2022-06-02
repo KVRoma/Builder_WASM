@@ -588,12 +588,15 @@ namespace Builder_WASM.Server.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("ReadByAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ReadByUser")
+                        .HasColumnType("bit");
 
                     b.Property<int>("UserRegisteredId")
                         .HasColumnType("int");

@@ -1,0 +1,59 @@
+﻿<button class="btn btn-outline-primary" type="button" @onclick=@(()=>messageView = messageView ? false : true)>
+    Messages
+    @if (CountOpenMessage(UserData) > 0)
+    {
+        <span class="badge bg-danger rounded-pill">
+            <span class="oi oi-envelope-closed"></span>
+        </span>
+    }
+</button>
+@if (messageView)
+{
+    <div class="row m-2" style="overflow-y:scroll; height:50px">
+        <div class="col">
+            @foreach(var item in UserData.Messages)
+            {
+                <p>@item.Created.ToShortDateString() - @item.Message</p>
+            }
+        </div>
+    </div>
+    <div class="input-group">
+        <input class="form-control" type="text" @bind=@textNewMessage/>
+        <button class="btn btn-outline-success" @onclick=SendClick>Send</button>
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public UserRegistered UserData { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<UserRegistered> SendClickCallback { get; set; }
+
+    bool messageView = false;
+    string textNewMessage = string.Empty;
+
+    int CountOpenMessage(UserRegistered user)
+    {
+        return user.Messages.Where(x => x.ReadByAdmin == false).Count();
+    }
+
+    async Task SendClick()
+    {
+        messageView = false;
+
+        UserMessage userMessage = new UserMessage();
+        userMessage.Message = "Admin: " + textNewMessage;
+        userMessage.ReadByAdmin = true;
+
+        foreach (var item in UserData.Messages)
+        {
+            item.ReadByAdmin = true;
+        }
+
+        UserData.Messages.Add(userMessage);
+
+        await SendClickCallback.InvokeAsync(UserData);
+    }
+}

@@ -10,10 +10,11 @@ namespace Builder_WASM.Shared.Entities
     {
         public int Id { get; set; }
         public DateTime Created { get; set; } = DateTime.Today;
-        public bool IsDeleted { get; set; } = false;
+        public bool ReadByAdmin { get; set; } = false;
+        public bool ReadByUser { get; set; } = false;
         public string Message { get; set; } = string.Empty;
 
         public int UserRegisteredId { get; set; }
-        public UserRegistered UserRegistered { get; set; } = new UserRegistered();
+        public UserRegistered? UserRegistered { get; set; } = new UserRegistered();
     }
 }

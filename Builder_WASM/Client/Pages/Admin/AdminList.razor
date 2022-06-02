@@ -24,7 +24,8 @@ else
                        Companies=@companies
                        Hiring=@HireCompany(@user.CompanyId)                       
                        SaveClickCallback=@UpdateUserRegistered
-                       DeleteClickCallback=@DeleteUserRegistered>
+                       DeleteClickCallback=@DeleteUserRegistered
+                       MessageCallback=@MessagesUpdate>
                 </SelectCompany>
                 <p class="mb-2" />
             }
@@ -38,7 +39,7 @@ else
 
     IEnumerable<UserRegistered> userRegistereds = null!;
     IEnumerable<Company> companies = null!;
-    
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,7 +64,12 @@ else
         ResponseMessage resultDel = await HttpService.Delete<ResponseMessage>("api/UserRegistereds/" + user.Id);
         userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered>>("api/UserRegistereds")) ?? null!;        
     }
-   
+
+    async Task MessagesUpdate(UserRegistered user)
+    {
+        ResponseMessage message = await HttpService.Put<ResponseMessage>("api/UserRegistereds/" + user.Id, user);
+    }
+
 
     string HireCompany(int? id)
     {        

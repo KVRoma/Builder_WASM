@@ -253,7 +253,8 @@ namespace Builder_WASM.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    ReadByAdmin = table.Column<bool>(type: "bit", nullable: false),
+                    ReadByUser = table.Column<bool>(type: "bit", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserRegisteredId = table.Column<int>(type: "int", nullable: false)
                 },

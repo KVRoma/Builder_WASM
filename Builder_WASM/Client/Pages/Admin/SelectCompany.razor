@@ -34,30 +34,13 @@
         </div>
 
     </div>
-    @if (UserData.Messages?.Count() != 0)
-    {
+    
         <div class="card-footer text-center bg-white text-black">
-            <h6>----- Message -----</h6>
-            <div class="text-start">
-                @if (UserData.Messages != null)
-                {
-                    @foreach (var item in UserData.Messages)
-                    {
-                        <h6>@item.Created.ToShortDateString() : @item.Message</h6>
-                    }
-                }
-            </div>
-            <div>
-                <input type="text"/>
-            </div>
-            <div class="text-end">
-                <button class="btn btn-outline-primary" @onclick=OkMessage>
-                    <span class="oi oi-check"></span>
-                    Ok
-                </button>
-            </div>
+            <SelectMessages UserData=@UserData 
+                SendClickCallback=@SendMessage>                
+            </SelectMessages>
         </div>
-    }
+    
 </div>
 
 
@@ -79,8 +62,10 @@
     public EventCallback<UserRegistered> SaveClickCallback { get; set; }
     [Parameter]
     public EventCallback<UserRegistered> DeleteClickCallback { get; set; }
-    
-       
+    [Parameter]
+    public EventCallback<UserRegistered> MessageCallback { get; set; }
+
+
 
     string textColor = "";
 
@@ -100,9 +85,10 @@
         await DeleteClickCallback.InvokeAsync(UserData);        
     }
 
-    void OkMessage()
+    async Task SendMessage(UserRegistered user)
     {
-        //OkMessageCallback.InvokeAsync(Messages);
+        //UserData = await HttpService.Get<UserRegistered>("api/UserRegistereds");        
+        await MessageCallback.InvokeAsync(user);
     }
 
 }

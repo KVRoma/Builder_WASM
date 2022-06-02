@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Builder_WASM.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220523123919_Start")]
+    [Migration("20220602131742_Start")]
     partial class Start
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -590,12 +590,15 @@ namespace Builder_WASM.Server.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("ReadByAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ReadByUser")
+                        .HasColumnType("bit");
 
                     b.Property<int>("UserRegisteredId")
                         .HasColumnType("int");
