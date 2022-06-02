@@ -117,7 +117,7 @@ namespace Builder_WASM.Server.Controllers
 
             UserMessage mess = new UserMessage()
             {
-                Message = response.MessageNewUser                
+                Message = "User: " + response.MessageNewUser                
             };
 
             user = new UserRegistered() 
