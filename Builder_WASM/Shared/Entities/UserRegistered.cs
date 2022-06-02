@@ -20,7 +20,7 @@ namespace Builder_WASM.Shared.Entities
         public int? CompanyId { get; set; }
         public Company? Company { get; set; }
 
-        [JsonIgnore]
+        
         public List<UserMessage> Messages { get; set; } = new List<UserMessage>();  
 
         /// <summary>

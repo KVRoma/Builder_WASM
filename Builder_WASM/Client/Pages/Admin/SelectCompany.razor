@@ -34,14 +34,14 @@
         </div>
 
     </div>
-    @if (Messages?.Count() != 0)
+    @if (UserData.Messages?.Count() != 0)
     {
         <div class="card-footer text-center bg-white text-black">
             <h6>----- Message -----</h6>
             <div class="text-start">
-                @if (Messages != null)
+                @if (UserData.Messages != null)
                 {
-                    @foreach (var item in Messages)
+                    @foreach (var item in UserData.Messages)
                     {
                         <h6>@item.Created.ToShortDateString() : @item.Message</h6>
                     }
@@ -71,17 +71,16 @@
     public UserRegistered UserData { get; set; } = null!;
     [Parameter]
     public IEnumerable<Company> Companies { get; set; } = null!;
+    [Parameter]
+    public string Hiring { get; set; } = string.Empty;
+
 
     [Parameter]
     public EventCallback<UserRegistered> SaveClickCallback { get; set; }
     [Parameter]
     public EventCallback<UserRegistered> DeleteClickCallback { get; set; }
-    [Parameter]
-    public EventCallback<IEnumerable<UserMessage>> OkMessageCallback { get; set; }
-    [Parameter]
-    public string Hiring { get; set; } = string.Empty;
-    [Parameter]
-    public IEnumerable<UserMessage> Messages { get; set; } = null!;
+    
+       
 
     string textColor = "";
 
@@ -91,19 +90,19 @@
         textColor = string.IsNullOrWhiteSpace(Hiring) ? "text-danger" : "";        
     }
 
-    void Save()
+    async Task Save()
     {
-        SaveClickCallback.InvokeAsync(UserData);
+        await SaveClickCallback.InvokeAsync(UserData);
     }
 
-    void Delete()
+    async Task Delete()
     {
-        DeleteClickCallback.InvokeAsync(UserData);        
+        await DeleteClickCallback.InvokeAsync(UserData);        
     }
 
     void OkMessage()
     {
-        OkMessageCallback.InvokeAsync(Messages);
+        //OkMessageCallback.InvokeAsync(Messages);
     }
 
 }

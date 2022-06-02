@@ -118,7 +118,7 @@ namespace Builder_WASM.Server.Controllers
             _context.CompanyRepository.Delete(company);
             await _context.SaveAsync();
 
-            return company; //Ok(new { message = "The company deleted successfully!" });
+            return Ok(new { message = "The company deleted successfully!" });
         }
 
         private bool CompanyExists(int id)

@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Builder_WASM.Server;
 using Builder_WASM.Server.Data;
 using Builder_WASM.Server.Services;
@@ -34,7 +35,8 @@ builder.Services.AddAuthentication(aut=>
         IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()         
     };
 });
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); //  Ця штукенція дозволяє інклудити таблиці та серелізувати в жсон без помилок!
 builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IUserService, UserService>();

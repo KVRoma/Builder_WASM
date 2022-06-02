@@ -25,9 +25,7 @@ else
         </thead>
         <tbody>
             @foreach (var item in companies)
-            {
-                //var temp = item;
-
+            {                
                 <tr>
                     <td>@item.HeaderName</td>
                     <td>@item.HeaderCompanyName</td>
@@ -59,8 +57,8 @@ else
     async Task Delete(Company company)
     {
 
-        var res = await HttpService.Delete<Company>("api/Companies/" + company.Id);
-        companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;        
+        ResponseMessage resultDel = await HttpService.Delete<ResponseMessage>("api/Companies/" + company.Id);
+        companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;      
 
     }
 

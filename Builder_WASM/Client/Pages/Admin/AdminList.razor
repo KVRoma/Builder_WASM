@@ -22,8 +22,7 @@ else
             {
                 <SelectCompany UserData=@user
                        Companies=@companies
-                       Hiring=@HireCompany(@user.CompanyId)
-                       Messages=@GetUserMessage(@user.Id)
+                       Hiring=@HireCompany(@user.CompanyId)                       
                        SaveClickCallback=@UpdateUserRegistered
                        DeleteClickCallback=@DeleteUserRegistered>
                 </SelectCompany>
@@ -39,15 +38,13 @@ else
 
     IEnumerable<UserRegistered> userRegistereds = null!;
     IEnumerable<Company> companies = null!;
-    IEnumerable<UserMessage> messages = null!;
-
+    
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered>>("api/UserRegistereds")) ?? null!;
-            messages = (await HttpService.Get<IEnumerable<UserMessage>>("api/UserMessages")) ?? null!;
+            userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered>>("api/UserRegistereds")) ?? null!;            
             companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;
         }
         catch (Exception ex)
@@ -58,13 +55,13 @@ else
 
     async Task UpdateUserRegistered(UserRegistered user)
     {
-        string message = await HttpService.Put<string>("api/UserRegistereds/" + user.Id, user);
+        ResponseMessage message = await HttpService.Put<ResponseMessage>("api/UserRegistereds/" + user.Id, user);
     }
 
     async Task DeleteUserRegistered(UserRegistered user)
-    {
-        userRegistereds = userRegistereds.Where(x => x.Id != user.Id).ToList(); // любий другий варіант не обновлює UI
-        var result = await HttpService.Delete<string>("api/UserRegistereds/" + user.Id);
+    {        
+        ResponseMessage resultDel = await HttpService.Delete<ResponseMessage>("api/UserRegistereds/" + user.Id);
+        userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered>>("api/UserRegistereds")) ?? null!;        
     }
    
 
@@ -72,10 +69,5 @@ else
     {        
         return companies?.FirstOrDefault(x => x.Id == id)?.HeaderCompanyName?.ToString()!;
     }
-
-    IEnumerable<UserMessage?> GetUserMessage(int userId)
-    {
-        var res = messages.Where(x => x.UserRegisteredId == userId)?.OrderBy(x => x.Created) ?? null!;
-        return res;
-    }
+    
 }

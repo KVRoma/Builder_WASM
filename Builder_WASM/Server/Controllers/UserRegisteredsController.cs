@@ -34,7 +34,7 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound();
             }
-            var result = await _context.UserRegisteredRepository.GetAsync(x => x.Role != "Admin");
+            var result = await _context.UserRegisteredRepository.GetAsync(x => x.Role != "Admin",includeProperties: "Messages");
             
             return Ok(result);
         }
