@@ -1,4 +1,5 @@
 ﻿@using Builder_WASM.Client.Pages.Authentication
+@using Builder_WASM.Client.Pages.User
 @inherits LayoutComponentBase
 
 <div class="page">
@@ -15,7 +16,8 @@
         {
             <div class="top-row px-4 auth">
                 <Logout></Logout>
-            </div>
+                <UserSetup></UserSetup>
+            </div>            
         }
 
         <article class="content px-4">

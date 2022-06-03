@@ -86,8 +86,7 @@
     }
 
     async Task SendMessage(UserRegistered user)
-    {
-        //UserData = await HttpService.Get<UserRegistered>("api/UserRegistereds");        
+    {        
         await MessageCallback.InvokeAsync(user);
     }
 
