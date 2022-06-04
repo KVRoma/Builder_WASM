@@ -27,6 +27,7 @@
 		/// </summary>
 		/// <returns></returns>
 		public Task ClearAsync();
+		public void AddStorage(string storage);
 	}
 	
 }

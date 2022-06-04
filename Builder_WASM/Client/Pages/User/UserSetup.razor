@@ -1,34 +1,22 @@
-﻿<div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-    Кнопка выпадающего списка
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-    <li><a class="dropdown-item" href="#">Действие</a></li>
-    <li><a class="dropdown-item" href="#">Другое действие</a></li>
-    <li><a class="dropdown-item" href="#">Что-то еще здесь</a></li>
-  </ul>
-</div>
-
-@*<div class="row">
-    <div class="col">
-    <button class="btn btn-secondary d-block" type="button" @onclick=@(()=>@openMenu = @openMenu ? false : true)>
-        <span class="oi oi-cog"></span>
-    </button>
-    </div>
-</div>
-@if (openMenu)
-{
-    <div class="row">
-        <div class="col">
-        <a class="dropdown-item" href="#">Action</a>
-        <a class="dropdown-item" href="#">Another action</a>
-        <a class="dropdown-item" href="#">Something else here</a>
+﻿<div class="row justify-content-end">
+    <div class="col pe-0 ">
+        <div class="dropdown">
+            <button class="btn btn-outline-success " type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="oi oi-cog m-0 p-0"></span>                
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item m-0 w-100 text-start" href="#">Действие</a></li>
+                <li><a class="dropdown-item m-0 w-100 text-start" href="#">Другое действие</a></li>
+                <li><a class="dropdown-item m-0 w-100 text-start" href="#">Что-то еще здесь</a></li>
+            </ul>
         </div>
     </div>
-}*@
+</div>
+
+
 
 
 
 @code {
-    bool openMenu = false;
+   
 }

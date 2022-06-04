@@ -15,6 +15,9 @@ builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();
 //await builder.Build().RunAsync();
 var host = builder.Build();
 
+var local = host.Services.GetRequiredService<ILocalStorageService>();
+local.AddStorage("sessionStorage");
+
 var authenticationService = host.Services.GetRequiredService<IAuthenticationService>();
 await authenticationService.Initialize();
 

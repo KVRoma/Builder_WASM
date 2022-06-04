@@ -4,10 +4,11 @@
   "libraries": [
     {
       "library": "popper.js@2.11.5",
-      "destination": "wwwroot/lib/popper.js/",
-      "files": [
-        "umd/popper.min.js"
-      ]
+      "destination": "wwwroot/lib/popper.js/"
+    },
+    {
+      "library": "bootstrap@5.1.3",
+      "destination": "wwwroot/lib/bootstrap/"
     }
   ]
 }
