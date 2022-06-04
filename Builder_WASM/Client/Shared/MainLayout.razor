@@ -1,5 +1,4 @@
 ﻿@using Builder_WASM.Client.Pages.Authentication
-@using Builder_WASM.Client.Pages.User
 @inherits LayoutComponentBase
 
 <div class="page">
@@ -15,7 +14,7 @@
         @if (AuthenticationService.User != null)
         {
             <div class="top-row px-4 auth">
-                <UserSetup></UserSetup>
+                <SetupAccount></SetupAccount>
                 <Logout></Logout>                
             </div>            
         }

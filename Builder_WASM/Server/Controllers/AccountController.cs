@@ -28,6 +28,36 @@ namespace Builder_WASM.Server.Controllers
                 return BadRequest(new { message = "Username or password is incorrect" });
             response.Message = "User authentication was successful";
             return Ok(response);
-        }        
+        }
+
+        [HttpPut("changelogin/{id}")]
+        public async Task<IActionResult> ChangeLogin(int id, AuthenticateRequestChangeLogin model)
+        {
+           if(id != model.Id) return BadRequest(new { message = "Username or password is incorrect" });
+
+            string role = User.IsInRole("Admin") ? "Admin" : "User";
+
+            var response = await _user.ChangeLogin(model, role);
+
+            if (response == null) return BadRequest(new { message = "Username or password is incorrect" });
+
+
+            return Ok(response);
+        }
+
+        [HttpPut("changepassword/{id}")]
+        public async Task<IActionResult> ChangePassword(int id, AuthenticateRequestChangePassword model)
+        {
+            if (id != model.Id) return BadRequest(new { message = "Username or password is incorrect" });
+
+            string role = User.IsInRole("Admin") ? "Admin" : "User";
+
+            var response = await _user.ChangePassword(model, role);
+
+            if (response == null) return BadRequest(new { message = "Username or password is incorrect" });
+
+
+            return Ok(response);
+        }
     }
 }

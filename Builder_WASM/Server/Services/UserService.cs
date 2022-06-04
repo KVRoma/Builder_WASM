@@ -32,7 +32,49 @@ namespace Builder_WASM.Server.Services
 
             return new AuthenticateResponse(user, token);
         }
-        
+
+        public async Task<ResponseMessage> ChangeLogin(AuthenticateRequestChangeLogin model, string role)
+        {
+            var result = await _context.UserRegisteredRepository.GetByIdAsync(model.Id);
+            if (result == null) return null!;
+                        
+            UserMessage message = new UserMessage()
+            {
+                Message = role + ": Change login: " + result.Name + " -> " + model.Username,
+            };
+            result.Name = model.Username;
+            result.Messages.Add(message);
+
+            _context.UserRegisteredRepository.Update(result);
+            await _context.SaveAsync();
+
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.Message = "Change login was success!";
+
+            return responseMessage;
+        }
+
+        public async Task<ResponseMessage> ChangePassword(AuthenticateRequestChangePassword model, string role)
+        {
+            var result = await _context.UserRegisteredRepository.GetByIdAsync(model.Id);
+            if (result == null) return null!;
+
+            UserMessage message = new UserMessage()
+            {
+                Message = role + ": Change password."
+            };
+            result.Password = model.NewPassword;
+            result.Messages.Add(message);
+
+            _context.UserRegisteredRepository.Update(result);
+            await _context.SaveAsync();
+
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.Message = "Change password was success!";
+
+            return responseMessage;
+        }
+
 
         // helper methods
         private string generateJwtToken(UserRegistered user)
