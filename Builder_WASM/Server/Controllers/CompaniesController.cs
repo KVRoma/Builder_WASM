@@ -51,7 +51,7 @@ namespace Builder_WASM.Server.Controllers
                 return NotFound();
             }
 
-            return company;
+            return Ok(company);
         }
 
         // PUT: api/Companies/5
@@ -62,7 +62,7 @@ namespace Builder_WASM.Server.Controllers
             if (id != company.Id)
             {
                 return BadRequest();
-            }
+            }           
 
             _context.CompanyRepository.Update(company);
 
@@ -70,7 +70,7 @@ namespace Builder_WASM.Server.Controllers
             {
                 await _context.SaveAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
                 if (!CompanyExists(id))
                 {
@@ -78,11 +78,11 @@ namespace Builder_WASM.Server.Controllers
                 }
                 else
                 {
-                    throw;
+                    Console.Write("Exception messages: " + ex.Message + "Stack trace" + ex.StackTrace);
                 }
             }
 
-            return NoContent();
+            return Ok(new { message = "Update was successful!" });
         }
 
         // POST: api/Companies

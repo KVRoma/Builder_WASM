@@ -14,7 +14,7 @@ using System.Text.Json;
 
 namespace Builder_WASM.Server.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserRegisteredsController : ControllerBase
@@ -27,6 +27,7 @@ namespace Builder_WASM.Server.Controllers
         }
 
         // GET: api/UserRegistereds
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserRegistered>>> GetUserRegistereds()
         {
@@ -34,12 +35,13 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound();
             }
-            var result = await _context.UserRegisteredRepository.GetAsync(x => x.Role != "Admin",includeProperties: "Messages");
+            var result = await _context.UserRegisteredRepository.GetAsync(x => x.Role != "Admin",includeProperties: "Messages,Company");
             
             return Ok(result);
         }
 
         // GET: api/UserRegistereds/5
+        [Authorize(Roles = "Admin, User")]        
         [HttpGet("{id}")]
         public async Task<ActionResult<UserRegistered>> GetUserRegistered(int id)
         {
@@ -47,18 +49,19 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound();
             }
-            var userRegistered = (await _context.UserRegisteredRepository.GetAsync(x=>x.Id == id, includeProperties: "Messages")).FirstOrDefault();
+            var userRegistered = (await _context.UserRegisteredRepository.GetAsync(x=>x.Id == id, includeProperties: "Messages,Company")).FirstOrDefault();
 
             if (userRegistered == null)
             {
                 return NotFound();
             }
 
-            return userRegistered;
+            return Ok(userRegistered);
         }
 
         // PUT: api/UserRegistereds/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUserRegistered(int id, UserRegistered userRegistered)
         {            
@@ -80,7 +83,7 @@ namespace Builder_WASM.Server.Controllers
             {
                 await _context.SaveAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
                 if (!UserRegisteredExists(id))
                 {
@@ -88,7 +91,7 @@ namespace Builder_WASM.Server.Controllers
                 }
                 else
                 {
-                    throw;                    
+                    return BadRequest(new { message = "Exception messages: " + ex.Message + "Stack trace: " + ex.StackTrace });
                 }
             }
 
@@ -141,6 +144,7 @@ namespace Builder_WASM.Server.Controllers
         }
 
         // DELETE: api/UserRegistereds/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserRegistered(int id)
         {

@@ -16,7 +16,7 @@ builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();
 var host = builder.Build();
 
 var local = host.Services.GetRequiredService<ILocalStorageService>();
-local.AddStorage("sessionStorage");
+//local.AddStorage("sessionStorage"); // Використовую для зміни типу сховища в браузері.
 
 var authenticationService = host.Services.GetRequiredService<IAuthenticationService>();
 await authenticationService.Initialize();

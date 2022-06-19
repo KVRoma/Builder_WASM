@@ -14,25 +14,39 @@ namespace Builder_WASM.Shared.Entities
 
         [Display(Name = "Сompany logo file")]
         public string LogoPath { get; set; } = string.Empty;
+
         [Display(Name = "Agreement file")]
         public string ContractPath { get; set; } = string.Empty;
 
+
+
         [Display(Name = "Supervisor's name")]
+        [Required]
         public string HeaderName { get; set; } = string.Empty;
-        [Display(Name = "The name of the company")]
+
+        [Display(Name = "Name of the company")]
+        [Required]
         public string HeaderCompanyName { get; set; } = string.Empty;
+
         [Display(Name = "Position held in the company")]
         public string HeaderPost { get; set; } = string.Empty;
+
         [Display(Name = "Company address")]
         public string HeaderAddress { get; set; } = string.Empty;
+
         [Display(Name = "Additional field")]
         public string HeaderAdditional { get; set; } = string.Empty;
+
         [Display(Name = "Phone number")]
         public string HeaderPhone { get; set; } = string.Empty;
+
         [Display(Name = "E-mail company")]
         public string HeaderEmail { get; set; } = string.Empty;
+
         [Display(Name = "Website company")]
         public string HeaderWebSite { get; set; } = string.Empty;
+
+
 
         [Display(Name = "GST #")]
         public string GST { get; set; } = string.Empty;
@@ -47,10 +61,15 @@ namespace Builder_WASM.Shared.Entities
         [Display(Name = "Incorporation #")]
         public string Incorporation { get; set; } = string.Empty;
 
+
+
         [Display(Name = "Percent TAX")]
         public int TAXpercent { get; set; } = 12;
         [Display(Name = "Percent GST")]
         public int GSTpercent { get; set; } = 5;
+
+
+
 
         public List<UserRegistered> UserRegistered { get; set; } = new List<UserRegistered>();
 

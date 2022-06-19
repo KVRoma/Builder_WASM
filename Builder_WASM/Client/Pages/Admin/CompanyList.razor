@@ -1,6 +1,7 @@
 ﻿@page "/companylist"
 
 <h3>Company List</h3>
+ <button class="btn btn-info" type="button" @onclick=@Add>Add</button>
 
 @if (companies == null)
 {
@@ -30,7 +31,7 @@ else
                     <td>@item.HeaderName</td>
                     <td>@item.HeaderCompanyName</td>
                     <td>
-                        <button class="btn btn-info" type="button">Edit</button>
+                        <button class="btn btn-info" type="button" @onclick=@(()=> Edit(item))>Edit</button>
                         <button class="btn btn-danger" type="button" @onclick=@(() => Delete(item))>Delete</button>
                     </td>
                 </tr>
@@ -60,6 +61,14 @@ else
         ResponseMessage resultDel = await HttpService.Delete<ResponseMessage>("api/Companies/" + company.Id);
         companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;      
 
+    }
+    void Edit(Company company)
+    {
+        NavigationManager.NavigateTo("/CompanySettings/" + false + "/" + company.Id);
+    }
+    void Add()
+    {
+        NavigationManager.NavigateTo("/CompanySettings/" + true);
     }
 
 }

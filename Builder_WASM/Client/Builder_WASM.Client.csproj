@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <Folder Include="Pages\Client\" />
-    <Folder Include="Pages\Company\" />
   </ItemGroup>
 
 </Project>

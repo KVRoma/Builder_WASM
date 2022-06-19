@@ -7,13 +7,13 @@
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 @if (AuthenticationService.User.Role == "Admin")
                 {
-                    <li><a class="dropdown-item m-0 w-100 text-start" href="authenticate/changepassword">Сhange password</a></li>                                       
+                    <li><a class="dropdown-item m-0 w-100 text-start" href="authenticate/changepassword">Сhange password</a></li>
                 }
                 else if(AuthenticationService.User.Role == "User")
                 {
                     <li><a class="dropdown-item m-0 w-100 text-start" href="authenticate/changepassword">Сhange password</a></li>
-                    <li><a class="dropdown-item m-0 w-100 text-start" href="authenticate/changelogin">Сhange login</a></li>
-                    <li><a class="dropdown-item m-0 w-100 text-start" href="#">Что-то еще здесь</a></li>                    
+                    <li><a class="dropdown-item m-0 w-100 text-start" href="authenticate/changelogin">Сhange login</a></li>                   
+                    <li><a class="dropdown-item m-0 w-100 text-start" href="CompanySettings">Company setting</a></li>                    
                 }
             </ul>
         </div>
@@ -25,5 +25,6 @@
 
 
 @code {
-   
+    
+
 }

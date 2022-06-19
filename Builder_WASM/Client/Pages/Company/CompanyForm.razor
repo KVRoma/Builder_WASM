@@ -1,0 +1,203 @@
+﻿
+<div class="row justify-content-center">
+    <div class="col-xl-6 col-md-6 col-sm-12">
+        <div class="card text-white bg-secondary">
+            <div class="card-header text-center">
+                <h3>Company</h3>
+            </div>
+            <div class="card-body">
+                <EditForm Model=@Model OnValidSubmit="HandleValidSubmit">
+                    <DataAnnotationsValidator />
+
+                    <div class="form-group mb-3">
+
+                        <InputText @bind-Value="Model.HeaderCompanyName" class="form-control" placeholder="Name of the company" />
+                        <ValidationMessage For="@(() => Model.HeaderCompanyName)" />
+                    </div>
+                    <div class="form-group mb-3">
+
+                        <InputText @bind-Value="Model.HeaderName" class="form-control" placeholder="Supervisor's name" />
+                        <ValidationMessage For="@(() => Model.HeaderName)" />
+                    </div>
+
+
+
+
+                    <div>
+                        <p>
+                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Header" aria-expanded="false" aria-controls="Header">
+                                <span class="oi oi-list text-dark"></span>
+                                Header
+                            </button>
+                        </p>
+                        <div class="collapse" id="Header">
+                            <div class="mb-3">
+                                <div class="form-group mb-3">
+
+                                    <InputText @bind-Value="Model.HeaderPost" class="form-control" placeholder="Position held in the company" />
+                                    <ValidationMessage For="@(() => Model.HeaderPost)" />
+                                </div>
+                                <div class="form-group mb-3">
+
+                                    <InputText @bind-Value="Model.HeaderAddress" class="form-control" placeholder="Company address" />
+                                    <ValidationMessage For="@(() => Model.HeaderAddress)" />
+                                </div>
+                                <div class="form-group mb-3">
+
+                                    <InputText @bind-Value="Model.HeaderAdditional" class="form-control" placeholder="Additional field" />
+                                    <ValidationMessage For="@(() => Model.HeaderAdditional)" />
+                                </div>
+                                <div class="form-group mb-3">
+
+                                    <InputText @bind-Value="Model.HeaderPhone" class="form-control" placeholder="Phone number" />
+                                    <ValidationMessage For="@(() => Model.HeaderPhone)" />
+                                </div>
+                                <div class="form-group mb-3">
+
+                                    <InputText @bind-Value="Model.HeaderEmail" class="form-control" placeholder="E-mail company" />
+                                    <ValidationMessage For="@(() => Model.HeaderEmail)" />
+                                </div>
+                                <div class="form-group mb-3">
+
+                                    <InputText @bind-Value="Model.HeaderWebSite" class="form-control" placeholder="Website company" />
+                                    <ValidationMessage For="@(() => Model.HeaderWebSite)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div>
+                        <p>
+                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Invoice" aria-expanded="false" aria-controls="Invoice">
+                                <span class="oi oi-list text-dark"></span>
+                                Invoice
+                            </button>
+                        </p>
+                        <div class="collapse" id="Invoice">
+                            <div class="mb-3">
+                                <div class="form-group mb-3">
+
+                                    <InputText @bind-Value="Model.GST" class="form-control" placeholder="GST #" />
+                                    <ValidationMessage For="@(() => Model.GST)" />
+                                </div>
+                                <div class="form-group mb-3">
+
+                                    <InputText @bind-Value="Model.PST" class="form-control" placeholder="PST #" />
+                                    <ValidationMessage For="@(() => Model.PST)" />
+                                </div>
+                                <div class="form-group mb-3">
+
+                                    <InputText @bind-Value="Model.WCB" class="form-control" placeholder="WCB #" />
+                                    <ValidationMessage For="@(() => Model.WCB)" />
+                                </div>
+                                <div class="form-group mb-3">
+
+                                    <InputText @bind-Value="Model.Liability" class="form-control" placeholder="Liability #" />
+                                    <ValidationMessage For="@(() => Model.Liability)" />
+                                </div>
+                                <div class="form-group mb-3">
+
+                                    <InputText @bind-Value="Model.Licence" class="form-control" placeholder="Licence #" />
+                                    <ValidationMessage For="@(() => Model.Licence)" />
+                                </div>
+                                <div class="form-group mb-3">
+
+                                    <InputText @bind-Value="Model.Incorporation" class="form-control" placeholder="Incorporation #" />
+                                    <ValidationMessage For="@(() => Model.Incorporation)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div>
+                        <p>
+                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Percent" aria-expanded="false" aria-controls="Percent">
+                                <span class="oi oi-list text-dark"></span>
+                                Percent
+                            </button>
+                        </p>
+                        <div class="collapse" id="Percent">
+                            <div class="mb-3">
+                                <div class="form-group mb-3">                                    
+                                    <label class="form-label">Percent TAX</label>
+                                    <InputNumber @bind-Value="Model.TAXpercent" class="form-control" placeholder="Percent TAX" /> 
+                                    <ValidationMessage For="@(() => Model.TAXpercent )" />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Percent GST</label>
+                                    <InputNumber @bind-Value="Model.GSTpercent" class="form-control" placeholder="Percent GST" />
+                                    <ValidationMessage For="@(() => Model.GSTpercent)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div>
+                        <p>
+                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#File" aria-expanded="false" aria-controls="File">
+                                <span class="oi oi-list text-dark"></span>
+                                Download
+                            </button>
+                        </p>
+                        <div class="collapse" id="File">
+                            <div class="mb-3">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Сompany logo file</label>
+                                    <InputFile @bind-Value="Model.LogoPath" class="form-control" placeholder="Сompany logo file" />
+                                    <ValidationMessage For="@(() => Model.LogoPath)" />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Agreement file</label>
+                                    <InputFile @bind-Value="Model.ContractPath" class="form-control" placeholder="Agreement file" />
+                                    <ValidationMessage For="@(() => Model.ContractPath)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="text-end">
+                        <button class="btn btn-primary">
+                            Save
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Company Company { get; set; } = new Company();
+    [Parameter]
+    public EventCallback<Company> SaveClickCallback { get; set; }
+
+    Company Model = new Company();
+
+
+    protected override void OnParametersSet()
+    {
+        Model = Company;
+    }
+
+
+    private async Task HandleValidSubmit()
+    {
+        await SaveClickCallback.InvokeAsync(Model);
+    }
+
+}

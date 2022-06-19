@@ -31,8 +31,7 @@ namespace Builder_WASM.Shared.Entities
         {
             Name = user.Name;
             Role = user.Role;
-            CompanyId = user.CompanyId;
-            Company = user.Company;
+            CompanyId = user.CompanyId;            
             Messages = user.Messages;
         }
     }
