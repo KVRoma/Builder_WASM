@@ -1,0 +1,93 @@
+﻿@page "/clientlist"
+
+<div class="h3 mb-5 fw-bold">
+    Client 
+    <button class="btn btn-success btn-circle-xl" type="button" @onclick=@Add>
+        <span class="oi oi-plus"></span>        
+    </button>
+</div>
+
+
+@if (clients != null)
+{
+    <p>
+        <em>
+            <span class="spinner-border spinner-border-sm mr-1"></span>
+            Loading Clients...
+        </em>
+    </p>
+}
+else
+{
+    <h5>Count companies: @clients?.Count()</h5>
+
+    <div class="row row-cols-1 row-cols-lg-3 g-4">
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Название карточки</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                </div>
+                <div class="card-footer text-center text-nowrap">
+                    <button class="btn btn-primary btn-circle" type="button">
+                        <span class="oi oi-monitor"></span>    
+                    </button>
+                    <button class="btn btn-warning btn-circle" type="button">
+                        <span class="oi oi-pencil"></span>
+                    </button>
+                    <button class="btn btn-danger btn-circle" type="button">
+                        <span class="oi oi-trash"></span>    
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Название карточки</h5>
+                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+                </div>
+                <div class="card-footer text-center text-nowrap">
+                     <button class="btn btn-primary btn-circle" type="button">
+                        <span class="oi oi-monitor"></span>    
+                    </button>
+                    <button class="btn btn-warning btn-circle" type="button">
+                        <span class="oi oi-pencil"></span>
+                    </button>
+                    <button class="btn btn-danger btn-circle" type="button">
+                        <span class="oi oi-trash"></span>    
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Название карточки</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+                </div>
+                <div class="card-footer text-center text-nowrap">
+                     <button class="btn btn-primary btn-circle" type="button">
+                        <span class="oi oi-monitor"></span>    
+                    </button>
+                    <button class="btn btn-warning btn-circle" type="button">
+                        <span class="oi oi-pencil"></span>
+                    </button>
+                    <button class="btn btn-danger btn-circle" type="button">
+                        <span class="oi oi-trash"></span>    
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    IEnumerable<ClientJob> clients = null!;
+
+    void Add()
+    {
+        NavigationManager.NavigateTo("/clientsettings");
+    }
+
+}

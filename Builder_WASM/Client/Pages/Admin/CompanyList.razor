@@ -1,7 +1,10 @@
 ﻿@page "/companylist"
 
 <h3>Company List</h3>
- <button class="btn btn-info" type="button" @onclick=@Add>Add</button>
+ <button class="btn btn-success mb-3" type="button" @onclick=@Add>
+     <span class="oi oi-plus"></span>
+     Add
+ </button>
 
 @if (companies == null)
 {

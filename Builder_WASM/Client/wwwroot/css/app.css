@@ -62,3 +62,23 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+/*My circle buutton radius = 0.5 width or 0.5 height*/
+.btn-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 19px;
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 16px;
+}
+.btn-circle-xl {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 20px;
+}

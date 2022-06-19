@@ -14,7 +14,7 @@ using System.Text.Json;
 
 namespace Builder_WASM.Server.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserRegisteredsController : ControllerBase

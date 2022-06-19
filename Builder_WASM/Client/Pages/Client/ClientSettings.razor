@@ -1,0 +1,30 @@
+﻿@page "/clientsettings/{Option:bool?}/{Id:int?}"
+
+<ClientForm></ClientForm>
+
+
+@code {
+    [Parameter]
+    public int? Id { get; set; } = null;
+    [Parameter]
+    public bool Option { get; set; } = false;
+
+    string display;
+
+    protected override void OnParametersSet()
+    {
+        if (Option && Id == null)
+        {
+            // Added
+        }
+        else if (Option && Id != null)
+        {
+            // View
+        }
+        else if (!Option)
+        {
+            // Edit
+        }
+
+    }
+}
