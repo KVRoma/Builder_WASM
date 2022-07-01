@@ -9,29 +9,59 @@
                     <DataAnnotationsValidator />
 
                     <div class="form-group mb-3" >
-                        
+                        <label class="form-label">Registration date</label>
                         <InputDate @bind-Value="Model.DateRegistration" class="form-control text-primary fw-bold"/>
                         <ValidationMessage For="@(() => Model.DateRegistration)" />
                     </div>
-                    <div class="form-group mb-3">
+                   
 
-                        <label class="form-control form-label text-primary fw-bold">@Model.NumberClient</label>
-                        <ValidationMessage For="@(() => Model.NumberClient)" />
+                    <div class="form-group mb-3" >
+                        <label class="form-label">Company name</label>
+                        <InputText @bind-Value="Model.CompanyName" class="form-control text-primary fw-bold" placeholder="Company name"/>
+                        <ValidationMessage For="@(() => Model.CompanyName)" />
                     </div>
 
+                    <div class="form-group mb-3" >
+                        <label class="form-label">Specify</label>
+                        <InputText @bind-Value="Model.Specify" class="form-control text-primary fw-bold" placeholder="Specify"/>
+                        <ValidationMessage For="@(() => Model.Specify)" />
+                    </div>
+
+                    <div class="form-group mb-3" >
+                        <label class="form-label">Notes</label>
+                        <InputText @bind-Value="Model.Notes" class="form-control text-primary fw-bold" placeholder="Notes"/>
+                        <ValidationMessage For="@(() => Model.Notes)" />
+                    </div>
 
 
 
                     <div>
                         <p>
-                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Header" aria-expanded="false" aria-controls="Header">
+                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Primary" aria-expanded="false" aria-controls="Primary">
                                 <span class="oi oi-list text-dark"></span>
-                                Header
+                                Primary contact info...
                             </button>
                         </p>
-                        <div class="collapse" id="Header">
-                            <div class="mb-3">
-                                
+                        <div class="collapse" id="Primary">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Primary first name</label>
+                                <InputText @bind-Value="Model.PrimaryFirstName" class="form-control text-primary fw-bold" placeholder="Primary first name"/>
+                                <ValidationMessage For="@(() => Model.PrimaryFirstName)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Primary last name</label>
+                                <InputText @bind-Value="Model.PrimaryLastName" class="form-control text-primary fw-bold" placeholder="Primary last name"/>
+                                <ValidationMessage For="@(() => Model.PrimaryLastName)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Primary phone number</label>
+                                <InputText @bind-Value="Model.PrimaryPhoneNumber" class="form-control text-primary fw-bold" placeholder="Primary phone number"/>
+                                <ValidationMessage For="@(() => Model.PrimaryPhoneNumber)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Primary email</label>
+                                <InputText @bind-Value="Model.PrimaryEmail" class="form-control text-primary fw-bold" placeholder="Primary email"/>
+                                <ValidationMessage For="@(() => Model.PrimaryEmail)" />
                             </div>
                         </div>
                     </div>
@@ -42,14 +72,31 @@
 
                     <div>
                         <p>
-                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Invoice" aria-expanded="false" aria-controls="Invoice">
+                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Secondary" aria-expanded="false" aria-controls="Secondary">
                                 <span class="oi oi-list text-dark"></span>
-                                Invoice
+                                Secondary contact info...
                             </button>
                         </p>
-                        <div class="collapse" id="Invoice">
-                            <div class="mb-3">
-                                
+                        <div class="collapse" id="Secondary">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Secondary first name</label>
+                                <InputText @bind-Value="Model.SecondaryFirstName" class="form-control text-primary fw-bold" placeholder="Secondary first name"/>
+                                <ValidationMessage For="@(() => Model.SecondaryFirstName)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Secondary last name</label>
+                                <InputText @bind-Value="Model.SecondaryLastName" class="form-control text-primary fw-bold" placeholder="Secondary last name"/>
+                                <ValidationMessage For="@(() => Model.SecondaryLastName)" />
+                            </div>
+                           <div class="form-group mb-3">
+                                <label class="form-label">Secondary phone number</label>
+                                <InputText @bind-Value="Model.SecondaryPhoneNumber" class="form-control text-primary fw-bold" placeholder="Secondary phone number"/>
+                                <ValidationMessage For="@(() => Model.SecondaryPhoneNumber)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Secondary email</label>
+                                <InputText @bind-Value="Model.SecondaryEmail" class="form-control text-primary fw-bold" placeholder="Secondary email"/>
+                                <ValidationMessage For="@(() => Model.SecondaryEmail)" />
                             </div>
                         </div>
                     </div>
@@ -60,14 +107,36 @@
 
                     <div>
                         <p>
-                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Percent" aria-expanded="false" aria-controls="Percent">
+                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Billing" aria-expanded="false" aria-controls="Billing">
                                 <span class="oi oi-list text-dark"></span>
-                                Percent
+                                Billing address info...
                             </button>
                         </p>
-                        <div class="collapse" id="Percent">
-                            <div class="mb-3">
-                                
+                        <div class="collapse" id="Billing">
+                            <div class="form-group mb-3">
+                                <label class="form-label">BILLING ADDRESS Unit#, street</label>
+                                <InputText @bind-Value="Model.AddressBillStreet" class="form-control text-primary fw-bold" placeholder="BILLING ADDRESS Unit#, street"/>
+                                <ValidationMessage For="@(() => Model.AddressBillStreet)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">BILLING ADDRESS City</label>
+                                <InputText @bind-Value="Model.AddressBillCity" class="form-control text-primary fw-bold" placeholder="BILLING ADDRESS City"/>
+                                <ValidationMessage For="@(() => Model.AddressBillCity)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">BILLING ADDRESS Province</label>
+                                <InputText @bind-Value="Model.AddressBillProvince" class="form-control text-primary fw-bold" placeholder="BILLING ADDRESS Province"/>
+                                <ValidationMessage For="@(() => Model.AddressBillProvince)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">BILLING ADDRESS Postal code</label>
+                                <InputText @bind-Value="Model.AddressBillPostalCode" class="form-control text-primary fw-bold" placeholder="BILLING ADDRESS Postal code"/>
+                                <ValidationMessage For="@(() => Model.AddressBillPostalCode)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">BILLING ADDRESS Country</label>
+                                <InputText @bind-Value="Model.AddressBillCountry" class="form-control text-primary fw-bold" placeholder="BILLING ADDRESS Country"/>
+                                <ValidationMessage For="@(() => Model.AddressBillCountry)" />
                             </div>
                         </div>
                     </div>
@@ -77,14 +146,36 @@
 
                     <div>
                         <p>
-                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#File" aria-expanded="false" aria-controls="File">
+                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Site" aria-expanded="false" aria-controls="Site">
                                 <span class="oi oi-list text-dark"></span>
-                                Download
+                                Site address info...
                             </button>
                         </p>
-                        <div class="collapse" id="File">
-                            <div class="mb-3">
-                                
+                        <div class="collapse" id="Site">
+                           <div class="form-group mb-3">
+                                <label class="form-label">SITE ADDRESS Unit#, street</label>
+                                <InputText @bind-Value="Model.AddressSiteStreet" class="form-control text-primary fw-bold" placeholder="SITE ADDRESS Unit#, street"/>
+                                <ValidationMessage For="@(() => Model.AddressSiteStreet)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">SITE ADDRESS City</label>
+                                <InputText @bind-Value="Model.AddressSiteCity" class="form-control text-primary fw-bold" placeholder="BILLING ADDRESS SITE"/>
+                                <ValidationMessage For="@(() => Model.AddressSiteCity)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">SITE ADDRESS Province</label>
+                                <InputText @bind-Value="Model.AddressSiteProvince" class="form-control text-primary fw-bold" placeholder="SITE ADDRESS Province"/>
+                                <ValidationMessage For="@(() => Model.AddressSiteProvince)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">SITE ADDRESS Postal code</label>
+                                <InputText @bind-Value="Model.AddressSitePostalCode" class="form-control text-primary fw-bold" placeholder="SITE ADDRESS Postal code"/>
+                                <ValidationMessage For="@(() => Model.AddressSitePostalCode)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">SITE ADDRESS Country</label>
+                                <InputText @bind-Value="Model.AddressSiteCountry" class="form-control text-primary fw-bold" placeholder="SITE ADDRESS Country"/>
+                                <ValidationMessage For="@(() => Model.AddressSiteCountry)" />
                             </div>
                         </div>
                     </div>

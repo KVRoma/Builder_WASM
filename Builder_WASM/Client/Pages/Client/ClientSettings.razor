@@ -1,6 +1,10 @@
 ﻿@page "/clientsettings/{Option:bool?}/{Id:int?}"
 
-<ClientForm></ClientForm>
+@if(display == "Added")
+{
+    <ClientForm Client="client"></ClientForm>    
+}
+
 
 
 @code {
@@ -9,21 +13,26 @@
     [Parameter]
     public bool Option { get; set; } = false;
 
-    string display;
+    string display = string.Empty;
+    ClientJob client = new ClientJob();
 
-    protected override void OnParametersSet()
+    protected async override Task OnParametersSetAsync()
     {
         if (Option && Id == null)
         {
             // Added
+            display = "Added";
         }
         else if (Option && Id != null)
         {
             // View
+            display = "View";
+            client = await HttpService.Get<ClientJob>("api/ClientJobs/" + Id);
         }
         else if (!Option)
         {
             // Edit
+            display = "Edit";
         }
 
     }
