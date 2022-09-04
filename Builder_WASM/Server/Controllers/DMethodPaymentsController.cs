@@ -30,13 +30,13 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DMethodPaymentRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             int? companyId = await GetCompanyId();
             var result = await _context.DMethodPaymentRepository.GetAsync(x => x.CompanyId == companyId);
             if (result == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
             return Ok(result);
         }
@@ -47,27 +47,27 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DMethodPaymentRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             int? companyId = await GetCompanyId();
             var dMethodPayment = (await _context.DMethodPaymentRepository.GetAsync(x=>x.Id == id && x.CompanyId == companyId)).FirstOrDefault();
 
             if (dMethodPayment == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
-            return dMethodPayment;
+            return Ok(dMethodPayment);
         }
 
         // PUT: api/DMethodPayments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDMethodPayment(int id, DMethodPayment dMethodPayment)
+        public async Task<ActionResult> PutDMethodPayment(int id, DMethodPayment dMethodPayment)
         {
             if (id != dMethodPayment.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Item not found" });
             }
 
             _context.DMethodPaymentRepository.Update(dMethodPayment);
@@ -80,15 +80,15 @@ namespace Builder_WASM.Server.Controllers
             {
                 if (!DMethodPaymentExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Item not found" });
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new { message = "Error <Put>. Try later..." });
                 }
             }
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
 
         // POST: api/DMethodPayments
@@ -98,33 +98,36 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DMethodPaymentRepository == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.DMethodPayments'  is null.");
+                return NotFound(new { message = "Repository not found" });
             }
             _context.DMethodPaymentRepository.Insert(dMethodPayment);
             await _context.SaveAsync();
 
-            return CreatedAtAction("GetDMethodPayment", new { id = dMethodPayment.Id }, dMethodPayment);
+            return CreatedAtAction(nameof(GetDMethodPayment), new { id = dMethodPayment.Id }, dMethodPayment);
         }
 
         // DELETE: api/DMethodPayments/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDMethodPayment(int id)
+        public async Task<ActionResult> DeleteDMethodPayment(int id)
         {
             if (_context.DMethodPaymentRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             var dMethodPayment = await _context.DMethodPaymentRepository.GetByIdAsync(id);
             if (dMethodPayment == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
             _context.DMethodPaymentRepository.Delete(dMethodPayment);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
+
+
+
 
         private bool DMethodPaymentExists(int id)
         {

@@ -26,8 +26,9 @@ namespace Builder_WASM.Client.Services
         }
 
         public async Task Login(AuthenticateRequest data)
-        {
-            User = await _httpService.Post<AuthenticateResponse>("account/authenticate", data);
+        {           
+            var temp = await _httpService.PostAPI<AuthenticateResponse>("account/authenticate", data);
+            User = temp.Response;
             await _localStorageService.SetAsync("user", User);
         }
 

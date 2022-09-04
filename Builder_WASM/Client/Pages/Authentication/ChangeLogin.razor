@@ -4,7 +4,7 @@
     <div class="col-xl-4 col-md-6 col-sm-12">
         <div class="card text-white bg-secondary">
             <div class="card-header text-center">
-                <h4>@AuthenticationService.User.Name</h4>
+                <h4>@AuthenticationService?.User?.Name</h4>
                 <h6>Change Login</h6>
             </div>
             <div class="card-body">
@@ -55,13 +55,14 @@
         loading = true;
         try
         {
-            var mess = await HttpService.Put<ResponseMessage>("account/changelogin/" + AuthenticationService.User.Id, model);
-            if (mess.Message == "Change login was success!")
+            var mess = await HttpService.PutAPI<ResponseMessage>("account/changelogin/" + AuthenticationService.User.Id, model);
+            if (mess.IsSuccessStatusCode)//.Message == "Change login was success!")
             {
                 await AuthenticationService.Logout();
             }
-            error = mess.Message;
-
+            error = mess.Response.Message;
+            loading = false;
+            StateHasChanged();
         }
         catch (Exception ex)
         {

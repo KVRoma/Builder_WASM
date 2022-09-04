@@ -41,12 +41,12 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DItemRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             var result = await _context.DItemRepository.GetAsync(x=>x.DGroupeId == id);
             if (result == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
             return Ok(result);
         }
@@ -57,26 +57,26 @@ namespace Builder_WASM.Server.Controllers
         {
           if (_context.DItemRepository == null)
           {
-              return NotFound();
+              return NotFound(new { message = "Repository not found" });
           }
             var dItem = await _context.DItemRepository.GetByIdAsync(id);
 
             if (dItem == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
-            return dItem;
+            return Ok(dItem);
         }
 
         // PUT: api/DItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDItem(int id, DItem dItem)
+        public async Task<ActionResult> PutDItem(int id, DItem dItem)
         {
             if (id != dItem.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Item not found!" });
             }
 
             _context.DItemRepository.Update(dItem);
@@ -89,15 +89,15 @@ namespace Builder_WASM.Server.Controllers
             {
                 if (!DItemExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Item not found" });
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new { message = "Error <Put>. Try later..." });
                 }
             }
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
 
         // POST: api/DItems
@@ -107,12 +107,12 @@ namespace Builder_WASM.Server.Controllers
         {
           if (_context.DItemRepository == null)
           {
-              return Problem("Entity set 'DItems'  is null.");
+              return NotFound(new { message = "Repository not found" });
           }
             _context.DItemRepository.Insert(dItem);
             await _context.SaveAsync();
 
-            return CreatedAtAction("GetDItem", new { id = dItem.Id }, dItem);
+            return CreatedAtAction(nameof(GetDItem), new { id = dItem.Id }, dItem);
         }
 
         // DELETE: api/DItems/5
@@ -121,19 +121,23 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DItemRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             var dItem = await _context.DItemRepository.GetByIdAsync(id);
             if (dItem == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
             _context.DItemRepository.Delete(dItem);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
+
+
+
+
 
         private bool DItemExists(int id)
         {

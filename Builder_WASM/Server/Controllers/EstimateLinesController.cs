@@ -24,15 +24,17 @@ namespace Builder_WASM.Server.Controllers
             _context = context;
         }
 
-        // GET: api/EstimateLines
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<EstimateLine>>> GetEstimateLines()
+        // GET: api/EstimateLines/estimate/5
+        [HttpGet("estimate/{id}")]
+        public async Task<ActionResult<IEnumerable<EstimateLine>>> GetEstimateLines(int id)
         {
             if (_context.EstimateLineRepository == null)
             {
-                return NotFound();
-            }
-            var result = await _context.EstimateLineRepository.GetAsync();
+                return NotFound(new { message = "Repository not found" });
+            }            
+
+            var result = await _context.EstimateLineRepository.GetAsync(x=>x.EstimateId == id);
+
             return Ok(result);
         }
 
@@ -42,26 +44,26 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.EstimateLineRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             var estimateLine = await _context.EstimateLineRepository.GetByIdAsync(id);
 
             if (estimateLine == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
-            return estimateLine;
+            return Ok(estimateLine);
         }
 
         // PUT: api/EstimateLines/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEstimateLine(int id, EstimateLine estimateLine)
+        public async Task<ActionResult> PutEstimateLine(int id, EstimateLine estimateLine)
         {
             if (id != estimateLine.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Item not found" });
             }
 
             _context.EstimateLineRepository.Update(estimateLine);
@@ -74,15 +76,15 @@ namespace Builder_WASM.Server.Controllers
             {
                 if (!EstimateLineExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Item not found" });
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new { message = "Error <Put>. Try later..." });
                 }
             }
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
 
         // POST: api/EstimateLines
@@ -92,37 +94,42 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.EstimateLineRepository == null)
             {
-                return Problem("Entity set 'EstimateLines'  is null.");
+                return NotFound(new { message = "Repository not found" });
             }
             _context.EstimateLineRepository.Insert(estimateLine);
             await _context.SaveAsync();
 
-            return CreatedAtAction("GetEstimateLine", new { id = estimateLine.Id }, estimateLine);
+            return CreatedAtAction(nameof(GetEstimateLine), new { id = estimateLine.Id }, estimateLine);
         }
 
         // DELETE: api/EstimateLines/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEstimateLine(int id)
+        public async Task<ActionResult> DeleteEstimateLine(int id)
         {
             if (_context.EstimateLineRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             var estimateLine = await _context.EstimateLineRepository.GetByIdAsync(id);
             if (estimateLine == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
             _context.EstimateLineRepository.Delete(estimateLine);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
+
+
+
 
         private bool EstimateLineExists(int id)
         {
             return _context.EstimateLineRepository.Exist(id);
         }
+
+        
     }
 }

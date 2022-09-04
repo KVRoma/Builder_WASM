@@ -30,13 +30,30 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.EstimateRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
-            int? id = await GetClientId();
-            var result = await _context.EstimateRepository.GetAsync(x=>x.ClientJobId == id);
+            int? id = await GetCompanyId();
+            var result = await _context.EstimateRepository.GetAsync(x => x.ClientJob.CompanyId == id, includeProperties: "ClientJob") ;
             if (result == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
+            }
+            return Ok(result);
+        }
+
+        // GET: api/Estimates/client/5
+        [HttpGet("client/{id}")]
+        public async Task<ActionResult<IEnumerable<Estimate>>> GetEstimates(int id)
+        {
+            if (_context.EstimateRepository == null)
+            {
+                return NotFound(new { message = "Repository not found" });
+            }
+            
+            var result = await _context.EstimateRepository.GetAsync(x => x.ClientJobId == id);
+            if (result == null)
+            {
+                return NotFound(new { message = "Item not found" });
             }
             return Ok(result);
         }
@@ -47,27 +64,27 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.EstimateRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
-            int? clientId = await GetClientId();
-            var estimate = (await _context.EstimateRepository.GetAsync(x=>x.ClientJobId == clientId && x.Id == id)).FirstOrDefault();
+           
+            var estimate = (await _context.EstimateRepository.GetAsync(x => x.Id == id)).FirstOrDefault();
 
             if (estimate == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Item Not found!"});
             }
 
-            return estimate;
+            return Ok(estimate);
         }
 
         // PUT: api/Estimates/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEstimate(int id, Estimate estimate)
+        public async Task<ActionResult> PutEstimate(int id, Estimate estimate)
         {
             if (id != estimate.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Item not found!"});
             }
 
             _context.EstimateRepository.Update(estimate);
@@ -80,15 +97,15 @@ namespace Builder_WASM.Server.Controllers
             {
                 if (!EstimateExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Item not found!"});
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new { message = "Error <Put>. Try later..." });
                 }
             }
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
 
         // POST: api/Estimates
@@ -98,45 +115,49 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.EstimateRepository == null)
             {
-                return Problem("Entity set 'Estimates'  is null.");
+                return NotFound(new { message = "Repository Not found!" });
             }
             _context.EstimateRepository.Insert(estimate);
             await _context.SaveAsync();
 
-            return CreatedAtAction("GetEstimate", new { id = estimate.Id }, estimate);
+            return CreatedAtAction(nameof(GetEstimate), new { id = estimate.Id }, estimate);
         }
 
         // DELETE: api/Estimates/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEstimate(int id)
+        public async Task<ActionResult> DeleteEstimate(int id)
         {
             if (_context.EstimateRepository == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Repository not found!"});
             }
             var estimate = await _context.EstimateRepository.GetByIdAsync(id);
             if (estimate == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Item not found!"});
             }
 
             _context.EstimateRepository.Delete(estimate);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
+
+
+
 
         private bool EstimateExists(int id)
         {
             return _context.EstimateRepository.Exist(id);
         }
 
-        private async Task<int?> GetClientId()
+        private async Task<int?> GetCompanyId()
         {
             var userName = User?.Identity?.Name;
-            var companyId = (await _context.UserRegisteredRepository.GetAsync(x => x.Name == userName)).FirstOrDefault()?.CompanyId;
-            var clientId = (await _context.ClientJobRepository.GetAsync(x => x.CompanyId == companyId)).FirstOrDefault()?.Id;
-            return clientId;
+            var id = (await _context.UserRegisteredRepository.GetAsync(x => x.Name == userName)).FirstOrDefault()?.CompanyId;
+
+            return id;
         }
+               
     }
 }

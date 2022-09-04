@@ -3,6 +3,11 @@
 
 <h3>Administrator List</h3>
 
+@if (!string.IsNullOrEmpty(errors))
+{
+    <a class="h5 text-warning">@errors</a>
+}
+
 @if (userRegistereds == null)
 {
     <p>
@@ -39,35 +44,69 @@ else
 
     IEnumerable<UserRegistered> userRegistereds = null!;
     IEnumerable<Company> companies = null!;
+    string errors = string.Empty;
 
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered>>("api/UserRegistereds")) ?? null!;            
-            companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;
+            var tempUser = await HttpService.GetAPI<IEnumerable<UserRegistered>>("api/UserRegistereds");
+            if (tempUser.IsSuccessStatusCode)
+            {
+                userRegistereds = tempUser.Response;
+            }
+
+            var tempCompany = await HttpService.GetAPI<IEnumerable<Company>>("api/Companies");
+            if (tempCompany.IsSuccessStatusCode)
+            {
+                companies = tempCompany.Response;
+            }
+            //userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered>>("api/UserRegistereds")) ?? null!;            
+            //companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;
         }
         catch (Exception ex)
         {
-            Console.Write(ex.Message);
+            errors = ex.Message;
+            StateHasChanged();
         }
     }
 
     async Task UpdateUserRegistered(UserRegistered user)
     {
-        ResponseMessage message = await HttpService.Put<ResponseMessage>("api/UserRegistereds/" + user.Id, user);
+        var temp = await HttpService.PutAPI<ResponseMessage>("api/UserRegistereds/" + user.Id, user);
+        if (!temp.IsSuccessStatusCode)
+        {
+            errors = temp.Response.Message;
+            StateHasChanged();
+        }
     }
 
     async Task DeleteUserRegistered(UserRegistered user)
     {        
-        ResponseMessage resultDel = await HttpService.Delete<ResponseMessage>("api/UserRegistereds/" + user.Id);
-        userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered>>("api/UserRegistereds")) ?? null!;        
+        var temp  = await HttpService.DeleteAPI<ResponseMessage>("api/UserRegistereds/" + user.Id);
+        if (!temp.IsSuccessStatusCode)
+        {
+            errors = temp.Response.Message;
+            StateHasChanged();
+        }
+
+        var tempUser = (await HttpService.GetAPI<IEnumerable<UserRegistered>>("api/UserRegistereds"));
+        if (tempUser.IsSuccessStatusCode)
+        {
+            userRegistereds = tempUser.Response;
+        }
+        //userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered>>("api/UserRegistereds")) ?? null!;        
     }
 
     async Task MessagesUpdate(UserRegistered user)
     {
-        ResponseMessage message = await HttpService.Put<ResponseMessage>("api/UserRegistereds/" + user.Id, user);
+        var temp = await HttpService.PutAPI<ResponseMessage>("api/UserRegistereds/" + user.Id, user);
+        if (!temp.IsSuccessStatusCode)
+        {
+            errors = temp.Response.Message;
+            StateHasChanged();
+        }
     }
 
 

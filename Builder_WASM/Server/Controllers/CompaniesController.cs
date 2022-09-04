@@ -30,7 +30,7 @@ namespace Builder_WASM.Server.Controllers
         {
           if (_context.CompanyRepository == null)
           {
-              return NotFound();
+              return NotFound(new { message="Repository not found!"});
           }            
             var result = await _context.CompanyRepository.GetAsync();
             return Ok(result);
@@ -42,13 +42,13 @@ namespace Builder_WASM.Server.Controllers
         {
           if (_context.CompanyRepository == null)
           {
-              return NotFound();
+              return NotFound(new { message="Repository not found!"});
           }
             var company = await _context.CompanyRepository.GetByIdAsync(id);
 
             if (company == null)
             {
-                return NotFound();
+                return NotFound(new { message="Company not found!"});
             }
 
             return Ok(company);
@@ -57,11 +57,11 @@ namespace Builder_WASM.Server.Controllers
         // PUT: api/Companies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCompany(int id, Company company)
+        public async Task<ActionResult> PutCompany(int id, Company company)
         {
             if (id != company.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message="Company not found!"});
             }           
 
             _context.CompanyRepository.Update(company);
@@ -70,19 +70,19 @@ namespace Builder_WASM.Server.Controllers
             {
                 await _context.SaveAsync();
             }
-            catch (Exception ex)
+            catch (DbUpdateConcurrencyException)
             {
                 if (!CompanyExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message="Company not found!"});
                 }
                 else
                 {
-                    Console.Write("Exception messages: " + ex.Message + "Stack trace" + ex.StackTrace);
+                    return BadRequest(new { message = "Error <Put> companies. Try later..." });
                 }
             }
 
-            return Ok(new { message = "Update was successful!" });
+            return Ok(new { message= "Your action is successful" });
         }
 
         // POST: api/Companies
@@ -92,12 +92,12 @@ namespace Builder_WASM.Server.Controllers
         {
           if (_context.CompanyRepository == null)
           {
-              return Problem("Entity set 'Companies'  is null.");
+              return NotFound(new { message="Repository not found!"});
           }
             _context.CompanyRepository.Insert(company);
             await _context.SaveAsync();
 
-            return CreatedAtAction("GetCompany", new { id = company.Id }, company);
+            return CreatedAtAction(nameof(GetCompany), new { id = company.Id }, company);
         }
 
         // DELETE: api/Companies/5
@@ -106,20 +106,24 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.CompanyRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message="Repository not found!"});
             }
             
             var company = (await _context.CompanyRepository.GetAsync(x=>x.Id == id,includeProperties: "UserRegistered")).FirstOrDefault();
             if (company == null)
             {
-                return NotFound();
+                return NotFound(new { message="Company not found!"});
             }
 
             _context.CompanyRepository.Delete(company);
             await _context.SaveAsync();
 
-            return Ok(new { message = "The company deleted successfully!" });
+            return Ok(new { message = "Your action is successful" });
         }
+
+
+
+
 
         private bool CompanyExists(int id)
         {

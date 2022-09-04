@@ -41,7 +41,7 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DDescriptionRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found!" });
             }
             var result = await _context.DDescriptionRepository.GetAsync(x=>x.DItemId == id);
             return Ok(result);
@@ -53,26 +53,26 @@ namespace Builder_WASM.Server.Controllers
         {
           if (_context.DDescriptionRepository == null)
           {
-              return NotFound();
+              return NotFound(new { message = "Repository not found!" });
           }
             var dDescription = await _context.DDescriptionRepository.GetByIdAsync(id);
 
             if (dDescription == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
-            return dDescription;
+            return Ok(dDescription);
         }
 
         // PUT: api/DDescriptions/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDDescription(int id, DDescription dDescription)
+        public async Task<ActionResult> PutDDescription(int id, DDescription dDescription)
         {
             if (id != dDescription.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Item not found" });
             }
 
             _context.DDescriptionRepository.Update(dDescription);
@@ -85,15 +85,15 @@ namespace Builder_WASM.Server.Controllers
             {
                 if (!DDescriptionExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Item not found" });
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new { message = "Error <Put>. Try later..." });
                 }
             }
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
 
         // POST: api/DDescriptions
@@ -103,33 +103,36 @@ namespace Builder_WASM.Server.Controllers
         {
           if (_context.DDescriptionRepository == null)
           {
-              return Problem("Entity set 'DDescriptions'  is null.");
+              return NotFound(new { message = "Repository not found" });
           }
             _context.DDescriptionRepository.Insert(dDescription);
             await _context.SaveAsync();
 
-            return CreatedAtAction("GetDDescription", new { id = dDescription.Id }, dDescription);
+            return CreatedAtAction(nameof(GetDDescription), new { id = dDescription.Id }, dDescription);
         }
 
         // DELETE: api/DDescriptions/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDDescription(int id)
+        public async Task<ActionResult> DeleteDDescription(int id)
         {
             if (_context.DDescriptionRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             var dDescription = await _context.DDescriptionRepository.GetByIdAsync(id);
             if (dDescription == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
             _context.DDescriptionRepository.Delete(dDescription);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
+
+
+
 
         private bool DDescriptionExists(int id)
         {

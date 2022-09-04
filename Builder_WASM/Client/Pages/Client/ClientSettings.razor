@@ -27,7 +27,12 @@
         {
             // View
             display = "View";
-            client = await HttpService.Get<ClientJob>("api/ClientJobs/" + Id);
+            var temp = await HttpService.GetAPI<ClientJob>("api/ClientJobs/" + Id);
+            if (temp.IsSuccessStatusCode)
+            {
+                client = temp.Response;
+            }
+            //client = await HttpService.Get<ClientJob>("api/ClientJobs/" + Id);
         }
         else if (!Option)
         {

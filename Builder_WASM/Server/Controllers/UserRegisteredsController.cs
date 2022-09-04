@@ -33,7 +33,7 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.UserRegisteredRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message="Repository not found!"});
             }
             var result = await _context.UserRegisteredRepository.GetAsync(x => x.Role != "Admin",includeProperties: "Messages,Company");
             
@@ -47,13 +47,13 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.UserRegisteredRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found!" });
             }
             var userRegistered = (await _context.UserRegisteredRepository.GetAsync(x=>x.Id == id, includeProperties: "Messages,Company")).FirstOrDefault();
 
             if (userRegistered == null)
             {
-                return NotFound();
+                return NotFound(new { message = "User not found!" });
             }
 
             return Ok(userRegistered);
@@ -63,11 +63,11 @@ namespace Builder_WASM.Server.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserRegistered(int id, UserRegistered userRegistered)
+        public async Task<ActionResult> PutUserRegistered(int id, UserRegistered userRegistered)
         {            
             if (id != userRegistered?.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Repository not found!" });
             }
             var user = (await _context.UserRegisteredRepository.GetAsync(x=>x.Id == id, includeProperties: "Messages")).FirstOrDefault();
             if(user == null)
@@ -87,18 +87,16 @@ namespace Builder_WASM.Server.Controllers
             {
                 if (!UserRegisteredExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = "User not found!" });
                 }
                 else
                 {
-                    return BadRequest(new { message = "Exception messages: " + ex.Message + "Stack trace: " + ex.StackTrace });
+                    return BadRequest(new { message = "Error <Put>. Try later..." });
                 }
             }
 
-            return Ok(new { message = "Update was successful!" });
+            return Ok(new { message= "Your action is successful!" });
         }
-
-
 
         // POST: api/UserRegistereds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -108,7 +106,7 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.UserRegisteredRepository == null)
             {
-                return Problem("Entity set 'UserRegistereds'  is null.");
+                return NotFound(new { message = "Repository not found!"});
             }
 
             var user = (await _context.UserRegisteredRepository.GetAsync(x=>x.Name == response.Username)).FirstOrDefault();
@@ -140,29 +138,32 @@ namespace Builder_WASM.Server.Controllers
             await _context.SaveAsync();
 
            
-            return CreatedAtAction("GetUserRegistered", new { id = user.Id }, user);
+            return CreatedAtAction(nameof(GetUserRegistered), new { id = user.Id }, user);
         }
 
         // DELETE: api/UserRegistereds/5
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserRegistered(int id)
+        public async Task<ActionResult> DeleteUserRegistered(int id)
         {
             if (_context.UserRegisteredRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found!"});
             }
             var userRegistered = await _context.UserRegisteredRepository.GetByIdAsync(id);
             if (userRegistered == null)
             {
-                return NotFound();
+                return NotFound(new {message="User not found!"});
             }
 
             _context.UserRegisteredRepository.Delete(userRegistered);
             await _context.SaveAsync();
 
-            return Ok(new {message= "Delete user successful!" });
+            return Ok(new { message= "Your action is successful" });
         }
+
+
+
 
         private bool UserRegisteredExists(int id)
         {

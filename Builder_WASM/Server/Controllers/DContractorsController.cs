@@ -30,13 +30,13 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DContractorRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found!" });
             }
             int? companyId = await GetCompanyId();
             var result = await _context.DContractorRepository.GetAsync(x=>x.CompanyId == companyId);
             if (result == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
             return Ok(result);
         }
@@ -47,27 +47,27 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DContractorRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found!" });
             }
             int? companyId = await GetCompanyId();
             var dContractor = (await _context.DContractorRepository.GetAsync(x=>x.Id == id && x.CompanyId == companyId)).FirstOrDefault();
 
             if (dContractor == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
-            return dContractor;
+            return Ok(dContractor);
         }
 
         // PUT: api/DContractors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDContractor(int id, DContractor dContractor)
+        public async Task<ActionResult> PutDContractor(int id, DContractor dContractor)
         {
             if (id != dContractor.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Item not found!" });
             }
 
             _context.DContractorRepository.Update(dContractor);
@@ -80,15 +80,15 @@ namespace Builder_WASM.Server.Controllers
             {
                 if (!DContractorExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Item not found!" });
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new { message = "Error <Put>. Try later..." });
                 }
             }
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
 
         // POST: api/DContractors
@@ -98,33 +98,36 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DContractorRepository == null)
             {
-                return Problem("Entity set 'DContractors'  is null.");
+                return NotFound(new { message = "Repository not found!" });
             }
             _context.DContractorRepository.Insert(dContractor);
             await _context.SaveAsync();
 
-            return CreatedAtAction("GetDContractor", new { id = dContractor.Id }, dContractor);
+            return CreatedAtAction(nameof(GetDContractor), new { id = dContractor.Id }, dContractor);
         }
 
         // DELETE: api/DContractors/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDContractor(int id)
+        public async Task<ActionResult> DeleteDContractor(int id)
         {
             if (_context.DContractorRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found!" });
             }
             var dContractor = await _context.DContractorRepository.GetByIdAsync(id);
             if (dContractor == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found!" });
             }
 
             _context.DContractorRepository.Delete(dContractor);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
+
+
+
 
         private bool DContractorExists(int id)
         {

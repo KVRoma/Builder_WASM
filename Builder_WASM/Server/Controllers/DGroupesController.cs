@@ -30,13 +30,13 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DGroupeRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             int? companyId = await GetCompanyId();
             var result = await _context.DGroupeRepository.GetAsync(x => x.CompanyId == companyId);
             if (result == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
             return Ok(result);
         }
@@ -47,17 +47,17 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DGroupeRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             int? companyId = await GetCompanyId();
             var dGroupe = (await _context.DGroupeRepository.GetAsync(x=>x.Id == id && x.CompanyId == companyId)).FirstOrDefault();
 
             if (dGroupe == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
-            return dGroupe;
+            return Ok(dGroupe);
         }
 
         // PUT: api/DGroupes/5
@@ -67,7 +67,7 @@ namespace Builder_WASM.Server.Controllers
         {
             if (id != dGroupe.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Item not found" });
             }
 
             _context.DGroupeRepository.Update(dGroupe);
@@ -80,15 +80,15 @@ namespace Builder_WASM.Server.Controllers
             {
                 if (!DGroupeExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Item not found" });
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new { message = "Error <Put>. Try later..." });
                 }
             }
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
 
         // POST: api/DGroupes
@@ -98,12 +98,12 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DGroupeRepository == null)
             {
-                return Problem("Entity set 'DGroupes'  is null.");
+                return NotFound(new { message = "Repository not found" });
             }
             _context.DGroupeRepository.Insert(dGroupe);
             await _context.SaveAsync();
 
-            return CreatedAtAction("GetDGroupe", new { id = dGroupe.Id }, dGroupe);
+            return CreatedAtAction(nameof(GetDGroupe), new { id = dGroupe.Id }, dGroupe);
         }
 
         // DELETE: api/DGroupes/5
@@ -112,19 +112,22 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DGroupeRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             var dGroupe = await _context.DGroupeRepository.GetByIdAsync(id);
             if (dGroupe == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
             _context.DGroupeRepository.Delete(dGroupe);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
+
+
+
 
         private bool DGroupeExists(int id)
         {

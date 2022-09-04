@@ -6,6 +6,11 @@
      Add
  </button>
 
+@if (!string.IsNullOrEmpty(errors))
+{
+    <a class="h5 text-warning">@errors</a>
+}
+
 @if (companies == null)
 {
     <p>
@@ -45,24 +50,42 @@ else
 
 @code {
     IEnumerable<Company> companies = null!;
+    string errors = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;
+            var tempCompany = await HttpService.GetAPI<IEnumerable<Company>>("api/Companies");
+            if (tempCompany.IsSuccessStatusCode)
+            {
+                companies = tempCompany.Response;
+            }
+            //companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;
         }
         catch (Exception ex)
         {
-            Console.Write(ex.Message);
+            errors = ex.Message;
+            StateHasChanged();
         }
     }
 
     async Task Delete(Company company)
     {
+        var temp = await HttpService.DeleteAPI<ResponseMessage>("api/Companies/" + company.Id);
+        if (!temp.IsSuccessStatusCode)
+        {
+            errors = temp.Response.Message;
+            StateHasChanged();
+        }
 
-        ResponseMessage resultDel = await HttpService.Delete<ResponseMessage>("api/Companies/" + company.Id);
-        companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;      
+        var tempCompany = await HttpService.GetAPI<IEnumerable<Company>>("api/Companies");
+        if (tempCompany.IsSuccessStatusCode)
+        {
+            companies = tempCompany.Response;
+        }
+        //ResponseMessage resultDel = await HttpService.Delete<ResponseMessage>("api/Companies/" + company.Id);
+        //companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;      
 
     }
     void Edit(Company company)

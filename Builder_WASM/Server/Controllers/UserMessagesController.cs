@@ -30,7 +30,7 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.UserMessageRepository == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Repository not found!"});
             }
             var result = await _context.UserMessageRepository.GetAsync(x => !string.IsNullOrWhiteSpace(x.Message));            
             return Ok(result);
@@ -42,7 +42,7 @@ namespace Builder_WASM.Server.Controllers
         {
           if (_context.UserMessageRepository == null)
           {
-              return NotFound();
+              return NotFound(new {message = "Repository not found!"});
           }
             var result = await _context.UserMessageRepository.GetAsync(x=>x.UserRegisteredId == id && !string.IsNullOrWhiteSpace(x.Message));
             return Ok(result);
@@ -54,26 +54,26 @@ namespace Builder_WASM.Server.Controllers
         {
           if (_context.UserMessageRepository == null)
           {
-              return NotFound();
+              return NotFound(new {message = "Repository not found!"});
           }
             var userMessage = await _context.UserMessageRepository.GetByIdAsync(id);
 
             if (userMessage == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Item not found!"});
             }
 
-            return userMessage;
+            return Ok(userMessage);
         }
 
         // PUT: api/UserMessages/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserMessage(int id, UserMessage userMessage)
+        public async Task<ActionResult> PutUserMessage(int id, UserMessage userMessage)
         {
             if (id != userMessage.Id)
             {
-                return BadRequest();
+                return BadRequest(new {message = "Item not found!"});
             }
 
             _context.UserMessageRepository.Update(userMessage);
@@ -86,15 +86,15 @@ namespace Builder_WASM.Server.Controllers
             {
                 if (!UserMessageExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new {message = "Item not found!"});
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new { message = "Error <Put>. Try later..." });
                 }
             }
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
 
         // POST: api/UserMessages
@@ -104,33 +104,36 @@ namespace Builder_WASM.Server.Controllers
         {
           if (_context.UserMessageRepository == null)
           {
-              return Problem("Entity set 'UserMessages'  is null.");
+              return NotFound(new {message = "Repository not found!"});
           }
             _context.UserMessageRepository.Insert(userMessage);
             await _context.SaveAsync();
 
-            return CreatedAtAction("GetUserMessage", new { id = userMessage.Id }, userMessage);
+            return CreatedAtAction(nameof(GetUserMessage), new { id = userMessage.Id }, userMessage);
         }
 
         // DELETE: api/UserMessages/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserMessage(int id)
+        public async Task<ActionResult> DeleteUserMessage(int id)
         {
             if (_context.UserMessageRepository == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Repository Not found!"});
             }
             var userMessage = await _context.UserMessageRepository.GetByIdAsync(id);
             if (userMessage == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Item not found!"});
             }
 
             _context.UserMessageRepository.Delete(userMessage);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
+
+
+
 
         private bool UserMessageExists(int id)
         {

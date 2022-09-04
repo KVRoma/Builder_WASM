@@ -59,12 +59,14 @@
         {
             if (model.Password == model.ConfirmPassword)
             {
-                AuthenticateResponse user = await HttpService.Post<AuthenticateResponse>("api/UserRegistereds/", model);
-                if (user.Id != 0)
+                var temp = await HttpService.PostAPI<AuthenticateResponse>("api/UserRegistereds/", model);
+                if (temp.Response.Id != 0)
                 {
                     NavigationManager.NavigateTo("/authenticate/login");                    
                 }
-                error = user.Message;
+                error = temp.Response.Message;
+                loading = false;
+                StateHasChanged();
             }
             else
             {

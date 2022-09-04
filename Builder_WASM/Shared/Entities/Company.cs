@@ -74,6 +74,7 @@ namespace Builder_WASM.Shared.Entities
         public List<UserRegistered> UserRegistered { get; set; } = new List<UserRegistered>();
 
         public List<ClientJob> ClientJobs { get; set; } = new List<ClientJob>();
+
         public List<DContractor> DContractors { get; set; } = new List<DContractor>();
         public List<DGroupe> DGroupes { get; set; } = new List<DGroupe>();
         public List<DMethodPayment> DMethodPayments { get; set; } = new List<DMethodPayment>();

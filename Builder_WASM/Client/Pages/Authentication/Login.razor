@@ -53,7 +53,10 @@
             AuthenticateResponse user = await LocalStorageService.GetAsync<AuthenticateResponse>("user");
             if (user.Id == 0)
             {
-                error = user.Message;                
+                error = user.Message;  
+                
+                loading = false;
+                StateHasChanged();
             }
             else
             {

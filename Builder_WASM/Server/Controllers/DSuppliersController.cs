@@ -30,13 +30,13 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DSupplierRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             int? companyId = await GetCompanyId();
             var result = await _context.DSupplierRepository.GetAsync(x => x.CompanyId == companyId);
             if (result == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
             return Ok(result);
         }
@@ -47,27 +47,27 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DSupplierRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             int? companyId = await GetCompanyId();
             var dSupplier = (await _context.DSupplierRepository.GetAsync(x => x.Id == id && x.CompanyId == companyId)).FirstOrDefault();
 
             if (dSupplier == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
-            return dSupplier;
+            return Ok(dSupplier);
         }
 
         // PUT: api/DSuppliers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDSupplier(int? id, DSupplier dSupplier)
+        public async Task<ActionResult> PutDSupplier(int? id, DSupplier dSupplier)
         {
             if (id != dSupplier.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Item not found" });
             }
 
             _context.DSupplierRepository.Update(dSupplier);
@@ -80,15 +80,15 @@ namespace Builder_WASM.Server.Controllers
             {
                 if (!DSupplierExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Item not found" });
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new { message = "Error <Put>. Try later..." });
                 }
             }
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
 
         // POST: api/DSuppliers
@@ -98,33 +98,36 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.DSupplierRepository == null)
             {
-                return Problem("Entity set 'DSuppliers'  is null.");
+                return NotFound(new { message = "Repository not found" });
             }
             _context.DSupplierRepository.Insert(dSupplier);
             await _context.SaveAsync();
 
-            return CreatedAtAction("GetDSupplier", new { id = dSupplier.Id }, dSupplier);
+            return CreatedAtAction(nameof(GetDSupplier), new { id = dSupplier.Id }, dSupplier);
         }
 
         // DELETE: api/DSuppliers/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDSupplier(int? id)
+        public async Task<ActionResult> DeleteDSupplier(int? id)
         {
             if (_context.DSupplierRepository == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Repository not found" });
             }
             var dSupplier = await _context.DSupplierRepository.GetByIdAsync(id!);
             if (dSupplier == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found" });
             }
 
             _context.DSupplierRepository.Delete(dSupplier);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
+
+
+
 
         private bool DSupplierExists(int? id)
         {

@@ -8,11 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using Builder_WASM.Server.Data;
 using Builder_WASM.Shared.Entities;
 using Builder_WASM.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Builder_WASM.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ClientJobsController : ControllerBase
     {
         private readonly IUnitOfWork _context;
@@ -28,14 +30,14 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.ClientJobRepository == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Repository not found!"});
             }
 
             int? companyId = await GetCompanyId();
             var result = await _context.ClientJobRepository.GetAsync(x => x.CompanyId == companyId);
             if (result == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Client not found!" });
             }
             return Ok(result);
         }
@@ -46,7 +48,7 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.ClientJobRepository == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Repository not found!"});
             }
 
             int? companyId = await GetCompanyId();
@@ -54,20 +56,20 @@ namespace Builder_WASM.Server.Controllers
 
             if (clientJob == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Client not found!" });
             }
 
-            return clientJob;
+            return Ok(clientJob);
         }
 
         // PUT: api/ClientJobs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutClientJob(int id, ClientJob clientJob)
+        public async Task<ActionResult> PutClientJob(int id, ClientJob clientJob)
         {
             if (id != clientJob.Id)
             {
-                return BadRequest();
+                return BadRequest(new {message = "Error <Put> client"});
             }
 
             _context.ClientJobRepository.Update(clientJob);
@@ -80,15 +82,15 @@ namespace Builder_WASM.Server.Controllers
             {
                 if (!ClientJobExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Client not found!"});
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new { message = "Error <Put>. Try later..." });
                 }
             }
 
-            return NoContent();
+            return Ok(new { message= "Your action is successful" });
         }
 
         // POST: api/ClientJobs
@@ -98,33 +100,36 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.ClientJobRepository == null)
             {
-                return Problem("Entity set 'ClientJobs'  is null.");
+                return NotFound(new {message = "Repository not found!"});
             }
             _context.ClientJobRepository.Insert(clientJob);
             await _context.SaveAsync();
 
-            return CreatedAtAction("GetClientJob", new { id = clientJob.Id }, clientJob);
+            return CreatedAtAction(nameof(GetClientJob), new { id = clientJob.Id }, clientJob);
         }
 
         // DELETE: api/ClientJobs/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteClientJob(int id)
+        public async Task<ActionResult> DeleteClientJob(int id)
         {
             if (_context.ClientJobRepository == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Repository not found!"});
             }
             var clientJob = await _context.ClientJobRepository.GetByIdAsync(id);
             if (clientJob == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Client not found!"});
             }
 
             _context.ClientJobRepository.Delete(clientJob);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new { message= "Your action is successful" });
         }
+
+
+
 
         private bool ClientJobExists(int id)
         {

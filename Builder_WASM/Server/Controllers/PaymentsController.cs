@@ -30,10 +30,29 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.PaymentRepository == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Repository not found!"});
             }
-            var result = await _context.PaymentRepository.GetAsync();
+            int? id = await GetCompanyId();
+            var result = await _context.PaymentRepository.GetAsync(x=>x.Estimate.ClientJob.CompanyId == id, includeProperties:"Estimate, ClientJob");
             return Ok(result);
+        }
+
+        // GET: api/Payments/estimate/5
+        [HttpGet("estimate/{id}")]
+        public async Task<ActionResult<IEnumerable<Payment>>> GetPayments(int id)
+        {
+            if (_context.PaymentRepository == null)
+            {
+                return NotFound(new {message = "Repository Not found!"});
+            }
+            var payment = await _context.PaymentRepository.GetAsync(x=>x.EstimateId == id);
+
+            if (payment == null)
+            {
+                return NotFound(new {message = "Item not found!"});
+            }
+
+            return Ok(payment);
         }
 
         // GET: api/Payments/5
@@ -42,26 +61,26 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.PaymentRepository == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Repository not found!"});
             }
             var payment = await _context.PaymentRepository.GetByIdAsync(id);
 
             if (payment == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Item not found!"});
             }
 
-            return payment;
+            return Ok(payment);
         }
 
         // PUT: api/Payments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPayment(int id, Payment payment)
+        public async Task<ActionResult> PutPayment(int id, Payment payment)
         {
             if (id != payment.Id)
             {
-                return BadRequest();
+                return BadRequest(new {message = "Item not found!"});
             }
 
             _context.PaymentRepository.Update(payment);
@@ -74,15 +93,15 @@ namespace Builder_WASM.Server.Controllers
             {
                 if (!PaymentExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new {message = "Item not found!"});
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new { message = "Error <Put>. Try later..." });
                 }
             }
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
 
         // POST: api/Payments
@@ -92,37 +111,49 @@ namespace Builder_WASM.Server.Controllers
         {
             if (_context.PaymentRepository == null)
             {
-                return Problem("Entity set 'Payments'  is null.");
+                return NotFound(new {message = "Repository not found!"});
             }
             _context.PaymentRepository.Insert(payment);
             await _context.SaveAsync();
 
-            return CreatedAtAction("GetPayment", new { id = payment.Id }, payment);
+            return CreatedAtAction(nameof(GetPayment), new { id = payment.Id }, payment);
         }
 
         // DELETE: api/Payments/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePayment(int id)
+        public async Task<ActionResult> DeletePayment(int id)
         {
             if (_context.PaymentRepository == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Repository not found!"});
             }
             var payment = await _context.PaymentRepository.GetByIdAsync(id);
             if (payment == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Item not found!"});
             }
 
             _context.PaymentRepository.Delete(payment);
             await _context.SaveAsync();
 
-            return NoContent();
+            return Ok(new { message = "Your action is successful" });
         }
+
+
+
+
 
         private bool PaymentExists(int id)
         {
             return _context.PaymentRepository.Exist(id);
+        }
+
+        private async Task<int?> GetCompanyId()
+        {
+            var userName = User?.Identity?.Name;
+            var id = (await _context.UserRegisteredRepository.GetAsync(x => x.Name == userName)).FirstOrDefault()?.CompanyId;
+
+            return id;
         }
     }
 }

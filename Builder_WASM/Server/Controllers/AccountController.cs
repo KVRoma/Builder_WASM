@@ -20,18 +20,19 @@ namespace Builder_WASM.Server.Controllers
 
 
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate(AuthenticateRequest model)
+        public async Task<ActionResult> Authenticate(AuthenticateRequest model)
         {
             var response = await _user.Authenticate(model);
 
-            if (response == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+            if (response == null) return BadRequest(new { message = "Username or password is incorrect" });
+                
             response.Message = "User authentication was successful";
             return Ok(response);
         }
 
+
         [HttpPut("changelogin/{id}")]
-        public async Task<IActionResult> ChangeLogin(int id, AuthenticateRequestChangeLogin model)
+        public async Task<ActionResult> ChangeLogin(int id, AuthenticateRequestChangeLogin model)
         {
            if(id != model.Id) return BadRequest(new { message = "Username or password is incorrect" });
 
@@ -46,7 +47,7 @@ namespace Builder_WASM.Server.Controllers
         }
 
         [HttpPut("changepassword/{id}")]
-        public async Task<IActionResult> ChangePassword(int id, AuthenticateRequestChangePassword model)
+        public async Task<ActionResult> ChangePassword(int id, AuthenticateRequestChangePassword model)
         {
             if (id != model.Id) return BadRequest(new { message = "Username or password is incorrect" });
 
