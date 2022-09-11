@@ -1,14 +1,9 @@
 ﻿@page "/clientlist"
 
-<div class="h3 mb-5 fw-bold">
-    Client 
-    <button class="btn btn-success btn-circle-xl" type="button" @onclick=@Add>
-        <span class="oi oi-plus"></span>        
-    </button>
-</div>
 
 
-@if (clients != null)
+
+@if (display == "load")
 {
     <p>
         <em>
@@ -17,77 +12,99 @@
         </em>
     </p>
 }
-else
+else if (display == "ok")
 {
+    <div class="h3 mb-5 fw-bold">
+        Client
+        <button class="btn btn-success btn-circle-xl" type="button" @onclick=@Add>
+            <span class="oi oi-plus"></span>
+        </button>
+    </div>
+
     <h5>Count companies: @clients?.Count()</h5>
 
     <div class="row row-cols-1 row-cols-lg-3 g-4">
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Название карточки</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                </div>
-                <div class="card-footer text-center text-nowrap">
-                    <button class="btn btn-primary btn-circle" type="button">
-                        <span class="oi oi-monitor"></span>    
-                    </button>
-                    <button class="btn btn-warning btn-circle" type="button">
-                        <span class="oi oi-pencil"></span>
-                    </button>
-                    <button class="btn btn-danger btn-circle" type="button">
-                        <span class="oi oi-trash"></span>    
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Название карточки</h5>
-                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                </div>
-                <div class="card-footer text-center text-nowrap">
-                     <button class="btn btn-primary btn-circle" type="button">
-                        <span class="oi oi-monitor"></span>    
-                    </button>
-                    <button class="btn btn-warning btn-circle" type="button">
-                        <span class="oi oi-pencil"></span>
-                    </button>
-                    <button class="btn btn-danger btn-circle" type="button">
-                        <span class="oi oi-trash"></span>    
-                    </button>
+        @foreach(var item in clients!)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.NumberClient - @item.PrimaryFirstName</h5>
+                        <p class="card-text">
+                            <div>@item.DateRegistration.ToShortDateString()</div>
+                            <div>@item.PrimaryFullName</div>
+                            <div>@item.AddressBillFull</div>
+                            <div>@item.Notes</div>
+                        </p>
+                    </div>
+                    <div class="card-footer text-center text-nowrap">
+                        <button class="btn btn-primary btn-circle" type="button" @onclick=@(()=> View(item))>
+                            <span class="oi oi-monitor"></span>    
+                        </button>
+                        <button class="btn btn-warning btn-circle" type="button" @onclick=@(()=> Edit(item))>
+                            <span class="oi oi-pencil"></span>
+                        </button>
+                        <button class="btn btn-danger btn-circle" type="button" @onclick=@(()=> Delete(item))>
+                            <span class="oi oi-trash"></span>    
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Название карточки</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-                </div>
-                <div class="card-footer text-center text-nowrap">
-                     <button class="btn btn-primary btn-circle" type="button">
-                        <span class="oi oi-monitor"></span>    
-                    </button>
-                    <button class="btn btn-warning btn-circle" type="button">
-                        <span class="oi oi-pencil"></span>
-                    </button>
-                    <button class="btn btn-danger btn-circle" type="button">
-                        <span class="oi oi-trash"></span>    
-                    </button>
-                </div>
-            </div>
-        </div>
+        }
+    </div>
+}
+else
+{
+    <div class="h3 mb-5 fw-bold text-danger text-center">
+        @display
     </div>
 }
 
 @code {
     IEnumerable<ClientJob> clients = null!;
+    string display = "load";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var temp = await HttpService.GetAPI<Company>("api/Companies/UserCompany");
+        if (temp.IsSuccessStatusCode)
+        {
+            display = "ok";
+            var comp = await HttpService.GetAPI<IEnumerable<ClientJob>>("api/ClientJobs");
+            if (comp.IsSuccessStatusCode)
+            {
+                clients = comp.Response;
+            }
+            else
+            {                
+                display = comp.Message.Split(":")[1].Split("}")[0];
+            }
+        }
+        else
+        {
+            display = temp.Message.Split(":")[1].Split("}")[0];             
+        }
+    }
 
     void Add()
     {
-        NavigationManager.NavigateTo("/clientsettings/" + true);
+        NavigationManager.NavigateTo("/clientsettings");
     }
-
+    void View(ClientJob clientJob)
+    {
+        // тут треба перелік всіх квот цього клієнта.
+    }
+    void Edit(ClientJob clientJob)
+    {
+        NavigationManager.NavigateTo("/clientsettings/"+ clientJob.Id);
+    }
+    async Task Delete(ClientJob clientJob)
+    {
+        var temp = await HttpService.DeleteAPI<ResponseMessage>("api/ClientJobs/" + clientJob.Id);
+        if (temp.IsSuccessStatusCode)
+        {
+            await OnInitializedAsync();
+        }
+    }
+    
 }

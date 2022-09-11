@@ -10,9 +10,9 @@ namespace Builder_WASM.Client.Services
 {
     public class HttpService : IHttpService
     {
-        private HttpClient _httpClient;
-        private NavigationManager _navigationManager;
-        private ILocalStorageService _localStorageService;        
+        private readonly HttpClient _httpClient;
+        private readonly NavigationManager _navigationManager;
+        private readonly ILocalStorageService _localStorageService;        
 
         public HttpService(
             HttpClient httpClient,

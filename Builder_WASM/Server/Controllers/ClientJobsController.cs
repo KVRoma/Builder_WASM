@@ -35,10 +35,10 @@ namespace Builder_WASM.Server.Controllers
 
             int? companyId = await GetCompanyId();
             var result = await _context.ClientJobRepository.GetAsync(x => x.CompanyId == companyId);
-            if (result == null)
-            {
-                return NotFound(new { message = "Client not found!" });
-            }
+            //if (result == null)
+            //{
+            //    return NotFound(new { message = "Client not found!" });
+            //}
             return Ok(result);
         }
 
@@ -102,6 +102,9 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound(new {message = "Repository not found!"});
             }
+
+            clientJob.CompanyId = await GetCompanyId();
+
             _context.ClientJobRepository.Insert(clientJob);
             await _context.SaveAsync();
 
@@ -136,12 +139,13 @@ namespace Builder_WASM.Server.Controllers
             return _context.ClientJobRepository.Exist(id);
         }
 
-        private async Task<int?> GetCompanyId()
+        private async Task<int> GetCompanyId()
         {
             var userName = User?.Identity?.Name;
-            var id = (await _context.UserRegisteredRepository.GetAsync(x => x.Name == userName)).FirstOrDefault()?.CompanyId;
+            var id = (await _context.UserRegisteredRepository.GetAsync(x => x.Name == userName)).First().CompanyId ?? 0;
             
             return id;
         }
+               
     }
 }

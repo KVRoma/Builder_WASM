@@ -1,44 +1,45 @@
-﻿@page "/clientsettings/{Option:bool?}/{Id:int?}"
+﻿@page "/clientsettings/{Id:int?}"
 
-@if(display == "Added")
-{
-    <ClientForm Client="client"></ClientForm>    
-}
+
+<ClientForm Client="client" 
+            SaveClickCallback="SaveClient">
+</ClientForm>    
+
 
 
 
 @code {
     [Parameter]
-    public int? Id { get; set; } = null;
-    [Parameter]
-    public bool Option { get; set; } = false;
+    public int? Id { get; set; } = null;    
 
     string display = string.Empty;
     ClientJob client = new ClientJob();
+    
 
     protected async override Task OnParametersSetAsync()
     {
-        if (Option && Id == null)
+        if (Id != null)
         {
-            // Added
-            display = "Added";
-        }
-        else if (Option && Id != null)
-        {
-            // View
-            display = "View";
             var temp = await HttpService.GetAPI<ClientJob>("api/ClientJobs/" + Id);
             if (temp.IsSuccessStatusCode)
             {
                 client = temp.Response;
             }
-            //client = await HttpService.Get<ClientJob>("api/ClientJobs/" + Id);
         }
-        else if (!Option)
-        {
-            // Edit
-            display = "Edit";
-        }
+    }
 
+    async Task SaveClient(ClientJob client)
+    {
+        if (client.Id == 0)
+        {      
+            
+            var post = await HttpService.PostAPI<ClientJob>("api/ClientJobs",client);           
+            NavigationManager.NavigateTo("/clientlist");
+        }
+        else
+        { 
+            var temp = await HttpService.PutAPI<ResponseMessage>("api/ClientJobs/" + client.Id, client);
+            NavigationManager.NavigateTo("/clientlist");
+        }
     }
 }

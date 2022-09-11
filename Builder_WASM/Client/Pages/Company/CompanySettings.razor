@@ -1,4 +1,4 @@
-﻿@page "/CompanySettings/{Option:bool?}/{Id:int?}"
+﻿@page "/CompanySettings/{Id:int?}"
 
 @if (isUserInCompany == "Ok")
 {
@@ -24,8 +24,7 @@ else if(isUserInCompany == "Load")
 
 
 @code {
-    [Parameter]
-    public bool Option { get; set; } = false;
+    
     [Parameter]
     public int? Id { get; set; }
 
@@ -36,42 +35,22 @@ else if(isUserInCompany == "Load")
 
     protected async override Task OnParametersSetAsync()
     {
-        if (AuthenticationService.User.Role == "User" && Option == false)
+        if (AuthenticationService.User.Role == "User")
         {
             int userId = AuthenticationService.User.Id;
             var temp = await HttpService.GetAPI<UserRegistered>("api/UserRegistereds/" + userId);
             if (temp.IsSuccessStatusCode)
             {
                 isUserInCompany = "Ok";
-                company = temp.Response?.Company!;
+                company = temp.Response.Company!;
+                Id = company.Id;
             }
             else
             {
                 isUserInCompany = "Null";
             }
-
-            //try
-            //{
-            //    int userId = AuthenticationService.User.Id;
-            //    user = await HttpService.Get<UserRegistered>("api/UserRegistereds/" + userId);
-
-            //}            
-            //finally
-            //{                
-
-            //    if (user.Company == null)
-            //    {
-            //        isUserInCompany = "Null";
-            //    }
-            //    else
-            //    {
-            //        isUserInCompany = "Ok";
-            //        company = user?.Company!;
-            //    }
-            //}
-
         }
-        else if (AuthenticationService.User.Role == "Admin" && Option == false)
+        else if (AuthenticationService.User.Role == "Admin" && Id != null)
         {
             var temp = await HttpService.GetAPI<Company>("api/Companies/" + Id);
             if (temp.IsSuccessStatusCode)
@@ -79,16 +58,9 @@ else if(isUserInCompany == "Load")
                 company = temp.Response;
                 isUserInCompany = "Ok";
             }
-            //try
-            //{
-            //    company = (await HttpService.Get<Company>("api/Companies/" + Id)) ?? null!;
-            //}
-            //finally
-            //{
-            //    isUserInCompany = "Ok";
-            //}
+           
         }
-        else if(AuthenticationService.User.Role == "Admin" && Option == true)
+        else if(AuthenticationService.User.Role == "Admin" && Id == null)
         {
             isUserInCompany = "Ok";
         }
@@ -98,17 +70,15 @@ else if(isUserInCompany == "Load")
 
     async Task SaveCompany(Company newCompany)
     {
-        if (Option)
+        if (Id == null)
         {
-            var temp = await HttpService.PostAPI<Company>("api/Companies", newCompany);
-            //Company comp = await HttpService.Post<Company>("api/Companies", newCompany);
+            var temp = await HttpService.PostAPI<Company>("api/Companies", newCompany);            
         }
         else
         {
             newCompany.UserRegistered = new List<UserRegistered>();
             var temp = await HttpService.PutAPI<ResponseMessage>("api/Companies/" + newCompany.Id, newCompany);
-            var mes = temp.Response.Message;
-            //ResponseMessage message = await HttpService.Put<ResponseMessage>("api/Companies/" + newCompany.Id, newCompany);
+            var mes = temp.Response.Message;            
         }
 
         if (AuthenticationService.User.Role == "Admin")

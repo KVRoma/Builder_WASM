@@ -61,9 +61,7 @@ else
             if (tempCompany.IsSuccessStatusCode)
             {
                 companies = tempCompany.Response;
-            }
-            //userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered>>("api/UserRegistereds")) ?? null!;            
-            //companies = (await HttpService.Get<IEnumerable<Company>>("api/Companies")) ?? null!;
+            }            
         }
         catch (Exception ex)
         {
@@ -96,7 +94,7 @@ else
         {
             userRegistereds = tempUser.Response;
         }
-        //userRegistereds = (await HttpService.Get<IEnumerable<UserRegistered>>("api/UserRegistereds")) ?? null!;        
+               
     }
 
     async Task MessagesUpdate(UserRegistered user)

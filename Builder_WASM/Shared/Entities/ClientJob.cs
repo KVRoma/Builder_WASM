@@ -114,6 +114,6 @@ namespace Builder_WASM.Shared.Entities
         public List<Estimate> Estimates { get; set; } = new List<Estimate>();
 
         public int CompanyId { get; set; }
-        public Company Company { get; set; } = new Company();
+        public Company? Company { get; set; }
     }
 }

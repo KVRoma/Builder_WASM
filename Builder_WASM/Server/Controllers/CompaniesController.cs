@@ -54,6 +54,27 @@ namespace Builder_WASM.Server.Controllers
             return Ok(company);
         }
 
+        // GET: api/Companies/UserCompany
+        [HttpGet("UserCompany")]
+        public async Task<ActionResult<Company>> GetCompany()
+        {
+            if (_context.CompanyRepository == null)
+            {
+                return NotFound(new { message = "Repository not found!" });
+            }
+
+            var userName = User?.Identity?.Name;
+            var user = (await _context.UserRegisteredRepository.GetAsync(x => x.Name == userName)).FirstOrDefault();
+            var company = await _context.CompanyRepository.GetByIdAsync(user!.CompanyId!);
+
+            if (company == null)
+            {
+                return NotFound(new { message = "You are not registered with any company!" });
+            }
+
+            return Ok(company);
+        }
+
         // PUT: api/Companies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

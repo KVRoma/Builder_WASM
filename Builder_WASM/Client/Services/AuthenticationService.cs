@@ -5,9 +5,9 @@ namespace Builder_WASM.Client.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private IHttpService _httpService;
-        private ILocalStorageService _localStorageService;
-        private NavigationManager _navigationManager;
+        private readonly IHttpService _httpService;
+        private readonly ILocalStorageService _localStorageService;
+        private readonly NavigationManager _navigationManager;
         public AuthenticateResponse? User{ get; private set; }
         public AuthenticationService(
             IHttpService httpService,
