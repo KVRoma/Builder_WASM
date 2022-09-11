@@ -35,10 +35,7 @@ namespace Builder_WASM.Server.Controllers
 
             int? companyId = await GetCompanyId();
             var result = await _context.ClientJobRepository.GetAsync(x => x.CompanyId == companyId);
-            //if (result == null)
-            //{
-            //    return NotFound(new { message = "Client not found!" });
-            //}
+            
             return Ok(result);
         }
 

@@ -14,14 +14,14 @@
 }
 else if (display == "ok")
 {
-    <div class="h3 mb-5 fw-bold">
+    <div class="h3 mb-1 fw-bold">
         Client
         <button class="btn btn-success btn-circle-xl" type="button" @onclick=@Add>
             <span class="oi oi-plus"></span>
-        </button>
+        </button>        
     </div>
 
-    <h5>Count companies: @clients?.Count()</h5>
+    <div class="h6 mb-5 fst-italic">(Count: @clients?.Count())</div>
 
     <div class="row row-cols-1 row-cols-lg-3 g-4">
         @foreach(var item in clients!)
@@ -90,14 +90,17 @@ else
     {
         NavigationManager.NavigateTo("/clientsettings");
     }
+
     void View(ClientJob clientJob)
     {
         // тут треба перелік всіх квот цього клієнта.
     }
+
     void Edit(ClientJob clientJob)
     {
         NavigationManager.NavigateTo("/clientsettings/"+ clientJob.Id);
     }
+
     async Task Delete(ClientJob clientJob)
     {
         var temp = await HttpService.DeleteAPI<ResponseMessage>("api/ClientJobs/" + clientJob.Id);
