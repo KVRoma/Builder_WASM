@@ -1,6 +1,7 @@
 ﻿@page "/clientlist"
 
 
+  
 
 
 @if (display == "load")
@@ -104,10 +105,18 @@ else
     async Task Delete(ClientJob clientJob)
     {
         var temp = await HttpService.DeleteAPI<ResponseMessage>("api/ClientJobs/" + clientJob.Id);
+        
+        
         if (temp.IsSuccessStatusCode)
         {
+            toastService.ShowToast(temp.Response.Message, ToastLevel.Success);
             await OnInitializedAsync();
         }
+        else
+        { 
+            toastService.ShowToast(temp.Response.Message, ToastLevel.Error);
+        }
     }
+    
     
 }

@@ -2,6 +2,7 @@
 @inherits LayoutComponentBase
 
 <div class="page">
+    
 
     @if (AuthenticationService.User != null)
     {
@@ -20,6 +21,7 @@
         }
 
         <article class="content px-4">
+            <Toast />
             @Body
         </article>
     </main>
