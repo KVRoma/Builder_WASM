@@ -5,9 +5,9 @@ namespace Builder_WASM.Client.Services
 {
     public class ToastService : IDisposable
     {
-        public event Action<string, ToastLevel> OnShow;
-        public event Action OnHide;
-        private Timer Countdown;
+        public event Action<string, ToastLevel>? OnShow;
+        public event Action? OnHide;
+        private Timer? Countdown;
 
         public void ShowToast(string message, ToastLevel level)
         {
@@ -19,7 +19,7 @@ namespace Builder_WASM.Client.Services
         {
             SetCountdown();
 
-            if (Countdown.Enabled)
+            if (Countdown!.Enabled)
             {
                 Countdown.Stop();
                 Countdown.Start();
@@ -35,7 +35,7 @@ namespace Builder_WASM.Client.Services
             if (Countdown == null)
             {
                 Countdown = new Timer(2000);
-                Countdown.Elapsed += HideToast;
+                Countdown.Elapsed += HideToast!;
                 Countdown.AutoReset = false;
             }
         }
