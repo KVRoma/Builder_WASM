@@ -1,52 +1,48 @@
-﻿@page "/clientlist"
-
-
-  
-
+﻿@page "/estimatelist"
 
 @if (display == "load")
 {
     <p>
         <em>
             <span class="spinner-border spinner-border-sm mr-1"></span>
-            Loading Clients...
+            Loading Estimates...
         </em>
     </p>
 }
 else if (display == "ok")
 {
     <div class="h3 mb-1 fw-bold">
-        Client
+        Estimate
         <button class="btn btn-success btn-circle-xl" type="button" @onclick=@Add>
             <span class="oi oi-plus"></span>
-        </button>        
+        </button>
     </div>
 
-    <div class="h6 mb-5 fst-italic">(Count: @clients?.Count())</div>
+    <div class="h6 mb-5 fst-italic">(Count: @estimates?.Count())</div>
 
     <div class="row row-cols-1 row-cols-lg-3 g-4">
-        @foreach(var item in clients!)
+        @foreach (var item in estimates!)
         {
             <div class="col">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">@item.NumberClient - @item.PrimaryFirstName</h5>
+                        <h5 class="card-title">@item.NumberEstimate - @item.ClientJob?.PrimaryFirstName</h5>
                         <p class="card-text">
-                            <div>@item.DateRegistration.ToShortDateString()</div>
-                            <div>@item.PrimaryFullName</div>
-                            <div>@item.AddressBillFull</div>
-                            <div>@item.Notes</div>
+                            <div>@item.DateEstimate.ToShortDateString()</div>
+                            <div>@item.MaterialTotal.ToString()</div>
+                            <div>@item.LabourTotal.ToString()</div>
+                            <div>@item.InvoiceGrandTotal.ToString()</div>
                         </p>
                     </div>
                     <div class="card-footer text-center text-nowrap">
                         <button class="btn btn-primary btn-circle" type="button" @onclick=@(()=> View(item))>
-                            <span class="oi oi-monitor"></span>    
+                            <span class="oi oi-monitor"></span>
                         </button>
                         <button class="btn btn-warning btn-circle" type="button" @onclick=@(()=> Edit(item))>
                             <span class="oi oi-pencil"></span>
                         </button>
                         <button class="btn btn-danger btn-circle" type="button" @onclick=@(()=> Delete(item))>
-                            <span class="oi oi-trash"></span>    
+                            <span class="oi oi-trash"></span>
                         </button>
                     </div>
                 </div>
@@ -55,67 +51,66 @@ else if (display == "ok")
     </div>
 }
 
-
 @code {
-    IEnumerable<ClientJob> clients = null!;
+
+    IEnumerable<Estimate> estimates = null!;
     string display = "load";
 
     protected override async Task OnInitializedAsync()
     {
         var temp = await HttpService.GetAPI<Company>("api/Companies/UserCompany");
         if (temp.IsSuccessStatusCode)
-        {            
-            var comp = await HttpService.GetAPI<IEnumerable<ClientJob>>("api/ClientJobs");
+        {
+            var est = await HttpService.GetAPI<IEnumerable<Estimate>>("api/Estimates");
             display = "ok";
 
-            if (comp.IsSuccessStatusCode)
+            if (est.IsSuccessStatusCode)
             {
-                clients = comp.Response;
+                estimates = est.Response;
             }
             else
-            {              
-                toastService.ShowToast(comp.Message, ToastLevel.Error);
-                clients = new List<ClientJob>();                
+            {
+                toastService.ShowToast(est.Message, ToastLevel.Error);
+                estimates = new List<Estimate>();
             }
         }
         else
-        {            
+        {
             toastService.ShowToast(temp.Message, ToastLevel.Error);
-            clients = new List<ClientJob>();
+            estimates = new List<Estimate>();
             display = "ok";
         }
     }
 
     void Add()
     {
-        NavigationManager.NavigateTo("/clientsettings");
-    }
-
-    void View(ClientJob clientJob)
-    {
-        // тут треба перелік всіх квот цього клієнта.
-    }
-
-    void Edit(ClientJob clientJob)
-    {
-        NavigationManager.NavigateTo("/clientsettings/"+ clientJob.Id);
-    }
-
-    async Task Delete(ClientJob clientJob)
-    {
-        var temp = await HttpService.DeleteAPI<ResponseMessage>("api/ClientJobs/" + clientJob.Id);
         
+    }
+
+    void View(Estimate estimate)
+    {
         
+    }
+
+    void Edit(Estimate estimate)
+    {
+        
+    }
+
+    async Task Delete(Estimate estimate)
+    {
+        var temp = await HttpService.DeleteAPI<ResponseMessage>("api/Estimates/" + estimate.Id);
+
+
         if (temp.IsSuccessStatusCode)
         {
             toastService.ShowToast(temp.Response.Message, ToastLevel.Success);
             await OnInitializedAsync();
         }
         else
-        { 
+        {
             toastService.ShowToast(temp.Message, ToastLevel.Error);
         }
     }
-    
-    
+
 }

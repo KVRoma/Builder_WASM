@@ -7,7 +7,7 @@
     </div>
 </div>
 
-@if (AuthenticationService.User?.Role == "Admin")
+@if (AuthenticationService?.User?.Role == "Admin")
 {
     <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
         <nav class="flex-column">        
@@ -34,7 +34,7 @@
         </nav>
     </div>
 }
-else if(AuthenticationService.User?.Role == "User")
+else if(AuthenticationService?.User?.Role == "User")
 {
     <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
         <nav class="flex-column">        
@@ -44,8 +44,8 @@ else if(AuthenticationService.User?.Role == "User")
                 </NavLink>
             </div>
             <div class="nav-item px-3">
-                <NavLink class="nav-link" href="counterU">
-                    <span class="oi oi-plus" aria-hidden="true"></span> Counter User
+                <NavLink class="nav-link" href="estimatelist">
+                    <span class="oi oi-calculator" aria-hidden="true"></span> Eestimates
                 </NavLink>
             </div>
             <div class="nav-item px-3">

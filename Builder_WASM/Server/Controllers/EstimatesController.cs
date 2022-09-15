@@ -32,7 +32,12 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound(new { message = "Repository not found" });
             }
-            int? id = await GetCompanyId();
+            int id = await GetCompanyId();
+            if (id == 0)
+            {
+                return BadRequest(new { message = "You are not registered with any company!" });
+            }
+
             var result = await _context.EstimateRepository.GetAsync(x => x.ClientJob.CompanyId == id, includeProperties: "ClientJob") ;
             if (result == null)
             {
@@ -151,10 +156,10 @@ namespace Builder_WASM.Server.Controllers
             return _context.EstimateRepository.Exist(id);
         }
 
-        private async Task<int?> GetCompanyId()
+        private async Task<int> GetCompanyId()
         {
             var userName = User?.Identity?.Name;
-            var id = (await _context.UserRegisteredRepository.GetAsync(x => x.Name == userName)).FirstOrDefault()?.CompanyId;
+            var id = (await _context.UserRegisteredRepository.GetAsync(x => x.Name == userName))?.FirstOrDefault()?.CompanyId ?? 0;
 
             return id;
         }

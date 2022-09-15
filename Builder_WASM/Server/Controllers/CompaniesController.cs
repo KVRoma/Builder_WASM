@@ -28,10 +28,10 @@ namespace Builder_WASM.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompanies()
         {
-          if (_context.CompanyRepository == null)
-          {
-              return NotFound(new { message="Repository not found!"});
-          }            
+            if (_context.CompanyRepository == null)
+            {
+                return NotFound(new { message = "Repository not found!" });
+            }
             var result = await _context.CompanyRepository.GetAsync();
             return Ok(result);
         }
@@ -40,22 +40,22 @@ namespace Builder_WASM.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Company>> GetCompany(int id)
         {
-          if (_context.CompanyRepository == null)
-          {
-              return NotFound(new { message="Repository not found!"});
-          }
+            if (_context.CompanyRepository == null)
+            {
+                return NotFound(new { message = "Repository not found!" });
+            }
             var company = await _context.CompanyRepository.GetByIdAsync(id);
 
             if (company == null)
             {
-                return NotFound(new { message="Company not found!"});
+                return NotFound(new { message = "Company not found!" });
             }
 
             return Ok(company);
         }
 
         // GET: api/Companies/UserCompany
-        [HttpGet("UserCompany")]
+        [HttpGet("UserCompany")]        
         public async Task<ActionResult<Company>> GetCompany()
         {
             if (_context.CompanyRepository == null)

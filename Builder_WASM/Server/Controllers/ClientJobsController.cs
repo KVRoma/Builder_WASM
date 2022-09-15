@@ -101,6 +101,10 @@ namespace Builder_WASM.Server.Controllers
             }
 
             clientJob.CompanyId = await GetCompanyId();
+            if (clientJob.CompanyId == 0)
+            {
+                return BadRequest(new { message = "You are not registered with any company!" });
+            }
 
             _context.ClientJobRepository.Insert(clientJob);
             await _context.SaveAsync();

@@ -4,7 +4,7 @@
 <div class="page">
     
 
-    @if (AuthenticationService.User != null)
+    @if (AuthenticationService?.User != null)
     {
         <div class="sidebar">
             <NavMenu />
@@ -12,7 +12,7 @@
     }
 
     <main>
-        @if (AuthenticationService.User != null)
+        @if (AuthenticationService?.User != null)
         {
             <div class="top-row px-4 auth">
                 <SetupAccount></SetupAccount>

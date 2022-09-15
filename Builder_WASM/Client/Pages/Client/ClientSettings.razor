@@ -14,7 +14,7 @@
 
     string display = string.Empty;
     ClientJob client = new ClientJob();
-    
+
 
     protected async override Task OnParametersSetAsync()
     {
@@ -25,6 +25,10 @@
             {
                 client = temp.Response;
             }
+            else
+            {
+                toastService.ShowToast(temp.Message, ToastLevel.Error);
+            }
         }
     }
 
@@ -32,13 +36,30 @@
     {
         if (client.Id == 0)
         {      
-            
-            var post = await HttpService.PostAPI<ClientJob>("api/ClientJobs",client);           
+
+            var post = await HttpService.PostAPI<ClientJob>("api/ClientJobs",client);
+            if (post.IsSuccessStatusCode)
+            {
+                toastService.ShowToast(post.Response.PrimaryFullName + " created!", ToastLevel.Success);
+            }
+            else 
+            {
+                toastService.ShowToast(post.Message, ToastLevel.Error);
+            }            
+
             NavigationManager.NavigateTo("/clientlist");
         }
         else
         { 
             var temp = await HttpService.PutAPI<ResponseMessage>("api/ClientJobs/" + client.Id, client);
+            if (temp.IsSuccessStatusCode)
+            {
+                toastService.ShowToast(temp.Response.Message, ToastLevel.Success);
+            }
+            else
+            { 
+                toastService.ShowToast(temp.Message, ToastLevel.Error);
+            }
             NavigationManager.NavigateTo("/clientlist");
         }
     }

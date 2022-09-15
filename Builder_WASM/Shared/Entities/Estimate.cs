@@ -107,7 +107,7 @@ namespace Builder_WASM.Shared.Entities
 
         [Display(Name = "Client")]
         public int ClientJobId { get; set; }
-        public ClientJob ClientJob { get; set; } = new ClientJob();
+        public ClientJob? ClientJob { get; set; }
 
 
         public List<EstimateLine> EstimateLines { get; set; } = new List<EstimateLine>();

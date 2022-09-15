@@ -88,38 +88,36 @@ namespace Builder_WASM.Client.Services
         // helper methods
 
         private async Task<ResponseAPI<T>> sendRequestAPI<T>(HttpRequestMessage request)
-        {
-            int code;
-            bool status;
-            string mess;
-
-            // add jwt auth header if user is logged in and request is to the api url
+        {  
             var user = await _localStorageService.GetAsync<AuthenticateResponse>("user");
-            //var isApiUrl = !request.RequestUri?.IsAbsoluteUri;
-            if (user != null) //&& isApiUrl 
+            
+            if (user != null)
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user.Token);
 
-            using var response = await _httpClient.SendAsync(request);
-                     
+            using var response = await _httpClient.SendAsync(request);                      
+
+            ResponseAPI<T> res = new ResponseAPI<T>();
+            res.StatusCode = (int)response.StatusCode;
+            res.IsSuccessStatusCode = response.IsSuccessStatusCode;
 
             // auto logout on 401 response
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                _navigationManager.NavigateTo("/authenticate/login");
-                return default!;
+                _navigationManager.NavigateTo("/authenticate/login");       
             }
 
-            code = (int)response.StatusCode;
-            status = response.IsSuccessStatusCode;
-            mess = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                res.Message = await response.Content.ReadAsStringAsync();
+                res.Response = (await response.Content.ReadFromJsonAsync<T>())!;
+            }
+            else
+            {
+                string mes = await response.Content.ReadAsStringAsync();
+                res.Message = (string.IsNullOrWhiteSpace(mes)) ? "{message: Error! HTTP status " + res.StatusCode.ToString() + "}" : mes;
+                res.Response = default!;
+            }     
 
-            ResponseAPI<T> res = new ResponseAPI<T>();
-
-            res.StatusCode = code;
-            res.IsSuccessStatusCode = status;
-            res.Message = mess;            
-            res.Response = (await response.Content.ReadFromJsonAsync<T>())!;
-                        
             return res;
         }
 
