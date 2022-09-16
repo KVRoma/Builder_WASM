@@ -1,4 +1,4 @@
-﻿@page "/estimatelist"
+﻿@page "/estimatelist/{Id:int?}"
 
 @if (display == "load")
 {
@@ -26,12 +26,12 @@ else if (display == "ok")
             <div class="col">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">@item.NumberEstimate - @item.ClientJob?.PrimaryFirstName</h5>
+                        <h5 class="card-title">@item.NumberEstimate - @item.ClientJob?.PrimaryFullName</h5>
                         <p class="card-text">
-                            <div>@item.DateEstimate.ToShortDateString()</div>
-                            <div>@item.MaterialTotal.ToString()</div>
-                            <div>@item.LabourTotal.ToString()</div>
-                            <div>@item.InvoiceGrandTotal.ToString()</div>
+                            <div>Date: @item.DateEstimate.ToShortDateString()</div>
+                            <div>Material: $@item.MaterialTotal.ToString()</div>
+                            <div>Labour: $@item.LabourTotal.ToString()</div>
+                            <div>Total: $@item.InvoiceGrandTotal.ToString()</div>
                         </p>
                     </div>
                     <div class="card-footer text-center text-nowrap">
@@ -52,16 +52,42 @@ else if (display == "ok")
 }
 
 @code {
+    [Parameter]
+    public int? Id { get; set; } = null;
 
     IEnumerable<Estimate> estimates = null!;
     string display = "load";
 
     protected override async Task OnInitializedAsync()
     {
-        var temp = await HttpService.GetAPI<Company>("api/Companies/UserCompany");
-        if (temp.IsSuccessStatusCode)
+        if (Id == null)
         {
-            var est = await HttpService.GetAPI<IEnumerable<Estimate>>("api/Estimates");
+            var temp = await HttpService.GetAPI<Company>("api/Companies/UserCompany");
+            if (temp.IsSuccessStatusCode)
+            {
+                var est = await HttpService.GetAPI<IEnumerable<Estimate>>("api/Estimates");
+                display = "ok";
+
+                if (est.IsSuccessStatusCode)
+                {
+                    estimates = est.Response;
+                }
+                else
+                {
+                    toastService.ShowToast(est.Message, ToastLevel.Error);
+                    estimates = new List<Estimate>();
+                }
+            }
+            else
+            {
+                toastService.ShowToast(temp.Message, ToastLevel.Error);
+                estimates = new List<Estimate>();
+                display = "ok";
+            }
+        }
+        else
+        { 
+            var est = await HttpService.GetAPI<IEnumerable<Estimate>>("api/Estimates/client/" + Id);
             display = "ok";
 
             if (est.IsSuccessStatusCode)
@@ -74,17 +100,11 @@ else if (display == "ok")
                 estimates = new List<Estimate>();
             }
         }
-        else
-        {
-            toastService.ShowToast(temp.Message, ToastLevel.Error);
-            estimates = new List<Estimate>();
-            display = "ok";
-        }
     }
 
     void Add()
     {
-        
+        NavigationManager.NavigateTo("/estimatesettings");
     }
 
     void View(Estimate estimate)
@@ -94,7 +114,7 @@ else if (display == "ok")
 
     void Edit(Estimate estimate)
     {
-        
+        NavigationManager.NavigateTo("/estimatesettings/" + estimate.Id);
     }
 
     async Task Delete(Estimate estimate)

@@ -1,0 +1,66 @@
+﻿@page "/estimatesettings/{Id:int?}"
+
+
+<EstimateForm Estimate="estimate" 
+            SaveClickCallback="SaveEstimate">
+</EstimateForm>    
+
+
+
+
+@code {
+    [Parameter]
+    public int? Id { get; set; } = null;    
+
+    string display = string.Empty;
+    Estimate estimate = new Estimate();
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (Id != null)
+        {
+            var temp = await HttpService.GetAPI<Estimate>("api/Estimates/" + Id);
+            if (temp.IsSuccessStatusCode)
+            {
+                estimate = temp.Response;
+            }
+            else
+            {
+                toastService.ShowToast(temp.Message, ToastLevel.Error);
+            }
+        }
+    }
+
+    async Task SaveEstimate(Estimate est)
+    {
+        if (est.Id == 0)
+        {      
+
+            var post = await HttpService.PostAPI<Estimate>("api/Estimates/", est);
+            if (post.IsSuccessStatusCode)
+            {
+                toastService.ShowToast(post.Response.NumberEstimate + " created!", ToastLevel.Success);
+            }
+            else 
+            {
+                toastService.ShowToast(post.Message, ToastLevel.Error);
+            }            
+
+            NavigationManager.NavigateTo("/estimatelist");
+        }
+        else
+        { 
+            var temp = await HttpService.PutAPI<ResponseMessage>("api/Estimates/" + est.Id, est);
+            if (temp.IsSuccessStatusCode)
+            {
+                toastService.ShowToast(temp.Response.Message, ToastLevel.Success);
+            }
+            else
+            { 
+                toastService.ShowToast(temp.Message, ToastLevel.Error);
+            }
+            NavigationManager.NavigateTo("/estimatelist");
+        }
+    }
+}

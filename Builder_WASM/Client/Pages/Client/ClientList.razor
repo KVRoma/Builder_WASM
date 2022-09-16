@@ -93,7 +93,7 @@ else if (display == "ok")
 
     void View(ClientJob clientJob)
     {
-        // тут треба перелік всіх квот цього клієнта.
+        NavigationManager.NavigateTo("/estimatelist/" + clientJob.Id);
     }
 
     void Edit(ClientJob clientJob)

@@ -14,27 +14,6 @@
                         <ValidationMessage For="@(() => Model.DateRegistration)" />
                     </div>
                    
-
-                    <div class="form-group mb-3" >
-                        <label class="form-label">Company name</label>
-                        <InputText @bind-Value="Model.CompanyName" class="form-control text-primary fw-bold" placeholder="Company name"/>
-                        <ValidationMessage For="@(() => Model.CompanyName)" />
-                    </div>
-
-                    <div class="form-group mb-3" >
-                        <label class="form-label">Specify</label>
-                        <InputText @bind-Value="Model.Specify" class="form-control text-primary fw-bold" placeholder="Specify"/>
-                        <ValidationMessage For="@(() => Model.Specify)" />
-                    </div>
-
-                    <div class="form-group mb-3" >
-                        <label class="form-label">Notes</label>
-                        <InputText @bind-Value="Model.Notes" class="form-control text-primary fw-bold" placeholder="Notes"/>
-                        <ValidationMessage For="@(() => Model.Notes)" />
-                    </div>
-
-
-
                     <div>
                         <p>
                             <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Primary" aria-expanded="false" aria-controls="Primary">
@@ -176,6 +155,35 @@
                                 <label class="form-label">SITE ADDRESS Country</label>
                                 <InputText @bind-Value="Model.AddressSiteCountry" class="form-control text-primary fw-bold" placeholder="SITE ADDRESS Country"/>
                                 <ValidationMessage For="@(() => Model.AddressSiteCountry)" />
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <p>
+                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Other" aria-expanded="false" aria-controls="Other">
+                                <span class="oi oi-list text-dark"></span>
+                                Other info...
+                            </button>
+                        </p>
+                        <div class="collapse" id="Other">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Company name</label>
+                                <InputText @bind-Value="Model.CompanyName" class="form-control text-primary fw-bold" placeholder="Company name" />
+                                <ValidationMessage For="@(() => Model.CompanyName)" />
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label">Specify</label>
+                                <InputText @bind-Value="Model.Specify" class="form-control text-primary fw-bold" placeholder="Specify" />
+                                <ValidationMessage For="@(() => Model.Specify)" />
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label">Notes</label>
+                                <InputText @bind-Value="Model.Notes" class="form-control text-primary fw-bold" placeholder="Notes" />
+                                <ValidationMessage For="@(() => Model.Notes)" />
                             </div>
                         </div>
                     </div>

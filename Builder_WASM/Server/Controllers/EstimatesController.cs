@@ -55,7 +55,7 @@ namespace Builder_WASM.Server.Controllers
                 return NotFound(new { message = "Repository not found" });
             }
             
-            var result = await _context.EstimateRepository.GetAsync(x => x.ClientJobId == id);
+            var result = await _context.EstimateRepository.GetAsync(x => x.ClientJobId == id, includeProperties: "ClientJob");
             if (result == null)
             {
                 return NotFound(new { message = "Item not found" });
@@ -122,6 +122,17 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound(new { message = "Repository Not found!" });
             }
+
+            if (estimate.ClientJobId == 0)
+            {
+                return BadRequest(new { message = "Please indicate the client!" });
+            }
+            
+            int idCompany = await GetCompanyId();
+            var comp = await _context.CompanyRepository.GetByIdAsync(idCompany);
+            estimate.TAXpercent = comp.TAXpercent;
+            estimate.GSTpercent = comp.GSTpercent;
+            
             _context.EstimateRepository.Insert(estimate);
             await _context.SaveAsync();
 
