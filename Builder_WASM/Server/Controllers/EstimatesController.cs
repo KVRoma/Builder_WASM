@@ -32,13 +32,9 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound(new { message = "Repository not found" });
             }
-            int id = await GetCompanyId();
-            if (id == 0)
-            {
-                return BadRequest(new { message = "You are not registered with any company!" });
-            }
+            int id = await GetCompanyId();                       
 
-            var result = await _context.EstimateRepository.GetAsync(x => x.ClientJob.CompanyId == id, includeProperties: "ClientJob") ;
+            var result = await _context.EstimateRepository.GetAsync(x => x.ClientJob!.CompanyId == id, includeProperties: "ClientJob") ;
             if (result == null)
             {
                 return NotFound(new { message = "Item not found" });

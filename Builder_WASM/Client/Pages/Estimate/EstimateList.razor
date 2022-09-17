@@ -61,9 +61,8 @@ else if (display == "ok")
     protected override async Task OnInitializedAsync()
     {
         if (Id == null)
-        {
-            var temp = await HttpService.GetAPI<Company>("api/Companies/UserCompany");
-            if (temp.IsSuccessStatusCode)
+        {            
+            if(AuthenticationService.User.CompanyId != null) 
             {
                 var est = await HttpService.GetAPI<IEnumerable<Estimate>>("api/Estimates");
                 display = "ok";
@@ -79,10 +78,8 @@ else if (display == "ok")
                 }
             }
             else
-            {
-                toastService.ShowToast(temp.Message, ToastLevel.Error);
-                estimates = new List<Estimate>();
-                display = "ok";
+            {                
+                NavigationManager.NavigateTo("/notcompany");
             }
         }
         else

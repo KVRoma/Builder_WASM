@@ -6,12 +6,6 @@
                SaveClickCallback=@SaveCompany>
     </CompanyForm>
 }
-else if(isUserInCompany == "Null")
-{
-    <div class="h4 text-center fw-bold mt-5">
-        Sorry, you are not registered with any company!
-    </div>
-}
 else if(isUserInCompany == "Load")
 {
     <p>
@@ -24,7 +18,7 @@ else if(isUserInCompany == "Load")
 
 
 @code {
-    
+
     [Parameter]
     public int? Id { get; set; }
 
@@ -37,18 +31,26 @@ else if(isUserInCompany == "Load")
     {
         if (AuthenticationService.User.Role == "User")
         {
-            int userId = AuthenticationService.User.Id;
-            var temp = await HttpService.GetAPI<UserRegistered>("api/UserRegistereds/" + userId);
-            if (temp.IsSuccessStatusCode)
+            if (AuthenticationService.User.CompanyId != null)
             {
-                isUserInCompany = "Ok";
-                company = temp.Response.Company!;
-                Id = company.Id;
+                int userId = AuthenticationService.User.Id;
+                var temp = await HttpService.GetAPI<UserRegistered>("api/UserRegistereds/" + userId);
+                if (temp.IsSuccessStatusCode)
+                {
+                    isUserInCompany = "Ok";
+                    company = temp.Response.Company!;
+                    Id = company.Id;
+                }
+                else
+                {
+                    toastService.ShowToast(temp.Message, ToastLevel.Error);
+                }
             }
             else
             {
-                isUserInCompany = "Null";
+                NavigationManager.NavigateTo("/notcompany");
             }
+
         }
         else if (AuthenticationService.User.Role == "Admin" && Id != null)
         {

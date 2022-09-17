@@ -61,10 +61,10 @@ else if (display == "ok")
     string display = "load";
 
     protected override async Task OnInitializedAsync()
-    {
-        var temp = await HttpService.GetAPI<Company>("api/Companies/UserCompany");
-        if (temp.IsSuccessStatusCode)
-        {            
+    {        
+        if (AuthenticationService.User.CompanyId != null)
+        {    
+
             var comp = await HttpService.GetAPI<IEnumerable<ClientJob>>("api/ClientJobs");
             display = "ok";
 
@@ -79,10 +79,8 @@ else if (display == "ok")
             }
         }
         else
-        {            
-            toastService.ShowToast(temp.Message, ToastLevel.Error);
-            clients = new List<ClientJob>();
-            display = "ok";
+        {      
+            NavigationManager.NavigateTo("/notcompany");
         }
     }
 
