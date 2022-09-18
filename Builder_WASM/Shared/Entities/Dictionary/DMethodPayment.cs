@@ -17,6 +17,6 @@ namespace Builder_WASM.Shared.Entities.Dictionary
         public string NameMethod { get; set; } = string.Empty;
 
         public int CompanyId { get; set; }
-        public Company Company { get; set; } = new Company();
+        public Company? Company { get; set; }
     }
 }

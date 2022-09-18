@@ -16,6 +16,6 @@ namespace Builder_WASM.Shared.Entities.Dictionary
         public decimal RateDescription { get; set; }
 
         public int DItemId { get; set; }
-        public DItem DItem { get; set; } = new DItem();
+        public DItem? DItem { get; set; } = new DItem();
     }
 }

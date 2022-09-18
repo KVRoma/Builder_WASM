@@ -1,7 +1,7 @@
-﻿@page "/supplierlist"
+﻿@page "/groupelist"
 
 <div class="h3 mb-1 fw-bold">
-    Suppliers
+    Groupe (material and labour)
     <button class="btn btn-success btn-circle-xl" type="button" @onclick=@Add>
         <span class="oi oi-plus"></span>
     </button>
@@ -15,19 +15,19 @@
         <EditForm Model=@Model OnValidSubmit="HandleValidSubmit">
             <DataAnnotationsValidator />
 
-            <div class="form-group mb-3" >                
-                <InputText @bind-Value="Model.NameSupplier" class="form-control text-primary fw-bold" placeholder="Name"/>
-                <ValidationMessage For="@(() => Model.NameSupplier)"/>
-            </div> 
-                    
-            <div class="form-group mb-3" >                
-                <InputText @bind-Value="Model.AddressSupplier" class="form-control text-primary fw-bold" placeholder="Address"/>
-                <ValidationMessage For="@(() => Model.AddressSupplier)"/>
-            </div> 
+            <div class="form-group mb-3">
+                <InputText @bind-Value="Model.NameSupplier" class="form-control text-primary fw-bold" placeholder="Name" />
+                <ValidationMessage For="@(() => Model.NameSupplier)" />
+            </div>
+
+            <div class="form-group mb-3">
+                <InputText @bind-Value="Model.AddressSupplier" class="form-control text-primary fw-bold" placeholder="Address" />
+                <ValidationMessage For="@(() => Model.AddressSupplier)" />
+            </div>
 
             <div class="text-end">
                 <button class="btn btn-success text-nowrap" style="width:150px">
-                    <span class="oi oi-circle-check"></span> 
+                    <span class="oi oi-circle-check"></span>
                     Ok
                 </button>
                 <button class="btn btn-primary text-nowrap" style="width:150px" @onclick=Cancel>
@@ -41,17 +41,17 @@
 
 <table class="table">
     <thead>
-        <tr>           
+        <tr>
             <th scope="col">Name</th>
             <th scope="col">Address</th>
             <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
-        @foreach(var item in suppliers!)
+        @foreach (var item in suppliers!)
         {
-            
-            <tr>                
+
+            <tr>
                 <td>@item.NameSupplier</td>
                 <td>@item.AddressSupplier</td>
                 <td>
@@ -85,7 +85,7 @@
         }
         else
         {
-            toastService.ShowToast(temp.Message, ToastLevel.Error);            
+            toastService.ShowToast(temp.Message, ToastLevel.Error);
         }
     }
 
@@ -102,7 +102,7 @@
     }
 
     private async Task Delete(int id)
-    { 
+    {
         var temp = await HttpService.DeleteAPI<ResponseMessage>("api/DSuppliers/" + id);
 
         if (temp.IsSuccessStatusCode)
@@ -154,6 +154,5 @@
         await OnInitializedAsync();
     }
 
-    
-}
 
+}

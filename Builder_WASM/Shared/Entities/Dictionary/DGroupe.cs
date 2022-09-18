@@ -17,6 +17,6 @@ namespace Builder_WASM.Shared.Entities.Dictionary
         public List<DItem> DItems { get; set; } = new List<DItem>();
 
         public int CompanyId { get; set; }
-        public Company Company { get; set; } = new Company();
+        public Company? Company { get; set; }
     }
 }

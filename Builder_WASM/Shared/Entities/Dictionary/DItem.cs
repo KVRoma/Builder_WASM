@@ -14,7 +14,7 @@ namespace Builder_WASM.Shared.Entities.Dictionary
         public string NameItem { get; set; } = "";
 
         public int DGroupeId { get; set; }
-        public DGroupe DGroupe { get; set; } = new DGroupe();
+        public DGroupe? DGroupe { get; set; }
 
         [Display(Name = "Supplier")]
         public int? DSapplierId { get; set; }
