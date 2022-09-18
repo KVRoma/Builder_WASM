@@ -1,0 +1,157 @@
+﻿@page "/supplierlist"
+
+<div class="h3 mb-1 fw-bold">
+    Suppliers
+    <button class="btn btn-success btn-circle-xl" type="button" @onclick=@Add>
+        <span class="oi oi-plus"></span>
+    </button>
+</div>
+
+<div class="h6 mb-5 fst-italic">(Count: @suppliers?.Count())</div>
+
+@if (isVisible)
+{
+    <div class="card-body">
+        <EditForm Model=@Model OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="form-group mb-3" >                
+                <InputText @bind-Value="Model.NameSupplier" class="form-control text-primary fw-bold" placeholder="Name"/>
+                <ValidationMessage For="@(() => Model.NameSupplier)"/>
+            </div> 
+                    
+            <div class="form-group mb-3" >                
+                <InputText @bind-Value="Model.AddressSupplier" class="form-control text-primary fw-bold" placeholder="Address"/>
+                <ValidationMessage For="@(() => Model.AddressSupplier)"/>
+            </div> 
+
+            <div class="text-end">
+                <button class="btn btn-success text-nowrap" style="width:150px">
+                    <span class="oi oi-circle-check"></span> 
+                    Ok
+                </button>
+                <button class="btn btn-primary text-nowrap" style="width:150px" @onclick=Cancel>
+                    <span class="oi oi-circle-x"></span>
+                    Cancel
+                </button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>           
+            <th scope="col">Name</th>
+            <th scope="col">Address</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in suppliers!)
+        {
+            
+            <tr>                
+                <td>@item.NameSupplier</td>
+                <td>@item.AddressSupplier</td>
+                <td>
+                    <button class="btn btn-warning btn-circle" type="button" @onclick=@(()=> Edit(item))>
+                        <span class="oi oi-pencil"></span>
+                    </button>
+                    <button class="btn btn-danger btn-circle" type="button" @onclick=@(()=> Delete(item.Id))>
+                        <span class="oi oi-trash"></span>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+
+    IEnumerable<DSupplier> suppliers = new List<DSupplier>();
+    bool isVisible;
+    DSupplier Model = new DSupplier();
+
+    protected override async Task OnInitializedAsync()
+    {
+        isVisible = false;
+
+        var temp = await HttpService.GetAPI<IEnumerable<DSupplier>>("api/DSuppliers");
+        if (temp.IsSuccessStatusCode)
+        {
+            suppliers = temp.Response;
+        }
+        else
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Error);            
+        }
+    }
+
+    private void Add()
+    {
+        isVisible = true;
+        Model = new DSupplier();
+    }
+
+    private void Edit(DSupplier item)
+    {
+        isVisible = true;
+        Model = item;
+    }
+
+    private async Task Delete(int id)
+    { 
+        var temp = await HttpService.DeleteAPI<ResponseMessage>("api/DSuppliers/" + id);
+
+        if (temp.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(temp.Response.Message, ToastLevel.Success);
+            await OnInitializedAsync();
+        }
+        else
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Error);
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (Model.Id == 0)
+        {
+            var temp = await HttpService.PostAPI<DSupplier>("api/DSuppliers/", Model);
+
+            if (temp.IsSuccessStatusCode)
+            {
+                toastService.ShowToast(temp.Response.NameSupplier + " created!", ToastLevel.Success);
+            }
+            else
+            {
+                toastService.ShowToast(temp.Message, ToastLevel.Error);
+            }
+        }
+        else
+        {
+            var temp = await HttpService.PutAPI<ResponseMessage>("api/DSuppliers/" + Model.Id, Model);
+
+            if (temp.IsSuccessStatusCode)
+            {
+                toastService.ShowToast(temp.Response.Message, ToastLevel.Success);
+            }
+            else
+            {
+                toastService.ShowToast(temp.Message, ToastLevel.Error);
+            }
+        }
+
+        await OnInitializedAsync();
+    }
+
+    private void Cancel()
+    { 
+        isVisible = false;
+        Model = new DSupplier();
+    }
+}
+

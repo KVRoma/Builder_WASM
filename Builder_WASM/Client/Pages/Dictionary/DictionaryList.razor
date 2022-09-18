@@ -1,0 +1,90 @@
+﻿@page "/dictionarylist"
+
+
+    <div class="h3 mb-3 fw-bold">
+        Dictionaries       
+    </div>
+
+    
+
+    <div class="row row-cols-1 row-cols-lg-3 g-4">  
+        
+        <div class="col">
+            <div class="card h-100">
+                <h5 class="card-header fw-bold">
+                    Materials and Labour
+                </h5>
+                <div class="card-body">                    
+                    <p class="card-text fst-italic fs-6">
+                    This dictionary contains all the enumerations of groups and goods, as well as their cost.
+                    </p>
+                </div>
+                <div class="card-footer text-center text-nowrap">
+                    <button class="btn btn-warning btn-circle" type="button" @onclick=@(()=> Edit(DictionaryName.MaterialAndLobour))>
+                        <span class="oi oi-pencil"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    <div class="col">
+        <div class="card h-100">
+            <h5 class="card-header fw-bold">
+                Contractors
+            </h5>
+            <div class="card-body">
+                <p class="card-text fst-italic fs-6">
+                    This dictionary contains a complete list of contractors.
+                </p>
+            </div>
+            <div class="card-footer text-center text-nowrap">
+                <button class="btn btn-warning btn-circle" type="button" @onclick=@(()=> Edit(DictionaryName.Contractors))>
+                    <span class="oi oi-pencil"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100">
+            <h5 class="card-header fw-bold">
+                Suppliers
+            </h5>
+            <div class="card-body">
+                <p class="card-text fst-italic fs-6">
+                    This dictionary contains a complete list of suppliers
+                </p>
+            </div>
+            <div class="card-footer text-center text-nowrap">
+                <button class="btn btn-warning btn-circle" type="button" @onclick=@(()=> Edit(DictionaryName.Suppliers))>
+                    <span class="oi oi-pencil"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+        
+    </div>
+
+
+@code {
+    void Edit(DictionaryName name)
+    {
+        switch (name)
+        {
+            case DictionaryName.Suppliers:
+                {
+                    NavigationManager.NavigateTo("/supplierlist");
+                }
+                break;
+            case DictionaryName.MaterialAndLobour:
+                { }
+                break;
+            case DictionaryName.Contractors:
+                { }
+                break;
+        }
+
+    }
+
+
+}

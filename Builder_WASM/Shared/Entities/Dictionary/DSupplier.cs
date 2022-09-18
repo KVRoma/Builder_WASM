@@ -9,10 +9,11 @@ namespace Builder_WASM.Shared.Entities.Dictionary
 {
     public class DSupplier
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         [Display(Name = "Supplier")]
         [Required(ErrorMessage = "The Name field cannot be null !!! Please, write the name. ")]
         public string NameSupplier { get; set; } = "";
+
         [Display(Name = "Address")]
         [Required(ErrorMessage = "The Address field cannot be null !!! Please, write the Address. ")]
         public string AddressSupplier { get; set; } = "";
@@ -20,6 +21,6 @@ namespace Builder_WASM.Shared.Entities.Dictionary
         public List<DItem> DItems { get; set; } = new List<DItem>();
 
         public int CompanyId { get; set; }
-        public Company Company { get; set; } = new Company();
+        public Company? Company { get; set; }
     }
 }

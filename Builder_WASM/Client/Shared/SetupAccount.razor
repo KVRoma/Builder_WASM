@@ -4,16 +4,44 @@
             <button class="btn btn-outline-success " type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                 <span class="oi oi-cog m-0 p-0"></span>                
             </button>
+                        
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 @if (AuthenticationService.User.Role == "Admin")
                 {
-                    <li><a class="dropdown-item m-0 w-100 text-start" href="authenticate/changepassword">Сhange password</a></li>
+                    <li>
+                        <a class="dropdown-item m-0 w-100 text-start" href="authenticate/changepassword">
+                            <span class="oi oi-paperclip"></span>
+                            Сhange password
+                        </a>
+                    </li>
                 }
                 else if(AuthenticationService.User.Role == "User")
                 {
-                    <li><a class="dropdown-item m-0 w-100 text-start" href="authenticate/changepassword">Сhange password</a></li>
-                    <li><a class="dropdown-item m-0 w-100 text-start" href="authenticate/changelogin">Сhange login</a></li>                   
-                    <li><a class="dropdown-item m-0 w-100 text-start" href="CompanySettings">Company setting</a></li>                    
+                    
+                    <li>
+                        <a class="dropdown-item m-0 w-100 text-start" href="authenticate/changepassword">
+                            <span class="oi oi-paperclip"></span>
+                            Сhange password
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item m-0 w-100 text-start" href="authenticate/changelogin">
+                            <span class="oi oi-paperclip"></span>
+                            Сhange login
+                        </a>
+                    </li>                   
+                    <li>
+                        <a class="dropdown-item m-0 w-100 text-start" href="companysettings">
+                            <span class="oi oi-paperclip"></span>
+                            Company setting
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item m-0 w-100 text-start" href="dictionarylist">
+                            <span class="oi oi-paperclip"></span>
+                            Dictionary setting
+                        </a>
+                    </li>
                 }
             </ul>
         </div>
@@ -25,6 +53,8 @@
 
 
 @code {
-    
-
+    void Click(string link)
+    {
+        NavigationManager.NavigateTo(link);
+    }
 }
