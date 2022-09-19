@@ -43,11 +43,8 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound(new { message = "Repository not found" });
             }
-            var result = await _context.DItemRepository.GetAsync(x=>x.DGroupeId == id,includeProperties: "DGroupe, DSupplier");
-            if (result == null)
-            {
-                return NotFound(new { message = "Item not found" });
-            }
+            var result = await _context.DItemRepository.GetAsync(x=>x.DGroupeId == id,includeProperties: "DGroupe,DSupplier");
+            
             return Ok(result);
         }
 

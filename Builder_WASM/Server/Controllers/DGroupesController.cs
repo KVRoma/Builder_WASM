@@ -50,7 +50,7 @@ namespace Builder_WASM.Server.Controllers
                 return NotFound(new { message = "Repository not found" });
             }
             int? companyId = await GetCompanyId();
-            var dGroupe = (await _context.DGroupeRepository.GetAsync(x=>x.Id == id && x.CompanyId == companyId)).FirstOrDefault();
+            var dGroupe = (await _context.DGroupeRepository.GetAsync(x=>x.Id == id && x.CompanyId == companyId,includeProperties: "DItems")).FirstOrDefault();
 
             if (dGroupe == null)
             {

@@ -43,7 +43,7 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound(new { message = "Repository not found!" });
             }
-            var result = await _context.DDescriptionRepository.GetAsync(x=>x.DItemId == id);
+            var result = await _context.DDescriptionRepository.GetAsync(x=>x.DItemId == id, includeProperties: "DItem");
             return Ok(result);
         }
 
@@ -105,6 +105,12 @@ namespace Builder_WASM.Server.Controllers
           {
               return NotFound(new { message = "Repository not found" });
           }
+
+            if (dDescription.DItemId == 0)
+            {
+                return BadRequest(new { message = "Please indicate the Groupe!" });
+            }
+
             _context.DDescriptionRepository.Insert(dDescription);
             await _context.SaveAsync();
 

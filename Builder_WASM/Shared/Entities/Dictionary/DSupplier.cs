@@ -18,8 +18,8 @@ namespace Builder_WASM.Shared.Entities.Dictionary
         [Required(ErrorMessage = "The Address field cannot be null !!! Please, write the Address. ")]
         public string AddressSupplier { get; set; } = "";
 
-        public List<DItem> DItems { get; set; } = new List<DItem>();
-
+        public List<DItem>? DItems { get; set; } = new List<DItem>();
+        
         public int CompanyId { get; set; }
         public Company? Company { get; set; }
     }

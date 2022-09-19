@@ -1,13 +1,13 @@
-﻿@page "/itemlist/{Id:int}"
+﻿@page "/descriptionlist/{GroupeId:int}/{Id:int}"
 
 <div class="h3 mb-1 fw-bold">
-    Items dictionary
+    Descriptions dictionary
     <button class="btn btn-success btn-circle-xl" type="button" @onclick=@Add>
         <span class="oi oi-plus"></span>
     </button>
 </div>
 
-<div class="h6 mb-5 fst-italic">(Count: @items?.Count())</div>
+<div class="h6 mb-5 fst-italic">(Count: @descriptions?.Count())</div>
 
 @if (isVisible)
 {
@@ -16,31 +16,25 @@
             <DataAnnotationsValidator />
 
             <div class="form-group mb-3">
-                <label class="form-label">Groupe</label>
-                <InputSelect @bind-Value="Model.DGroupeId" class="form-control text-primary fw-bold">                    
-                    @foreach (var item in groupes)
+                <label class="form-label">Item</label>
+                <InputSelect @bind-Value="Model.DItemId" class="form-control text-primary fw-bold">
+                    @foreach (var item in items)
                     {
-                        <option value="@item.Id">@item.NameGroupe</option>
+                        <option value="@item.Id">@item.NameItem</option>
                     }
+
                 </InputSelect>
-                <ValidationMessage For="@(() => Model.DGroupeId)" />
+                <ValidationMessage For="@(() => Model.DItemId)" />
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label">Supplier</label>
-                <InputSelect @bind-Value="Model.DSupplierId" class="form-control text-primary fw-bold">
-                    <option value="">None</option>
-                    @foreach (var item in suppliers)
-                    {
-                        <option value="@item.Id">@item.NameSupplier</option>
-                    }
-                </InputSelect>
-                <ValidationMessage For="@(() => Model.DSupplierId)" />
+                <InputText @bind-Value="Model.NameDescription" class="form-control text-primary fw-bold" placeholder="Name Description" />
+                <ValidationMessage For="@(() => Model.NameDescription)" />
             </div>
 
             <div class="form-group mb-3">
-                <InputText @bind-Value="Model.NameItem" class="form-control text-primary fw-bold" placeholder="Name Item" />
-                <ValidationMessage For="@(() => Model.NameItem)" />
+                <InputNumber @bind-Value="Model.RateDescription"  class="form-control text-primary fw-bold" placeholder="Rate Description" />
+                <ValidationMessage For="@(() => Model.RateDescription)" />
             </div>
 
             <div class="text-end">
@@ -60,24 +54,21 @@
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">Groupe</th>
+            <th scope="col">Item</th>
             <th scope="col">Name</th>
-            <th scope="col">Supplier</th>
+            <th scope="col">Rate</th>
             <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in items!)
+        @foreach (var item in descriptions!)
         {
 
             <tr>
-                <td>@item.DGroupe?.NameGroupe</td>
-                <td>@item.NameItem</td>
-                <td>@item.DSupplier?.NameSupplier</td>
-                <td>
-                    <button class="btn btn-primary btn-circle" type="button" @onclick=@(()=> View(item))>
-                        <span class="oi oi-monitor"></span>
-                    </button>
+                <td>@item.DItem?.NameItem</td>
+                <td>@item.NameDescription</td>
+                <td class="text-nowrap">$ @item.RateDescription.ToString()</td>
+                <td>                    
                     <button class="btn btn-warning btn-circle m-1" type="button" @onclick=@(()=> Edit(item))>
                         <span class="oi oi-pencil"></span>
                     </button>
@@ -94,25 +85,22 @@
 @code {
     [Parameter]
     public int Id { get; set; }
+    [Parameter]
+    public int GroupeId { get; set; }
 
     IEnumerable<DItem> items = new List<DItem>();
-    IEnumerable<DSupplier> suppliers = new List<DSupplier>();
-    IEnumerable<DGroupe> groupes = new List<DGroupe>();
+    IEnumerable<DDescription> descriptions = new List<DDescription>();
     bool isVisible;
-    DItem Model = new DItem();
+    DDescription Model = new DDescription();
 
     protected override async Task OnInitializedAsync()
     {
         isVisible = false;
-
-        groupes =(await HttpService.GetAPI<IEnumerable<DGroupe>>("api/DGroupes"))?.Response!;        
-        suppliers = (await HttpService.GetAPI<IEnumerable<DSupplier>>("api/DSuppliers"))?.Response!;
-
-        var temp = await HttpService.GetAPI<IEnumerable<DItem>>("api/DItems/groupe/" + Id);
-
+        items = (await HttpService.GetAPI<IEnumerable<DItem>>("api/DItems/groupe/" + GroupeId))?.Response!;
+        var temp = await HttpService.GetAPI<IEnumerable<DDescription>>("api/DDescriptions/item/" + Id);
         if (temp.IsSuccessStatusCode)
         {
-            items = temp.Response;            
+            descriptions = temp.Response;            
         }
         else
         {
@@ -123,16 +111,13 @@
     private void Add()
     {
         isVisible = true;
-        Model = new DItem();
-        Model.DGroupeId = Id;
+        Model = new DDescription();
+        Model.DItemId = Id;
     }
 
-    private void View(DItem item)
-    {
-        NavigationManager.NavigateTo("/descriptionlist/" + Id + "/" + item.Id);
-    }
 
-    private void Edit(DItem item)
+
+    private void Edit(DDescription item)
     {
         isVisible = true;
         Model = item;
@@ -140,7 +125,7 @@
 
     private async Task Delete(int id)
     {
-        var temp = await HttpService.DeleteAPI<ResponseMessage>("api/DItems/" + id);
+        var temp = await HttpService.DeleteAPI<ResponseMessage>("api/DDescriptions/" + id);
 
         if (temp.IsSuccessStatusCode)
         {
@@ -156,19 +141,18 @@
     private void Cancel()
     {
         isVisible = false;
-        Model = new DItem();
+        Model = new DDescription();
     }
 
     private async Task HandleValidSubmit()
     {
-
         if (Model.Id == 0)
         {
-            var temp = await HttpService.PostAPI<DItem>("api/DItems", Model);
+            var temp = await HttpService.PostAPI<DDescription>("api/DDescriptions", Model);
 
             if (temp.IsSuccessStatusCode)
             {
-                toastService.ShowToast(temp.Response.NameItem + " created!", ToastLevel.Success);
+                toastService.ShowToast(temp.Response.NameDescription + " created!", ToastLevel.Success);
             }
             else
             {
@@ -177,10 +161,9 @@
         }
         else
         {
-            Model.DSupplier = null;
-            Model.DGroupe = null;
+            Model.DItem = null;
 
-            var temp = await HttpService.PutAPI<ResponseMessage>("api/DItems/" + Model.Id, Model);
+            var temp = await HttpService.PutAPI<ResponseMessage>("api/DDescriptions/" + Model.Id, Model);
 
             if (temp.IsSuccessStatusCode)
             {
@@ -190,7 +173,8 @@
             {
                 toastService.ShowToast(temp.Message, ToastLevel.Error);
             }
-        }        
+        }
+
         await OnInitializedAsync();
     }
 

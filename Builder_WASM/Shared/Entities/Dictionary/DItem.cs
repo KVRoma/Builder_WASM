@@ -11,14 +11,15 @@ namespace Builder_WASM.Shared.Entities.Dictionary
     {
         public int Id { get; set; }
         [Display(Name = "Item")]
+        [Required(ErrorMessage = "Please, write the Name!")]
         public string NameItem { get; set; } = "";
 
         public int DGroupeId { get; set; }
         public DGroupe? DGroupe { get; set; }
 
         [Display(Name = "Supplier")]
-        public int? DSapplierId { get; set; }
+        public int? DSupplierId { get; set; }
         public DSupplier? DSupplier { get; set; }
-        public List<DDescription> DDescriptions { get; set; } = new List<DDescription>();
+        public List<DDescription>? DDescriptions { get; set; } = new List<DDescription>();
     }
 }

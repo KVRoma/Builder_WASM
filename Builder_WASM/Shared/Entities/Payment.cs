@@ -30,6 +30,6 @@ namespace Builder_WASM.Shared.Entities
         }
 
         public int EstimateId { get; set; }
-        public Estimate Estimate { set; get; } = new Estimate();
+        public Estimate? Estimate { set; get; }
     }
 }

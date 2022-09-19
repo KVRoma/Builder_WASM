@@ -15,6 +15,6 @@ namespace Builder_WASM.Shared.Entities
         public string Message { get; set; } = string.Empty;
 
         public int UserRegisteredId { get; set; }
-        public UserRegistered? UserRegistered { get; set; } = new UserRegistered();
+        public UserRegistered? UserRegistered { get; set; }
     }
 }

@@ -25,6 +25,6 @@ namespace Builder_WASM.Shared.Entities
         public EstimateLineType Type { get; set; }
 
         public int EstimateId { get; set; }
-        public Estimate Estimate { get; set; } = new Estimate();
+        public Estimate? Estimate { get; set; }
     }
 }
