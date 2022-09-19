@@ -12,7 +12,7 @@ namespace Builder_WASM.Shared.Entities.Dictionary
         public int Id { get; set; }
         [Display(Name = "Group")]
         public string NameGroupe { get; set; } = "";
-        public EstimateLineType Type { get; set; }
+        public EstimateLineType Type { get; set; } = EstimateLineType.Material;
 
         public List<DItem> DItems { get; set; } = new List<DItem>();
 
