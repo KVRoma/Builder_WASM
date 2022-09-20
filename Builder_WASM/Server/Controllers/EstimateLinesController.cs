@@ -31,9 +31,9 @@ namespace Builder_WASM.Server.Controllers
             if (_context.EstimateLineRepository == null)
             {
                 return NotFound(new { message = "Repository not found" });
-            }            
+            }
 
-            var result = await _context.EstimateLineRepository.GetAsync(x=>x.EstimateId == id);
+            var result = await _context.EstimateLineRepository.GetAsync(x => x.EstimateId == id) ;
 
             return Ok(result);
         }

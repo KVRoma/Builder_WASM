@@ -29,38 +29,12 @@
                         <ValidationMessage For="@(() => Model.ClientJobId)" />
                     </div>
 
-                   
-                    <div>
-                        <p>
-                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Material" aria-expanded="false" aria-controls="Material">
-                                <span class="oi oi-list text-dark"></span>
-                                Material info...
-                            </button>
-                        </p>
-                        <div class="collapse" id="Material">
-                            <div class="form-group mb-3">
-                                
-                            </div>                         
-                        </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Notes</label>
+                        <InputText @bind-Value="Model.Note" class="form-control text-primary fw-bold" />
+                        <ValidationMessage For="@(() => Model.Note)" />
                     </div>
-
-
-
-
-
-                    <div>
-                        <p>
-                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Labour" aria-expanded="false" aria-controls="Labour">
-                                <span class="oi oi-list text-dark"></span>
-                                Labour info...
-                            </button>
-                        </p>
-                        <div class="collapse" id="Labour">
-                            <div class="form-group mb-3">
-                                
-                            </div>                            
-                        </div>
-                    </div>
+                    
 
                     
                     <div class="text-end">

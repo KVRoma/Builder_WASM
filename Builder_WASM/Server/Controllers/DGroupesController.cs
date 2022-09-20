@@ -9,6 +9,7 @@ using Builder_WASM.Server.Data;
 using Builder_WASM.Shared.Entities.Dictionary;
 using Microsoft.AspNetCore.Authorization;
 using Builder_WASM.Server.Services;
+using Builder_WASM.Shared;
 
 namespace Builder_WASM.Server.Controllers
 {
@@ -34,10 +35,21 @@ namespace Builder_WASM.Server.Controllers
             }
             int? companyId = await GetCompanyId();
             var result = await _context.DGroupeRepository.GetAsync(x => x.CompanyId == companyId);
-            if (result == null)
+            
+            return Ok(result);
+        }
+
+        // GET: api/DGroupes/type/1
+        [HttpGet("type/{type}")]
+        public async Task<ActionResult<IEnumerable<DGroupe>>> GetDGroupes(EstimateLineType type)
+        {
+            if (_context.DGroupeRepository == null)
             {
-                return NotFound(new { message = "Item not found" });
+                return NotFound(new { message = "Repository not found" });
             }
+            int? companyId = await GetCompanyId();
+            var result = await _context.DGroupeRepository.GetAsync(x => x.CompanyId == companyId && x.Type == type);
+            
             return Ok(result);
         }
 

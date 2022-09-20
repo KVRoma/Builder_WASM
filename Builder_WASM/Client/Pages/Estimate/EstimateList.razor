@@ -32,6 +32,7 @@ else if (display == "ok")
                             <div>Material: $@item.MaterialTotal.ToString()</div>
                             <div>Labour: $@item.LabourTotal.ToString()</div>
                             <div>Total: $@item.InvoiceGrandTotal.ToString()</div>
+                            <div>Total: $@item.Balance.ToString()</div>
                         </p>
                     </div>
                     <div class="card-footer text-center text-nowrap">
@@ -106,7 +107,7 @@ else if (display == "ok")
 
     void View(Estimate estimate)
     {
-        
+        NavigationManager.NavigateTo("/estimatelinelist/" + estimate.Id);
     }
 
     void Edit(Estimate estimate)

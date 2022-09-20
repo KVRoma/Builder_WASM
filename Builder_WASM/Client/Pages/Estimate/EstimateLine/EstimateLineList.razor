@@ -1,0 +1,30 @@
+﻿@page "/estimatelinelist/{Id:int}"
+
+<h3>Estimate Line List</h3>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    IEnumerable<EstimateLine> lines = new List<EstimateLine>();
+
+    IEnumerable<DGroupe> groupes = new List<DGroupe>();
+    IEnumerable<DItem> items = new List<DItem>();
+    IEnumerable<DDescription> descriptions = new List<DDescription>();
+
+    EstimateLineType type = EstimateLineType.Material;
+
+    protected override async Task OnInitializedAsync()
+    {
+        groupes = (await HttpService.GetAPI<IEnumerable<DGroupe>>("api/DGroupes/type/" + type))?.Response!;
+        var temp = await HttpService.GetAPI<IEnumerable<EstimateLine>>("api/EstimateLines/estimate/" + Id);
+        if (temp.IsSuccessStatusCode)
+        {
+            lines = temp.Response;
+        }
+        else
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Error);
+        }
+    }
+}
