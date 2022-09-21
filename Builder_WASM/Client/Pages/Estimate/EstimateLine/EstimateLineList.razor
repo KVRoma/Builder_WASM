@@ -1,6 +1,15 @@
 ﻿@page "/estimatelinelist/{Id:int}"
 
 <h3>Estimate Line List</h3>
+<div class="row">
+    <div class="col col-3 form-group mb-3">    
+        <Groupe groupes="groupes" OnChangeCallback="SelectGroupe"/>        
+    </div>
+    <div class="col col-3 form-group mb-3">
+        <label class="form-label">@test</label>
+    </div>
+</div>
+
 
 @code {
     [Parameter]
@@ -11,6 +20,9 @@
     IEnumerable<DGroupe> groupes = new List<DGroupe>();
     IEnumerable<DItem> items = new List<DItem>();
     IEnumerable<DDescription> descriptions = new List<DDescription>();
+
+    string test = string.Empty;
+    string userTest = string.Empty;
 
     EstimateLineType type = EstimateLineType.Material;
 
@@ -27,4 +39,10 @@
             toastService.ShowToast(temp.Message, ToastLevel.Error);
         }
     }
+
+    void SelectGroupe(DGroupe groupe)
+    {
+        test = groupe?.NameGroupe ?? string.Empty;
+    }
+    
 }

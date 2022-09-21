@@ -1,0 +1,38 @@
+﻿
+<select @bind="@Id" class="form-control text-primary fw-bold ">
+    <option selected value="0">None</option>
+    @if (groupes != null)
+    {
+        @foreach (var item in groupes)
+        {
+            <option value="@item.Id">@item.NameGroupe</option>
+        }
+    }
+</select>
+
+@code {
+    [Parameter]
+    public IEnumerable<DGroupe>? groupes { get; set; }
+    [Parameter]
+    public EventCallback<DGroupe?> OnChangeCallback { get; set; }
+
+
+    DGroupe? groupeSelect;
+    int id;
+    int Id
+    {
+        get { return id; }
+        set 
+        { 
+            id = value;
+            groupeSelect = groupes?.FirstOrDefault(x=>x.Id == id);
+            OnChange();
+        }
+    }
+
+    void OnChange()
+    {
+        OnChangeCallback.InvokeAsync(groupeSelect);
+    }
+    
+}
