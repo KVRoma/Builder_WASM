@@ -1,12 +1,34 @@
 ﻿@page "/estimatelinelist/{Id:int}"
 
 <h3>Estimate Line List</h3>
-<div class="row">
-    <div class="col col-3 form-group mb-3">    
+
+<div class="row mt-5">
+    <h6>Groupe</h6>
+    <div class="col col-12 col-md-4 form-group mb-3">
         <Groupe groupes="groupes" OnChangeCallback="SelectGroupe"/>        
     </div>
-    <div class="col col-3 form-group mb-3">
-        <label class="form-label">@test</label>
+    <div class="col col-12 col-md-8 form-group mb-3">
+        <input @bind=nameGroup class="form-control" type="text" disabled=@disableGroupe placeholder=@holderGroup></input>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <h6>Item</h6>
+    <div class="col col-12 col-md-4 form-group mb-3">
+        <Groupe groupes="groupes" OnChangeCallback="SelectGroupe" />
+    </div>
+    <div class="col col-12 col-md-8 form-group mb-3">
+        <input @bind=nameGroup class="form-control" type="text" disabled=@disableGroupe placeholder=@holderGroup></input>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <h6>Description</h6>
+    <div class="col col-12 col-md-4 form-group mb-3">
+        <Groupe groupes="groupes" OnChangeCallback="SelectGroupe" />
+    </div>
+    <div class="col col-12 col-md-8 form-group mb-3">
+        <input @bind=nameGroup class="form-control" type="text" disabled=@disableGroupe placeholder=@holderGroup></input>
     </div>
 </div>
 
@@ -21,8 +43,9 @@
     IEnumerable<DItem> items = new List<DItem>();
     IEnumerable<DDescription> descriptions = new List<DDescription>();
 
-    string test = string.Empty;
-    string userTest = string.Empty;
+    string nameGroup = string.Empty;
+    bool disableGroupe { get; set; } = false;
+    string holderGroup { get; set; } = "You can write your answer...";
 
     EstimateLineType type = EstimateLineType.Material;
 
@@ -42,7 +65,9 @@
 
     void SelectGroupe(DGroupe groupe)
     {
-        test = groupe?.NameGroupe ?? string.Empty;
+        nameGroup = groupe?.NameGroupe ?? string.Empty;
+        disableGroupe = (string.IsNullOrEmpty(nameGroup)) ? false : true;
+        holderGroup = (disableGroupe) ? "" : "You can write your answer...";
     }
     
 }

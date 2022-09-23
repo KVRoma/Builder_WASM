@@ -1,0 +1,37 @@
+﻿<select @bind="@Id" class="form-control text-primary fw-bold ">
+    <option selected value="0">None</option>
+    @if (items != null)
+    {
+        @foreach (var item in items)
+        {
+            <option value="@item.Id">@item.NameItem</option>
+        }
+    }
+</select>
+
+@code {
+    [Parameter]
+    public IEnumerable<DItem>? items { get; set; }
+    [Parameter]
+    public EventCallback<DItem?> OnChangeCallback { get; set; }
+
+
+    DItem? itemSelect;
+    int id;
+    int Id
+    {
+        get { return id; }
+        set
+        {
+            id = value;
+            itemSelect = items?.FirstOrDefault(x => x.Id == id);
+            OnChange();
+        }
+    }
+
+    void OnChange()
+    {
+        OnChangeCallback.InvokeAsync(itemSelect);
+    }
+
+}

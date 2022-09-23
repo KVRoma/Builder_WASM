@@ -1,0 +1,37 @@
+﻿<select @bind="@Id" class="form-control text-primary fw-bold ">
+    <option selected value="0">None</option>
+    @if (descriptions != null)
+    {
+        @foreach (var item in descriptions)
+        {
+            <option value="@item.Id">@item.NameDescription</option>
+        }
+    }
+</select>
+
+@code {
+    [Parameter]
+    public IEnumerable<DDescription>? descriptions { get; set; }
+    [Parameter]
+    public EventCallback<DDescription?> OnChangeCallback { get; set; }
+
+
+    DDescription? descriptionSelect;
+    int id;
+    int Id
+    {
+        get { return id; }
+        set
+        {
+            id = value;
+            descriptionSelect = descriptions?.FirstOrDefault(x => x.Id == id);
+            OnChange();
+        }
+    }
+
+    void OnChange()
+    {
+        OnChangeCallback.InvokeAsync(descriptionSelect);
+    }
+
+}
