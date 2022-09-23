@@ -1,36 +1,18 @@
 ﻿@page "/estimatelinelist/{Id:int}"
 
-<h3>Estimate Line List</h3>
+<h3>Estimate Line List  name: @dataGroupe.NameGroupe Id: @dataGroupe.Id </h3>
 
 <div class="row mt-5">
-    <h6>Groupe</h6>
-    <div class="col col-12 col-md-4 form-group mb-3">
-        <Groupe groupes="groupes" OnChangeCallback="SelectGroupe"/>        
-    </div>
-    <div class="col col-12 col-md-8 form-group mb-3">
-        <input @bind=nameGroup class="form-control" type="text" disabled=@disableGroupe placeholder=@holderGroup></input>
-    </div>
+    <Groupe Groupes="groupes" OnChangeCallback="SelectGroupe" placeholder="You can write your answer..." />    
+</div>
+<div class="row mt-5">
+    <Item Items="items" OnChangeCallback="SelectItem" placeholder="You can write your answer..." />
+</div>
+<div class="row mt-5">
+    <Description Descriptions="descriptions" OnChangeCallback="SelectDescription" placeholder="You can write your answer..." />
 </div>
 
-<div class="row mt-5">
-    <h6>Item</h6>
-    <div class="col col-12 col-md-4 form-group mb-3">
-        <Groupe groupes="groupes" OnChangeCallback="SelectGroupe" />
-    </div>
-    <div class="col col-12 col-md-8 form-group mb-3">
-        <input @bind=nameGroup class="form-control" type="text" disabled=@disableGroupe placeholder=@holderGroup></input>
-    </div>
-</div>
 
-<div class="row mt-5">
-    <h6>Description</h6>
-    <div class="col col-12 col-md-4 form-group mb-3">
-        <Groupe groupes="groupes" OnChangeCallback="SelectGroupe" />
-    </div>
-    <div class="col col-12 col-md-8 form-group mb-3">
-        <input @bind=nameGroup class="form-control" type="text" disabled=@disableGroupe placeholder=@holderGroup></input>
-    </div>
-</div>
 
 
 @code {
@@ -43,9 +25,9 @@
     IEnumerable<DItem> items = new List<DItem>();
     IEnumerable<DDescription> descriptions = new List<DDescription>();
 
-    string nameGroup = string.Empty;
-    bool disableGroupe { get; set; } = false;
-    string holderGroup { get; set; } = "You can write your answer...";
+    DGroupe dataGroupe = new DGroupe();
+    DItem dataItem = new DItem();
+    DDescription dataDescription = new DDescription();
 
     EstimateLineType type = EstimateLineType.Material;
 
@@ -63,11 +45,21 @@
         }
     }
 
-    void SelectGroupe(DGroupe groupe)
+    async Task SelectGroupe(DGroupe data)
     {
-        nameGroup = groupe?.NameGroupe ?? string.Empty;
-        disableGroupe = (string.IsNullOrEmpty(nameGroup)) ? false : true;
-        holderGroup = (disableGroupe) ? "" : "You can write your answer...";
+        dataGroupe = data;        
+        items = (await HttpService.GetAPI<IEnumerable<DItem>>("api/DItems/groupe/" + data.Id))?.Response!;        
     }
-    
+
+    async Task SelectItem(DItem data)
+    {
+        dataItem = data;
+        descriptions = (await HttpService.GetAPI<IEnumerable<DDescription>>("api/DDescriptions/item/" + data.Id))?.Response!;
+    }
+
+    void SelectDescription(DDescription data)
+    {
+        dataDescription = data;
+    }
+
 }

@@ -1,23 +1,45 @@
 ﻿
-<select @bind="@Id" class="form-control text-primary fw-bold ">
-    <option selected value="0">None</option>
-    @if (groupes != null)
-    {
-        @foreach (var item in groupes)
-        {
-            <option value="@item.Id">@item.NameGroupe</option>
-        }
-    }
-</select>
+<div class="card card-header bg-light">
+    <h6 class="fw-bold">
+        Group
+    </h6>
+    <div class="card-body">
+        <div class="row">        
+            <div class="col col-12 col-md-4 form-group mb-2">
+                <select @bind="@Id" class="form-control text-primary fw-bold ">
+                    <option selected value="0">None</option>
+                    @if (Groupes != null)
+                    {
+                        @foreach (var item in Groupes)
+                        {
+                            <option value="@item.Id">@item.NameGroupe</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col col-12 col-md-8 form-group">
+                <input @bind=Name @onfocusout=OnChange class="form-control" type="text" disabled=@disabledInput placeholder=@isHolder></input>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 @code {
     [Parameter]
-    public IEnumerable<DGroupe>? groupes { get; set; }
+    public IEnumerable<DGroupe>? Groupes { get; set; }
     [Parameter]
-    public EventCallback<DGroupe?> OnChangeCallback { get; set; }
+    public EventCallback<DGroupe> OnChangeCallback { get; set; }
+    [Parameter]
+    public string placeholder { get; set; } = string.Empty;
 
+    string Name { get; set; } = string.Empty;
+    bool disabledInput;
+    string isHolder = string.Empty;
+    DGroupe data = new DGroupe();
 
-    DGroupe? groupeSelect;
     int id;
     int Id
     {
@@ -25,14 +47,27 @@
         set 
         { 
             id = value;
-            groupeSelect = groupes?.FirstOrDefault(x=>x.Id == id);
+            disabledInput = (Id == 0) ? false : true;
+            isHolder = (disabledInput) ? string.Empty : placeholder;
+            Name = Groupes?.FirstOrDefault(x=>x.Id == id)?.NameGroupe ?? string.Empty;
             OnChange();
         }
     }
-
-    void OnChange()
+    protected override void OnParametersSet()
     {
-        OnChangeCallback.InvokeAsync(groupeSelect);
+        isHolder = placeholder;        
+    }
+    void OnChange()
+    {        
+        if (Id == 0)
+        {
+            data = new DGroupe() { NameGroupe = Name };
+        }
+        else
+        {
+          data = Groupes?.FirstOrDefault(x => x.Id == Id)!;
+        }
+        OnChangeCallback.InvokeAsync(data);
     }
     
 }

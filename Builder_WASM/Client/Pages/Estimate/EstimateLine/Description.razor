@@ -1,22 +1,56 @@
-﻿<select @bind="@Id" class="form-control text-primary fw-bold ">
-    <option selected value="0">None</option>
-    @if (descriptions != null)
-    {
-        @foreach (var item in descriptions)
-        {
-            <option value="@item.Id">@item.NameDescription</option>
-        }
-    }
-</select>
+﻿<div class="card card-header bg-light">
+    <h6 class="fw-bold">
+        Description
+    </h6>
+    <div class="card-body">
+        <div class="row">
+            <div class="col col-12 col-md-4 form-group mb-2">
+                <select @bind="@Id" class="form-control text-primary fw-bold ">
+                    <option selected value="0">None</option>
+                    @if (Descriptions != null)
+                    {
+                        @foreach (var item in Descriptions)
+                        {
+                            <option value="@item.Id">@item.NameDescription</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col col-12 col-md-8 form-group">
+                <input @bind=Name @onfocusout=OnChange class="form-control" type="text" disabled=@disabledInput placeholder=@isHolder></input>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 @code {
+    IEnumerable<DDescription>? descriptions;
     [Parameter]
-    public IEnumerable<DDescription>? descriptions { get; set; }
+    public IEnumerable<DDescription>? Descriptions 
+    {
+        get { return descriptions; }
+        set 
+        {
+            if (descriptions != value)
+            {
+                descriptions = value;
+                Id = 0;
+            }
+        }
+    }
     [Parameter]
-    public EventCallback<DDescription?> OnChangeCallback { get; set; }
+    public EventCallback<DDescription> OnChangeCallback { get; set; }
+    [Parameter]
+    public string placeholder { get; set; } = string.Empty;
 
+    string Name { get; set; } = string.Empty;
+    bool disabledInput;
+    string isHolder = string.Empty;
+    DDescription data = new DDescription();
 
-    DDescription? descriptionSelect;
     int id;
     int Id
     {
@@ -24,14 +58,28 @@
         set
         {
             id = value;
-            descriptionSelect = descriptions?.FirstOrDefault(x => x.Id == id);
+            disabledInput = (Id == 0) ? false : true;
+            isHolder = (disabledInput) ? string.Empty : placeholder;
+            Name = Descriptions?.FirstOrDefault(x => x.Id == id)?.NameDescription ?? string.Empty;
             OnChange();
         }
+    }
+    protected override void OnParametersSet()
+    {
+        isHolder = placeholder;
     }
 
     void OnChange()
     {
-        OnChangeCallback.InvokeAsync(descriptionSelect);
+        if (Id == 0)
+        {
+            data = new DDescription() { NameDescription = Name };
+        }
+        else
+        {
+            data = Descriptions?.FirstOrDefault(x => x.Id == Id)!;
+        }
+        OnChangeCallback.InvokeAsync(data);
     }
 
 }
