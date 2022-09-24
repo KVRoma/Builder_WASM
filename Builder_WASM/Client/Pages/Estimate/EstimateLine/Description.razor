@@ -16,8 +16,13 @@
                     }
                 </select>
             </div>
-            <div class="col col-12 col-md-8 form-group">
-                <input @bind=Name @onfocusout=OnChange class="form-control" type="text" disabled=@disabledInput placeholder=@isHolder></input>
+
+            <div class="col col-12 col-md-6 form-group mb-2">
+                <input @bind=Name @onfocusout=OnChange class="form-control" type="text" disabled=@disabledInput placeholder=@isHolder></input>                
+            </div>
+
+            <div class="col col-12 col-md-2 form-group ">
+                <input @bind=Rate @onfocusout=OnChange class="form-control" type="number" disabled=@disabledInput></input>
             </div>
         </div>
     </div>
@@ -47,6 +52,8 @@
     public string placeholder { get; set; } = string.Empty;
 
     string Name { get; set; } = string.Empty;
+    decimal Rate { get; set; } = 0m;
+    
     bool disabledInput;
     string isHolder = string.Empty;
     DDescription data = new DDescription();
@@ -61,6 +68,7 @@
             disabledInput = (Id == 0) ? false : true;
             isHolder = (disabledInput) ? string.Empty : placeholder;
             Name = Descriptions?.FirstOrDefault(x => x.Id == id)?.NameDescription ?? string.Empty;
+            Rate = Descriptions?.FirstOrDefault(x => x.Id == id)?.RateDescription ?? 0m;
             OnChange();
         }
     }
@@ -73,7 +81,7 @@
     {
         if (Id == 0)
         {
-            data = new DDescription() { NameDescription = Name };
+            data = new DDescription() { NameDescription = Name, RateDescription = Rate };
         }
         else
         {
