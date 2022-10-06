@@ -22,7 +22,7 @@
             </div>
 
             <div class="col col-12 col-md-2 form-group ">
-                <input @bind=Rate @onfocusout=OnChange class="form-control" type="number" disabled=@disabledInput></input>
+                <input @bind=Rate @onfocusout=OnChange class="form-control" type="number" disabled=@disabledInput></input>                
             </div>
         </div>
     </div>
@@ -54,6 +54,7 @@
     string Name { get; set; } = string.Empty;
     decimal Rate { get; set; } = 0m;
     
+
     bool disabledInput;
     string isHolder = string.Empty;
     DDescription data = new DDescription();

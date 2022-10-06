@@ -131,6 +131,7 @@ else
     DItem dataItem = new DItem();
     DDescription dataDescription = new DDescription();
 
+
     EstimateLineType type;
 
     bool isVisible = false;
@@ -159,6 +160,7 @@ else
         newLine.Item = dataItem.NameItem;
         newLine.Description = dataDescription.NameDescription;
         newLine.Rate = dataDescription.RateDescription;
+
         var temp = await HttpService.PostAPI<EstimateLine>("api/EstimateLines", newLine);
         if (temp.IsSuccessStatusCode)
         {
@@ -213,16 +215,18 @@ else
 
     void SelectDescription(DDescription data)
     {
-        dataDescription = data;
+        dataDescription = data;       
     }
 
     async Task AddMaterial()
     {
         type = EstimateLineType.Material;
+        items = null!;
+        descriptions = null!;
         var temp = await HttpService.GetAPI<IEnumerable<DGroupe>>("api/DGroupes/type/" + type);
         if (temp.IsSuccessStatusCode)
         {
-            groupes = temp.Response;
+            groupes = temp.Response;            
             isVisible = true;
         }
         else
@@ -233,6 +237,8 @@ else
     async Task AddLabour()
     {
         type = EstimateLineType.Labour;
+        items = null!;
+        descriptions = null!;
         var temp = await HttpService.GetAPI<IEnumerable<DGroupe>>("api/DGroupes/type/" + type);
         if (temp.IsSuccessStatusCode)
         {
