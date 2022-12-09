@@ -49,9 +49,13 @@
             id = value;
             disabledInput = (Id == 0) ? false : true;
             isHolder = (disabledInput) ? string.Empty : placeholder;
-            Name = Groupes?.FirstOrDefault(x=>x.Id == id)?.NameGroupe ?? string.Empty;
+            Name = Groupes?.FirstOrDefault(x=>x.Id == id)?.NameGroupe ?? "";
             OnChange();
         }
+    }
+    protected override void OnInitialized()
+    {
+        Id = 0;
     }
     protected override void OnParametersSet()
     {

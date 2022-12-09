@@ -64,9 +64,15 @@
             OnChange();
         }
     }
+
+    protected override void OnInitialized()
+    {
+        Id = 0;
+    }
+
     protected override void OnParametersSet()
     {
-        isHolder = placeholder;
+        isHolder = placeholder;        
     }
 
     void OnChange()

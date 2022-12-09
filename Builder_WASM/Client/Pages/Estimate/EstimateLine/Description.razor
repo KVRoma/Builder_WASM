@@ -4,7 +4,7 @@
     </h6>
     <div class="card-body">
         <div class="row">
-            <div class="col col-12 col-md-4 form-group mb-2">
+            <div class="col col-12 col-md-3 form-group mb-2">
                 <select @bind="@Id" class="form-control text-primary fw-bold ">
                     <option selected value="0">None</option>
                     @if (Descriptions != null)
@@ -17,12 +17,22 @@
                 </select>
             </div>
 
-            <div class="col col-12 col-md-6 form-group mb-2">
+            <div class="col col-12 col-md-5 form-group mb-2">
                 <input @bind=Name @onfocusout=OnChange class="form-control" type="text" disabled=@disabledInput placeholder=@isHolder></input>                
             </div>
 
-            <div class="col col-12 col-md-2 form-group ">
-                <input @bind=Rate @onfocusout=OnChange class="form-control" type="number" disabled=@disabledInput></input>                
+            <div class="col col-12 col-md-2 form-group mb-2">                
+                    <div class="input-group flex-nowrap">                        
+                        <span class="input-group-text w-50">Rate</span>
+                        <input @bind=Rate @onfocusout=OnChange class="form-control" aria-label="Rate" type="number" disabled=@disabledInput></input>
+                    </div>
+            </div>
+
+            <div class="col col-12 col-md-2 form-group ">               
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text w-50">Count</span>
+                    <input @bind=Count @onfocusout=OnChange class="form-control" aria-label="Count" type="number" ></input>
+                </div>
             </div>
         </div>
     </div>
@@ -47,13 +57,14 @@
         }
     }
     [Parameter]
-    public EventCallback<DDescription> OnChangeCallback { get; set; }
+    public EventCallback<(DDescription, decimal)> OnChangeCallback { get; set; }
     [Parameter]
     public string placeholder { get; set; } = string.Empty;
 
     string Name { get; set; } = string.Empty;
     decimal Rate { get; set; } = 0m;
-    
+    decimal Count { get; set; } = 0m;
+
 
     bool disabledInput;
     string isHolder = string.Empty;
@@ -73,9 +84,16 @@
             OnChange();
         }
     }
+
+    protected override void OnInitialized()
+    {
+        Id = 0;
+        Count = 0m;
+    }
+
     protected override void OnParametersSet()
     {
-        isHolder = placeholder;
+        isHolder = placeholder;                
     }
 
     void OnChange()
@@ -88,7 +106,7 @@
         {
             data = Descriptions?.FirstOrDefault(x => x.Id == Id)!;
         }
-        OnChangeCallback.InvokeAsync(data);
+        OnChangeCallback.InvokeAsync((data, Count));
     }
 
 }

@@ -1,21 +1,27 @@
 ﻿@page "/estimatelinelist/{Id:int}"
 
 <h3 class="mb-5">Estimate line</h3>
-<div class="h5 mb-1 fw-bold">   
-    <button class="btn btn-success btn-circle" type="button" @onclick=@AddMaterial>
-        <span class="oi oi-plus"></span>
-    </button>
-    Material
-</div>
 
-<div class="h5 mb-5 fw-bold">    
-    <button class="btn btn-success btn-circle" type="button" @onclick=@AddLabour>
-        <span class="oi oi-plus"></span>
-    </button>
-    Labour
-</div>
+@if (isVisible != null)
+{
+    <div class="h5 mb-1 fw-bold">   
+        <button class="btn btn-success btn-circle" type="button" @onclick=@AddMaterial>
+            <span class="oi oi-plus"></span>
+        </button>
+        Material
+    </div>
 
-@if (isVisible)
+    <div class="h5 mb-5 fw-bold">    
+        <button class="btn btn-success btn-circle" type="button" @onclick=@AddLabour>
+            <span class="oi oi-plus"></span>
+        </button>
+        Labour
+    </div>
+}
+
+
+
+@if (isVisible == true)
 {
     <div class="row">
         <Groupe Groupes="groupes" OnChangeCallback="SelectGroupe" placeholder="You can write your answer..." />    
@@ -34,85 +40,128 @@
             <button class="btn btn-danger btn-circle" type="button" @onclick=Cancel>
                 <span class="oi oi-x"></span>
             </button>
-        </div>
-        
+        </div>        
+    </div>
+}
+else if (isVisible == false)
+{
+    <div class="table-responsive-md">
+        <table class="table caption-top mb-5">
+            <caption class="text-danger fw-bold">List of Material</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Groupe</th>
+                    <th scope="col">Item</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Count</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">Price</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in linesMaterial!)
+                {
+                    <tr>
+                        <td class="col-2">@item.Groupe</td>
+                        <td class="col-2">@item.Item</td>
+                        <td class="col-3">@item.Description</td>
+                        <td class="col-1">@item.Count</td>
+                        <td class="col-1">@item.Rate</td>
+                        <td class="col-1">@item.Price</td>
+                        <td class="col-2">
+                            <button class="btn btn-warning btn-circle m-1" type="button" @onclick=@(()=> Edit(item))>
+                                <span class="oi oi-pencil"></span>
+                            </button>
+                            <button class="btn btn-danger btn-circle m-1" type="button" @onclick=@(()=> Delete(item.Id))>
+                                <span class="oi oi-trash"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-responsive-md">
+        <table class="table caption-top">
+            <caption class="text-danger fw-bold">List of Labour</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Groupe</th>
+                    <th scope="col">Item</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Count</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">Price</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in linesLabour!)
+                {
+                    <tr>
+                        <td class="col-2">@item.Groupe</td>
+                        <td class="col-2">@item.Item</td>
+                        <td class="col-3">@item.Description</td>
+                        <td class="col-1">@item.Count</td>
+                        <td class="col-1">@item.Rate</td>
+                        <td class="col-1">@item.Price</td>
+                        <td class="col-2">
+                            <button class="btn btn-warning btn-circle m-1" type="button" @onclick=@(()=> Edit(item))>
+                                <span class="oi oi-pencil"></span>
+                            </button>
+                            <button class="btn btn-danger btn-circle m-1" type="button" @onclick=@(()=> Delete(item.Id))>
+                                <span class="oi oi-trash"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 }
 else
 {
-    <table class="table caption-top mb-5">
-        <caption class="text-danger fw-bold">List of Material</caption>
-        <thead>
-            <tr>
-                <th scope="col">Groupe</th>
-                <th scope="col">Item</th>
-                <th scope="col">Description</th>
-                <th scope="col">Count</th>
-                <th scope="col">Rate</th>
-                <th scope="col">Price</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in linesMaterial!)
-            {
+    <div class="row">
+        <div class="card card-header bg-light">
+            <h6 class="fw-bold">
+                Edit Line
+            </h6>
+            <div class="card-body">
+                <div class="row">                    
 
-                <tr>
-                    <td class="col-2">@item.Groupe</td>
-                    <td class="col-2">@item.Item</td>
-                    <td class="col-3">@item.Description</td>
-                    <td class="col-1">@item.Count</td>
-                    <td class="col-1">@item.Rate</td>
-                    <td class="col-1">@item.Price</td>
-                    <td class="col-2">
-                        <button class="btn btn-warning btn-circle m-1" type="button" @onclick=@(()=> Edit(item))>
-                            <span class="oi oi-pencil"></span>
-                        </button>
-                        <button class="btn btn-danger btn-circle m-1" type="button" @onclick=@(()=> Delete(item.Id))>
-                            <span class="oi oi-trash"></span>
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    <div class="col col-12 col-md-5 form-group mb-2">
+                        <input @bind=nameEdit  class="form-control" type="text"></input>
+                    </div>
 
-    <table class="table caption-top">
-        <caption class="text-danger fw-bold">List of Labour</caption>
-        <thead>
-            <tr>
-                <th scope="col">Groupe</th>
-                <th scope="col">Item</th>
-                <th scope="col">Description</th>
-                <th scope="col">Count</th>
-                <th scope="col">Rate</th>
-                <th scope="col">Price</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in linesLabour!)
-            {
+                    <div class="col col-12 col-md-2 form-group mb-2">
+                        <div class="input-group flex-nowrap">
+                            <span class="input-group-text w-50">Rate</span>
+                            <input @bind=rateEdit  class="form-control" aria-label="Rate" type="number" ></input>
+                        </div>
+                    </div>
 
-                <tr>
-                    <td class="col-2">@item.Groupe</td>
-                    <td class="col-2">@item.Item</td>
-                    <td class="col-3">@item.Description</td>
-                    <td class="col-1">@item.Count</td>
-                    <td class="col-1">@item.Rate</td>
-                    <td class="col-1">@item.Price</td>
-                    <td class="col-2">
-                        <button class="btn btn-warning btn-circle m-1" type="button" @onclick=@(()=> Edit(item))>
-                            <span class="oi oi-pencil"></span>
-                        </button>
-                        <button class="btn btn-danger btn-circle m-1" type="button" @onclick=@(()=> Delete(item.Id))>
-                            <span class="oi oi-trash"></span>
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    <div class="col col-12 col-md-2 form-group ">
+                        <div class="input-group flex-nowrap">
+                            <span class="input-group-text w-50">Count</span>
+                            <input @bind=countEdit  class="form-control" aria-label="Count" type="number"></input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-1 mb-5">
+        <div class="col form-control">
+            <button class="btn btn-success btn-circle" type="button" @onclick=SaveEdit>
+                <span class="oi oi-check"></span>
+            </button>
+            <button class="btn btn-danger btn-circle" type="button" @onclick=CancelEdit>
+                <span class="oi oi-x"></span>
+            </button>
+        </div>
+    </div>
 }
 
 
@@ -131,52 +180,29 @@ else
     DItem dataItem = new DItem();
     DDescription dataDescription = new DDescription();
 
-
     EstimateLineType type;
 
-    bool isVisible = false;
+    bool? isVisible = false;
+    decimal Count = 0m;
+
+    string nameEdit = string.Empty;
+    decimal rateEdit = 0m;
+    decimal countEdit = 0m;
+    EstimateLine estimateLineEdit = new EstimateLine();
 
     protected override async Task OnInitializedAsync()
-    {        
+    {
+        Count = 0m;
         var temp = await HttpService.GetAPI<IEnumerable<EstimateLine>>("api/EstimateLines/estimate/" + Id);
         if (temp.IsSuccessStatusCode)
         {
-            linesMaterial = temp.Response.Where(x=>x.Type == EstimateLineType.Material);
+            linesMaterial = temp.Response.Where(x => x.Type == EstimateLineType.Material);
             linesLabour = temp.Response.Where(x => x.Type == EstimateLineType.Labour);
         }
         else
         {
             toastService.ShowToast(temp.Message, ToastLevel.Error);
         }
-    }
-
-    async Task Added()
-    {
-        isVisible = false;
-        EstimateLine newLine = new EstimateLine();
-        newLine.EstimateId = Id;
-        newLine.Type = type;
-        newLine.Groupe = dataGroupe.NameGroupe;
-        newLine.Item = dataItem.NameItem;
-        newLine.Description = dataDescription.NameDescription;
-        newLine.Rate = dataDescription.RateDescription;
-
-        var temp = await HttpService.PostAPI<EstimateLine>("api/EstimateLines", newLine);
-        if (temp.IsSuccessStatusCode)
-        {
-            toastService.ShowToast(temp.Response.Description + " created!", ToastLevel.Success);
-        }
-        else
-        {
-            toastService.ShowToast(temp.Message, ToastLevel.Error);
-        }
-
-        await OnInitializedAsync();
-    }
-
-    void Cancel()
-    { 
-        isVisible = false;
     }
 
     async Task SelectGroupe(DGroupe data)
@@ -195,7 +221,6 @@ else
             }
         }
     }
-
     async Task SelectItem(DItem data)
     {
         if (dataItem != data)
@@ -212,10 +237,10 @@ else
             }
         }
     }
-
-    void SelectDescription(DDescription data)
+    void SelectDescription((DDescription, decimal) data)
     {
-        dataDescription = data;       
+        dataDescription = data.Item1;
+        Count = data.Item2;
     }
 
     async Task AddMaterial()
@@ -226,13 +251,13 @@ else
         var temp = await HttpService.GetAPI<IEnumerable<DGroupe>>("api/DGroupes/type/" + type);
         if (temp.IsSuccessStatusCode)
         {
-            groupes = temp.Response;            
+            groupes = temp.Response;
             isVisible = true;
         }
         else
         {
             toastService.ShowToast(temp.Message, ToastLevel.Error);
-        }        
+        }
     }
     async Task AddLabour()
     {
@@ -248,11 +273,49 @@ else
         else
         {
             toastService.ShowToast(temp.Message, ToastLevel.Error);
-        }        
+        }
     }
 
+    async Task Added()
+    {
+        isVisible = false;
+        EstimateLine newLine = new EstimateLine();
+        newLine.EstimateId = Id;
+        newLine.Type = type;
+        newLine.Groupe = dataGroupe.NameGroupe;
+        newLine.Item = dataItem.NameItem;
+        newLine.Description = dataDescription.NameDescription;
+        newLine.Rate = dataDescription.RateDescription;
+        newLine.Count = Count;
+
+        var temp = await HttpService.PostAPI<EstimateLine>("api/EstimateLines", newLine);
+        if (temp.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(temp.Response.Description + " created!", ToastLevel.Success);
+        }
+        else
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Error);
+        }
+
+        await OnInitializedAsync();
+    }
+    void Cancel()
+    {
+        isVisible = false;
+    }
+
+
+
+
     void Edit(EstimateLine line)
-    { 
+    {
+        nameEdit = line.Description;
+        rateEdit = line.Rate;
+        countEdit = line.Count;
+        estimateLineEdit = line;
+
+        isVisible = null;
     }
 
     async Task Delete(int id)
@@ -267,6 +330,35 @@ else
         {
             toastService.ShowToast(temp.Message, ToastLevel.Error);
         }
+    }
+
+    async Task SaveEdit()
+    {
+        isVisible = false;
+        if (estimateLineEdit.Description != nameEdit ||
+            estimateLineEdit.Rate != rateEdit ||
+            estimateLineEdit.Count != countEdit)
+        {
+            estimateLineEdit.Description = nameEdit;
+            estimateLineEdit.Rate = rateEdit;
+            estimateLineEdit.Count = countEdit;
+
+            var temp = await HttpService.PutAPI<EstimateLine>("api/EstimateLines/" + estimateLineEdit.Id, estimateLineEdit);
+            if (temp.IsSuccessStatusCode)
+            {
+                toastService.ShowToast(temp.Response.Description + " created!", ToastLevel.Success);
+            }
+            else
+            {
+                toastService.ShowToast(temp.Message, ToastLevel.Error);
+            }
+
+            await OnInitializedAsync();
+        }
+    }
+    void CancelEdit()
+    {
+        isVisible = false;
     }
 
 }
