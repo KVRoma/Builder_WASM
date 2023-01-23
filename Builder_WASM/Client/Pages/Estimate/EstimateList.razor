@@ -26,14 +26,16 @@ else if (display == "ok")
             <div class="col">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">@item.NumberEstimate - @item.ClientJob?.PrimaryFullName</h5>
+                        <h5 class="card-title fw-bold">@item.NumberEstimate - @item.ClientJob?.PrimaryFullName</h5>
                         <p class="card-text">
-                            <div>Date: @item.DateEstimate.ToShortDateString()</div>
-                            <div>Material: $@item.MaterialTotal.ToString()</div>
-                            <div>Labour: $@item.LabourTotal.ToString()</div>
-                            <div>Total: $@item.InvoiceGrandTotal.ToString()</div>
-                            <div>Total: $@item.Balance.ToString()</div>
+                            <div>Date: @item.DateEstimate.ToShortDateString()</div>                        
+                            <div>Material Total: $@item.MaterialTotal.ToString()</div>                      
+                            <div>Labour Total: $@item.LabourTotal.ToString()</div>
+                        
+                            <div class="mt-2 fw-bold">Total: $@item.InvoiceGrandTotal.ToString()</div>
+                            <div>Balance: $@item.Balance.ToString()</div>
                         </p>
+                        
                     </div>
                     <div class="card-footer text-center text-nowrap">
                         <button class="btn btn-primary btn-circle" type="button" @onclick=@(()=> View(item))>
@@ -45,6 +47,19 @@ else if (display == "ok")
                         <button class="btn btn-danger btn-circle" type="button" @onclick=@(()=> Delete(item))>
                             <span class="oi oi-trash"></span>
                         </button>
+
+
+                        <div class="mt-2">
+                        <button class="btn btn-success btn-circle" type="button" >
+                            <span class="oi oi-dollar"></span>
+                        </button>
+                            <button class="btn btn-outline-primary btn-circle" type="button">
+                                <span class="oi oi-copywriting"></span>
+                            </button>
+                        <button class="btn btn-primary btn-circle" type="button">
+                            <span class="oi oi-cloud-download"></span>
+                        </button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -9,6 +9,7 @@ using Builder_WASM.Server.Data;
 using Builder_WASM.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Builder_WASM.Server.Services;
+using Builder_WASM.Client.Pages.Estimate;
 
 namespace Builder_WASM.Server.Controllers
 {
@@ -66,11 +67,12 @@ namespace Builder_WASM.Server.Controllers
                 return BadRequest(new { message = "Item not found" });
             }
 
-            _context.EstimateLineRepository.Update(estimateLine);
+            _context.EstimateLineRepository.Update(estimateLine);            
 
             try
             {
                 await _context.SaveAsync();
+                await EstimateCalculate(estimateLine.EstimateId);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -96,8 +98,9 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound(new { message = "Repository not found" });
             }
-            _context.EstimateLineRepository.Insert(estimateLine);
+            _context.EstimateLineRepository.Insert(estimateLine);                        
             await _context.SaveAsync();
+            await EstimateCalculate(estimateLine.EstimateId);
 
             return CreatedAtAction(nameof(GetEstimateLine), new { id = estimateLine.Id }, estimateLine);
         }
@@ -118,6 +121,7 @@ namespace Builder_WASM.Server.Controllers
 
             _context.EstimateLineRepository.Delete(estimateLine);
             await _context.SaveAsync();
+            await EstimateCalculate(estimateLine.EstimateId);
 
             return Ok(new { message = "Your action is successful" });
         }
@@ -128,6 +132,15 @@ namespace Builder_WASM.Server.Controllers
         private bool EstimateLineExists(int id)
         {
             return _context.EstimateLineRepository.Exist(id);
+        }
+
+        private async Task EstimateCalculate(int id)
+        {            
+            var estimate = (await _context.EstimateRepository.GetAsync(x => x.Id == id, includeProperties: "EstimateLines")).FirstOrDefault();
+            estimate!.MaterialSubtotal = estimate!.EstimateLines.Where(x=>x.Type == Shared.EstimateLineType.Material )?.Select(x=>x.Price)?.Sum() ?? 0m;
+            estimate!.LabourSubtotal = estimate!.EstimateLines.Where(x => x.Type == Shared.EstimateLineType.Labour)?.Select(x => x.Price)?.Sum() ?? 0m;
+            _context.EstimateRepository.Update(estimate);
+            await _context.SaveAsync();                        
         }
 
         
