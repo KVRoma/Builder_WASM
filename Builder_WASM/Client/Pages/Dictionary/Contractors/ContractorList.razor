@@ -1,0 +1,165 @@
+﻿@page "/contractorlist"
+
+<div class="h3 mb-1 fw-bold">
+    Conractors
+    <button class="btn btn-success btn-circle-xl" type="button" @onclick=@Add>
+        <span class="oi oi-plus"></span>
+    </button>
+</div>
+
+<div class="h6 mb-5 fst-italic">(Count: @contractors?.Count())</div>
+
+@if (isVisible)
+{
+    <div class="card-body">
+        <EditForm Model=@Model OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="form-group mb-3">
+                <InputText @bind-Value="Model.Name" class="form-control text-primary fw-bold" placeholder="Name" />
+                <ValidationMessage For="@(() => Model.Name)" />
+            </div>
+
+            <div class="form-group mb-3">
+                <InputText @bind-Value="Model.Phone" class="form-control text-primary fw-bold" placeholder="Phone" />
+                <ValidationMessage For="@(() => Model.Phone)" />
+            </div>
+
+            <div class="form-group mb-3">
+                <InputText @bind-Value="Model.Specialty" class="form-control text-primary fw-bold" placeholder="Specialty" />
+                <ValidationMessage For="@(() => Model.Specialty)" />
+            </div>
+
+            <div class="text-end">
+                <button class="btn btn-success text-nowrap" style="width:150px">
+                    <span class="oi oi-circle-check"></span>
+                    Ok
+                </button>
+                <button class="btn btn-primary text-nowrap" style="width:150px" @onclick=Cancel>
+                    <span class="oi oi-circle-x"></span>
+                    Cancel
+                </button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Specialty</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in contractors!)
+        {
+
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Phone</td>
+                <td>@item.Specialty</td>
+                <td>
+                    <button class="btn btn-warning btn-circle m-1" type="button" @onclick=@(()=> Edit(item))>
+                        <span class="oi oi-pencil"></span>
+                    </button>
+                    <button class="btn btn-danger btn-circle m-1" type="button" @onclick=@(()=> Delete(item.Id))>
+                        <span class="oi oi-trash"></span>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+
+    IEnumerable<DContractor> contractors = new List<DContractor>();
+    bool isVisible;
+    DContractor Model = new DContractor();
+
+    protected override async Task OnInitializedAsync()
+    {
+        isVisible = false;
+
+        var temp = await HttpService.GetAPI<IEnumerable<DContractor>>("api/DContractors");
+        if (temp.IsSuccessStatusCode)
+        {
+            contractors = temp.Response;
+        }
+        else
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Error);
+        }
+    }
+
+    private void Add()
+    {
+        isVisible = true;
+        Model = new DContractor();
+    }
+
+    private void Edit(DContractor item)
+    {
+        isVisible = true;
+        Model = item;
+    }
+
+    private async Task Delete(int id)
+    {
+        var temp = await HttpService.DeleteAPI<ResponseMessage>("api/DContractors/" + id);
+
+        if (temp.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(temp.Response.Message, ToastLevel.Success);
+            await OnInitializedAsync();
+        }
+        else
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Error);
+        }
+    }
+
+    private void Cancel()
+    {
+        isVisible = false;
+        Model = new DContractor();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (Model.Id == 0)
+        {
+            var temp = await HttpService.PostAPI<DContractor>("api/DContractors/", Model);
+
+            if (temp.IsSuccessStatusCode)
+            {
+                toastService.ShowToast(temp.Response.Name + " created!", ToastLevel.Success);
+            }
+            else
+            {
+                toastService.ShowToast(temp.Message, ToastLevel.Error);
+            }
+        }
+        else
+        {
+            var temp = await HttpService.PutAPI<ResponseMessage>("api/DContractors/" + Model.Id, Model);
+
+            if (temp.IsSuccessStatusCode)
+            {
+                toastService.ShowToast(temp.Response.Message, ToastLevel.Success);
+            }
+            else
+            {
+                toastService.ShowToast(temp.Message, ToastLevel.Error);
+            }
+        }
+
+        await OnInitializedAsync();
+    }
+
+
+}

@@ -4,6 +4,7 @@
     {
         MaterialAndLobour,
         Contractors,
-        Suppliers        
+        Suppliers,
+        MethodPayment
     }
 }

@@ -1,0 +1,159 @@
+﻿@page "/methodpaymentlist"
+
+<div class="h3 mb-1 fw-bold">
+    Methods payment
+    <button class="btn btn-success btn-circle-xl" type="button" @onclick=@Add>
+        <span class="oi oi-plus"></span>
+    </button>
+</div>
+
+<div class="h6 mb-5 fst-italic">(Count: @methods?.Count())</div>
+
+@if (isVisible)
+{
+    <div class="card-body">
+        <EditForm Model=@Model OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="form-group mb-3">
+                <InputText @bind-Value="Model.NameMethod" class="form-control text-primary fw-bold" placeholder="Name" />
+                <ValidationMessage For="@(() => Model.NameMethod)" />
+            </div>
+
+            <div class="form-group mb-3">
+                <InputNumber @bind-Value="Model.PercentMethod" class="form-control text-primary fw-bold" placeholder="Percent" />
+                <ValidationMessage For="@(() => Model.PercentMethod)" />
+            </div>
+
+            <div class="text-end">
+                <button class="btn btn-success text-nowrap" style="width:150px">
+                    <span class="oi oi-circle-check"></span>
+                    Ok
+                </button>
+                <button class="btn btn-primary text-nowrap" style="width:150px" @onclick=Cancel>
+                    <span class="oi oi-circle-x"></span>
+                    Cancel
+                </button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name method</th>
+            <th scope="col">Percent</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in methods!)
+        {
+
+            <tr>
+                <td>@item.NameMethod</td>
+                <td>@item.PercentMethod</td>
+                <td>
+                    <button class="btn btn-warning btn-circle m-1" type="button" @onclick=@(()=> Edit(item))>
+                        <span class="oi oi-pencil"></span>
+                    </button>
+                    <button class="btn btn-danger btn-circle m-1" type="button" @onclick=@(()=> Delete(item.Id))>
+                        <span class="oi oi-trash"></span>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+
+    IEnumerable<DMethodPayment> methods = new List<DMethodPayment>();
+    bool isVisible;
+    DMethodPayment Model = new DMethodPayment();
+
+    protected override async Task OnInitializedAsync()
+    {
+        isVisible = false;
+
+        var temp = await HttpService.GetAPI<IEnumerable<DMethodPayment>>("api/DMethodPayments");
+        if (temp.IsSuccessStatusCode)
+        {
+            methods = temp.Response;
+        }
+        else
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Error);
+        }
+    }
+
+    private void Add()
+    {
+        isVisible = true;
+        Model = new DMethodPayment();
+    }
+
+    private void Edit(DMethodPayment item)
+    {
+        isVisible = true;
+        Model = item;
+    }
+
+    private async Task Delete(int id)
+    {
+        var temp = await HttpService.DeleteAPI<ResponseMessage>("api/DMethodPayments/" + id);
+
+        if (temp.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(temp.Response.Message, ToastLevel.Success);
+            await OnInitializedAsync();
+        }
+        else
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Error);
+        }
+    }
+
+    private void Cancel()
+    {
+        isVisible = false;
+        Model = new DMethodPayment();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (Model.Id == 0)
+        {
+            
+            var temp = await HttpService.PostAPI<DMethodPayment>("api/DMethodPayments/", Model);
+
+            if (temp.IsSuccessStatusCode)
+            {
+                toastService.ShowToast(temp.Response.NameMethod + " created!", ToastLevel.Success);
+            }
+            else
+            {
+                toastService.ShowToast(temp.Message, ToastLevel.Error);
+            }
+        }
+        else
+        {
+            var temp = await HttpService.PutAPI<ResponseMessage>("api/DMethodPayments/" + Model.Id, Model);
+
+            if (temp.IsSuccessStatusCode)
+            {
+                toastService.ShowToast(temp.Response.Message, ToastLevel.Success);
+            }
+            else
+            {
+                toastService.ShowToast(temp.Message, ToastLevel.Error);
+            }
+        }
+
+        await OnInitializedAsync();
+    }
+
+
+}

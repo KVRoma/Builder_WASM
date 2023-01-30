@@ -61,8 +61,26 @@
                     </button>
                 </div>
             </div>
-        </div>    
-        
+        </div>
+
+        <div class="col">
+            <div class="card h-100">
+                <h5 class="card-header fw-bold">
+                    Methods payment
+                </h5>
+                <div class="card-body">
+                    <p class="card-text fst-italic fs-6">
+                        This dictionary contains a complete list of payment methods.
+                    </p>
+                </div>
+                <div class="card-footer text-center text-nowrap">
+                    <button class="btn btn-warning btn-circle" type="button" @onclick=@(()=> Edit(DictionaryName.MethodPayment))>
+                        <span class="oi oi-pencil"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 
@@ -82,7 +100,14 @@
                 }
                 break;
             case DictionaryName.Contractors:
-                { }
+                {
+                    NavigationManager.NavigateTo("/contractorlist");
+                }
+                break;
+            case DictionaryName.MethodPayment:
+                {
+                    NavigationManager.NavigateTo("/methodpaymentlist");
+                }
                 break;
         }
 

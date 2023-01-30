@@ -100,6 +100,12 @@ namespace Builder_WASM.Server.Controllers
             {
                 return NotFound(new { message = "Repository not found!" });
             }
+
+            dContractor.CompanyId = await GetCompanyId();
+            if (dContractor.CompanyId == 0)
+            {
+                return BadRequest(new { message = "You are not registered with any company!" });
+            }
             _context.DContractorRepository.Insert(dContractor);
             await _context.SaveAsync();
 
@@ -134,10 +140,10 @@ namespace Builder_WASM.Server.Controllers
             return _context.DContractorRepository.Exist(id);
         }
 
-        private async Task<int?> GetCompanyId()
+        private async Task<int> GetCompanyId()
         {
             var userName = User?.Identity?.Name;
-            var id = (await _context.UserRegisteredRepository.GetAsync(x => x.Name == userName)).FirstOrDefault()?.CompanyId;
+            var id = (await _context.UserRegisteredRepository.GetAsync(x => x.Name == userName)).FirstOrDefault()?.CompanyId ?? 0;
 
             return id;
         }
