@@ -50,7 +50,7 @@ else if (display == "ok")
 
 
                         <div class="mt-2">
-                        <button class="btn btn-success btn-circle" type="button" >
+                            <button class="btn btn-success btn-circle" type="button" @onclick=@(()=> Payment(item))>
                             <span class="oi oi-dollar"></span>
                         </button>
                             <button class="btn btn-outline-primary btn-circle" type="button">
@@ -144,6 +144,11 @@ else if (display == "ok")
         {
             toastService.ShowToast(temp.Message, ToastLevel.Error);
         }
+    }
+
+    void Payment(Estimate estimate)
+    {
+        NavigationManager.NavigateTo("/paymentlist/" + estimate.Id);
     }
 
 }

@@ -115,7 +115,7 @@ namespace Builder_WASM.Server.Controllers
             }
             _context.PaymentRepository.Insert(payment);
             await _context.SaveAsync();
-
+            await EstimateCalculate(payment.EstimateId);
             return CreatedAtAction(nameof(GetPayment), new { id = payment.Id }, payment);
         }
 
@@ -135,7 +135,7 @@ namespace Builder_WASM.Server.Controllers
 
             _context.PaymentRepository.Delete(payment);
             await _context.SaveAsync();
-
+            await EstimateCalculate(payment.EstimateId);
             return Ok(new { message = "Your action is successful" });
         }
 
@@ -154,6 +154,14 @@ namespace Builder_WASM.Server.Controllers
             var id = (await _context.UserRegisteredRepository.GetAsync(x => x.Name == userName)).FirstOrDefault()?.CompanyId;
 
             return id;
+        }
+
+        private async Task EstimateCalculate(int id)
+        {
+            var estimate = (await _context.EstimateRepository.GetAsync(x => x.Id == id, includeProperties: "Payments")).FirstOrDefault();
+            estimate!.TotalPayment = estimate.Payments?.Select(x => x.TotalPayment)?.Sum() ?? 0m;
+            _context.EstimateRepository.Update(estimate);
+            await _context.SaveAsync();
         }
     }
 }

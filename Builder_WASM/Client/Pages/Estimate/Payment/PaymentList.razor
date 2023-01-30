@@ -1,0 +1,126 @@
+﻿@page "/paymentlist/{Id:int}"
+
+@if (display == ViewLevel.Load)
+{
+    <p>
+        <em>
+            <span class="spinner-border spinner-border-sm mr-1"></span>
+            Loading Payments...
+        </em>
+    </p>
+}
+else if (display == ViewLevel.Add)
+{
+    <PaymentForm EstimateId="Id" SaveClickCallback="Save" />
+}
+else if (display == ViewLevel.Edit)
+{
+
+}
+else if (display == ViewLevel.View)
+{
+        <div class="h5 mb-1 fw-bold">
+            Payment
+            <button class="btn btn-success btn-circle" type="button" @onclick=@AddPayment>
+                <span class="oi oi-plus"></span>
+            </button>            
+        </div>
+        
+        <div class="h6 mb-5 fst-italic">(Count: @payments?.Count())</div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>                    
+                    <th scope="col">Amount</th>
+                    <th scope="col">Administration fee</th>
+                    <th scope="col">Principal paid</th>
+                    <th scope="col">Payment method</th>
+                    <th scope="col">Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in payments!)
+                {                    
+                    <tr>
+                        <td>@item.DatePayment.ToShortDateString()</td>
+                        <td>$ @item.AmountPayment</td>
+                        <td>$ @decimal.Round(item.AmountPayment * (item.PercentMethodPayment / 100m))</td>
+                        <td>$ @item.TotalPayment</td>
+                        <td>@item.MethodPayment</td>
+                        <td>$ @(balance -= item.TotalPayment)</td>
+                        <td>                            
+                            <button class="btn btn-danger btn-circle m-1" type="button" @onclick=@(()=> Delete(item.Id))>
+                                <span class="oi oi-trash"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+}
+else
+{
+    
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    IEnumerable<Payment> payments = new List<Payment>();
+    ViewLevel display = ViewLevel.Load;
+    int count;
+    decimal balance = 0m;
+    Estimate estimate = new Estimate();
+
+    protected override async Task OnInitializedAsync()
+    {
+        count = 0;
+        estimate = (await HttpService.GetAPI<Estimate>("api/Estimates/" + Id)).Response;
+        balance = estimate.InvoiceGrandTotal;
+        var temp = await HttpService.GetAPI<IEnumerable<Payment>>("api/Payments/estimate/" + Id);
+        if (temp.IsSuccessStatusCode)
+        {
+            payments = temp.Response.ToList();
+            display = ViewLevel.View;
+        }
+        else
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Error);
+        }
+    }
+
+    void AddPayment()
+    {
+        display = ViewLevel.Add;
+    }
+
+    async Task Save(Payment payment)
+    {
+        var temp = await HttpService.PostAPI<Payment>("api/Payments/",payment);
+        if (temp.IsSuccessStatusCode)
+        {
+            toastService.ShowToast("Payment in the amount of $ " + temp.Response.TotalPayment.ToString() + " successfully added.", ToastLevel.Success);
+            await OnInitializedAsync();
+        }
+        else
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Error);
+        }       
+    }
+    async Task Delete(int id)
+    {
+        var temp = await HttpService.DeleteAPI<ResponseMessage>("api/Payments/" + id);
+        if (temp.IsSuccessStatusCode)
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Success);
+            await OnInitializedAsync();
+        }
+        else
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Error);
+        }           
+    }
+}

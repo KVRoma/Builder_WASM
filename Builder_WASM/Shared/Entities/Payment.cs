@@ -17,7 +17,7 @@ namespace Builder_WASM.Shared.Entities
         public DateTime DatePayment { get; set; } = DateTime.Now;
         [Display(Name = "Amount")]
         public decimal AmountPayment { get; set; }
-        [Display(Name = "Method")]
+        [Display(Name = "Method")]        
         public string MethodPayment { get; set; } = "";
         [Display(Name = "Percent")]
         public decimal PercentMethodPayment { get; set; }

@@ -1,0 +1,101 @@
+﻿<div class="row justify-content-center">
+    <div class="col-xl-6 col-md-6 col-sm-12">
+        <div class="card text-white bg-secondary">
+            <div class="card-header text-center">
+                <h3>Payment</h3>
+            </div>
+            <div class="card-body">
+                <EditForm Model=@Model OnValidSubmit="HandleValidSubmit">
+                    <DataAnnotationsValidator />
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Payment date</label>
+                        <InputDate @bind-Value="Model.DatePayment" class="form-control text-primary fw-bold" />
+                        <ValidationMessage For="@(() => Model.DatePayment)" />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Method payment</label>
+                        <InputSelect @bind-Value="methodId" class="form-control text-primary fw-bold">
+                            <option selected value="0">None</option>
+                            @if (methods != null)
+                            {
+                                @foreach (var item in methods)
+                                {
+                                    <option value="@item.Id">@item.NameMethod</option>
+                                }
+                            }
+                        </InputSelect>                        
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Amount</label>
+                        <InputNumber @bind-Value="Model.AmountPayment" class="form-control text-primary fw-bold" />
+                        <ValidationMessage For="@(() => Model.AmountPayment)" />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">TID</label>
+                        <InputText @bind-Value="Model.TID" class="form-control text-primary fw-bold" />
+                        <ValidationMessage For="@(() => Model.TID)" />
+                    </div>
+
+
+                    <div class="text-end">
+                        <button class="btn btn-primary">
+                            Save
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int EstimateId { get; set; }
+    [Parameter]
+    public EventCallback<Payment> SaveClickCallback { get; set; }
+
+    IEnumerable<DMethodPayment> methods = default!;
+    Payment Model = new Payment();
+    int methodId;
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        var temp = await HttpService.GetAPI<IEnumerable<DMethodPayment>>("api/DMethodPayments");
+        if (temp.IsSuccessStatusCode)
+        {
+            methods = temp.Response;
+        }
+        else
+        {
+            toastService.ShowToast(temp.Message, ToastLevel.Error);
+        }
+
+    }
+
+
+    private async Task HandleValidSubmit()
+    {
+        if (methodId == 0)
+        {
+            toastService.ShowToast("The field cannot be null !!! Please, write the name method.", ToastLevel.Error);
+        }
+        else if (Model.AmountPayment == 0)
+        {
+            toastService.ShowToast("The field cannot be null !!! Please, write the amount.", ToastLevel.Error);
+        }
+        else
+        {
+            Model.MethodPayment = methods.FirstOrDefault(x => x.Id == methodId)?.NameMethod ?? string.Empty;
+            Model.PercentMethodPayment = methods.FirstOrDefault(x => x.Id == methodId)?.PercentMethod ?? 0m;
+            Model.EstimateId = EstimateId;
+
+            await SaveClickCallback.InvokeAsync(Model);
+        }
+    }
+
+}
