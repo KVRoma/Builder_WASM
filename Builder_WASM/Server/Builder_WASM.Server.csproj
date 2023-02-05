@@ -23,5 +23,9 @@
     <ProjectReference Include="..\Shared\Builder_WASM.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\userFiles\" />
+  </ItemGroup>
+
 
 </Project>

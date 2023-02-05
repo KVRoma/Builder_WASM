@@ -110,6 +110,7 @@ else
             toastService.ShowToast(temp.Message, ToastLevel.Error);
         }       
     }
+
     async Task Delete(int id)
     {
         var temp = await HttpService.DeleteAPI<ResponseMessage>("api/Payments/" + id);

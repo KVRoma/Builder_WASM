@@ -1,52 +1,61 @@
 ﻿@page "/fetchdata"
+@using System.Net.Http.Headers;
 
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>Page for testing</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>TEST</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
-{  
-    <p><em> Load..</em></p>   
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+
+    <InputFile class="form-control text-primary fw-bold" OnChange="@HandleSelected" />
+    @if (FileUrl != null)
+    {
+        <div>
+            <img src="@FileUrl" style="width:300px" />
+        </div>
+    }
+
+
+
 
 @code {
-    private WeatherForecast[]? forecasts;
-    private List<string> mess = new List<string>();
 
-    protected override async Task OnInitializedAsync()
+    private string test = string.Empty;
+    string? _exportUrl = null;
+
+    public string FileUrl { get; set; }
+    public FileData fileData { get; set; }
+
+
+    private async Task HandleSelected(InputFileChangeEventArgs e)
     {
         
-        if (AuthenticationService.User?.Role == "Admin")
+        IBrowserFile file = e.File;
+        string extension = FileExtension(file.Name);
+        var buffers = new byte[file.Size];
+        await file.OpenReadStream().ReadAsync(buffers);
+        string fileType = file.ContentType;
+        string fileUrl = $"data:{fileType};base64,{Convert.ToBase64String(buffers)}";
+        FileUrl = fileUrl;
+        fileData = new FileData
         {
-            forecasts = await HttpService.Get<WeatherForecast[]>("api/WeatherForecast");            
-        }
+            Data = buffers,
+            FileType = fileType,
+            Size = file.Size,
+            Extension = extension
+        };
+       
 
+        var temp = (await HttpService.Post<ResponseMessage>("api/SaveAndLoadFile" + "/path", fileData)).Message;
     }
+
+    private string FileExtension(string name)
+    {     
+        string[] words = name.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+        return words[1];
+    }
+
+
+   
 }
