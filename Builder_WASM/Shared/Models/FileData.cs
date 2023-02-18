@@ -12,5 +12,6 @@ namespace Builder_WASM.Shared.Models
         public string FileType { get; set; } = string.Empty;
         public long Size { get; set; }
         public string Extension { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
     }
 }

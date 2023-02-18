@@ -16,12 +16,14 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>options.UseSqlServer(connectionString));
 
-builder.Services.Configure<FormOptions>(o =>      //3
+//****************************************************************************************************************** //3
+builder.Services.Configure<FormOptions>(o =>     
 {
     o.ValueLengthLimit = int.MaxValue;
     o.MultipartBodyLengthLimit = int.MaxValue;
     o.MemoryBufferThreshold = int.MaxValue;
 });
+//****************************************************************************************************************** 
 
 builder.Services.AddAuthentication(aut=> 
 { 
@@ -67,15 +69,24 @@ else
 app.UseHttpsRedirection();
 app.UseAuthentication();
 
-app.UseCors("CorsPolicy");  //1
+//****************************************************************************************************************** //1
+//app.UseCors("CorsPolicy");  
+//****************************************************************************************************************** 
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions()      //2
+
+//****************************************************************************************************************** //2
+if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")))
+{
+    Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), @"Resources"));
+}
+app.UseStaticFiles(new StaticFileOptions()      
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
     RequestPath = new PathString("/Resources")
 });
+//******************************************************************************************************************
 
 app.UseRouting();
 app.UseAuthorization();

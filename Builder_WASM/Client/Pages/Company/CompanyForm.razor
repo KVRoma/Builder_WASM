@@ -142,30 +142,44 @@
 
 
 
-
                     <div>
                         <p>
-                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#File" aria-expanded="false" aria-controls="File">
+                            <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#Dowload" aria-expanded="false" aria-controls="Dowload">
                                 <span class="oi oi-list text-dark"></span>
-                                Download
+                                Dowload
                             </button>
                         </p>
-                        <div class="collapse" id="File">
+                        <div class="collapse" id="Dowload">
                             <div class="mb-3">
                                 <div class="form-group mb-3">
-                                    <label class="form-label">Сompany logo file</label>
-                                    <InputFile @bind-Value="Model.LogoPath" class="form-control" placeholder="Сompany logo file" />
-                                    <ValidationMessage For="@(() => Model.LogoPath)" />
+                                   
+                                    <label class="form-label">
+                                        Logo company
+                                        @if (string.IsNullOrWhiteSpace(Model.LogoPath))
+                                        {
+                                            <span class="text-warning"> (file not found...)</span>
+                                        }
+                                    </label>                                   
+                                    
+                                    <InputFile class="form-control" OnChange="@AddLogo" />   
                                 </div>
-                                <div class="form-group mb-3">
-                                    <label class="form-label">Agreement file</label>
-                                    <InputFile @bind-Value="Model.ContractPath" class="form-control" placeholder="Agreement file" />
-                                    <ValidationMessage For="@(() => Model.ContractPath)" />
+
+                                <div class="form-group mb-3">  
+                                    
+                                    <label class="form-label">
+                                        Aggreement company
+                                        @if (string.IsNullOrWhiteSpace(Model.ContractPath))
+                                        {
+                                            <span class="text-warning"> (file not found...)</span>
+                                        }
+                                    </label>                                  
+                                   
+                                    <InputFile class="form-control" OnChange="@AddAgreement" />
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                                                       
 
 
 
@@ -187,7 +201,7 @@
     public EventCallback<Company> SaveClickCallback { get; set; }
 
     Company Model = new Company();
-
+    FileData fileData = null!;
 
     protected override void OnParametersSet()
     {
@@ -200,4 +214,69 @@
         await SaveClickCallback.InvokeAsync(Model);
     }
 
+    private async Task AddLogo(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            IBrowserFile file = e.File;
+            string extension = FileExtension(file.Name);
+            var buffers = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffers);
+            string fileType = file.ContentType;
+            string fileUrl = $"data:{fileType};base64,{Convert.ToBase64String(buffers)}";
+
+            fileData = new FileData
+                {
+                    Data = buffers,
+                    FileType = fileType,
+                    Size = file.Size,
+                    Extension = extension,
+                    Name = "company_" + AuthenticationService.User.CompanyId.ToString()! +
+                                       "_user_" + AuthenticationService.User.Id.ToString()! +
+                                       "_logo"
+                };
+            var temp = (await HttpService.Post<ResponseMessage>("api/SaveAndLoadFile" + "/save", fileData)).Message;
+            Model.LogoPath = temp;
+        }
+        catch
+        {
+            toastService.ShowToast($"File size > 1.9 MB !", ToastLevel.Error);
+        }
+
+    }
+    private async Task AddAgreement(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            IBrowserFile file = e.File;
+            string extension = FileExtension(file.Name);
+            var buffers = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffers);
+            string fileType = file.ContentType;
+            string fileUrl = $"data:{fileType};base64,{Convert.ToBase64String(buffers)}";
+
+            fileData = new FileData
+                {
+                    Data = buffers,
+                    FileType = fileType,
+                    Size = file.Size,
+                    Extension = extension,
+                    Name = "company_" + AuthenticationService.User.CompanyId.ToString()! +
+                                           "_user_" + AuthenticationService.User.Id.ToString()! +
+                                           "_agreement"
+                };
+            var temp = (await HttpService.Post<ResponseMessage>("api/SaveAndLoadFile" + "/save", fileData)).Message;
+            Model.ContractPath = temp;
+        }
+        catch
+        {
+            toastService.ShowToast($"File size > 1.9 MB !", ToastLevel.Error);
+        }
+    }
+
+    private string FileExtension(string name)
+    {
+        string[] words = name.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+        return words[1];
+    }
 }

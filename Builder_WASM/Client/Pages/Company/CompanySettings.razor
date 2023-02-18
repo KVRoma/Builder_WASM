@@ -5,6 +5,7 @@
     <CompanyForm Company=@company
                SaveClickCallback=@SaveCompany>
     </CompanyForm>
+        
 }
 else if(isUserInCompany == "Load")
 {
@@ -26,6 +27,7 @@ else if(isUserInCompany == "Load")
 
     string isUserInCompany = "Load";
     UserRegistered user = null!;
+    FileData fileData = null!;
 
     protected async override Task OnParametersSetAsync()
     {
@@ -60,7 +62,7 @@ else if(isUserInCompany == "Load")
                 company = temp.Response;
                 isUserInCompany = "Ok";
             }
-           
+
         }
         else if(AuthenticationService.User.Role == "Admin" && Id == null)
         {
@@ -93,4 +95,5 @@ else if(isUserInCompany == "Load")
         }
 
     }
+   
 }

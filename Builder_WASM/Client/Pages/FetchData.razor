@@ -6,15 +6,19 @@
 
 <h1>TEST</h1>
 
+<div class="m-4">
+    <button @onclick=LoadFile>Test Load</button>
+</div>
 
 
     <InputFile class="form-control text-primary fw-bold" OnChange="@HandleSelected" />
     @if (FileUrl != null)
     {
-        <div>
-            <img src="@FileUrl" style="width:300px" />
-        </div>
-    }
+        <div class="mt-4">
+            <img src="@FileUrl" style="width:100px" />
+        </div>       
+        
+    }    
 
 
 
@@ -24,14 +28,17 @@
     private string test = string.Empty;
     string? _exportUrl = null;
 
+
     public string FileUrl { get; set; }
     public FileData fileData { get; set; }
 
 
+
     private async Task HandleSelected(InputFileChangeEventArgs e)
     {
-        
+
         IBrowserFile file = e.File;
+
         string extension = FileExtension(file.Name);
         var buffers = new byte[file.Size];
         await file.OpenReadStream().ReadAsync(buffers);
@@ -39,15 +46,35 @@
         string fileUrl = $"data:{fileType};base64,{Convert.ToBase64String(buffers)}";
         FileUrl = fileUrl;
         fileData = new FileData
-        {
-            Data = buffers,
-            FileType = fileType,
-            Size = file.Size,
-            Extension = extension
+            {
+                Data = buffers,
+                FileType = fileType,
+                Size = file.Size,
+                Extension = extension,
+                Name = "company_" + AuthenticationService.User.CompanyId.ToString()! + 
+                       "_user_" + AuthenticationService.User.Id.ToString()! + 
+                       "_logo"
         };
-       
 
-        var temp = (await HttpService.Post<ResponseMessage>("api/SaveAndLoadFile" + "/path", fileData)).Message;
+
+        var temp = (await HttpService.Post<ResponseMessage>("api/SaveAndLoadFile" + "/save", fileData)).Message;        
+
+    }
+
+    private async Task LoadFile()
+    {
+        var file = await HttpService.GetAPI<FileData>("api/SaveAndLoadFile/load/1agr.pdf");
+        if (file.IsSuccessStatusCode)
+        {
+            await jSRuntime.InvokeVoidAsync("openFile", file.Response.Data, file.Response.FileType, "View - TestName.pdf");
+            // await jSRuntime.InvokeVoidAsync("saveFile", file.Response.Data, file.Response.FileType, "TestName.pdf");
+        }
+        else
+        {
+            toastService.ShowToast(file.Message, ToastLevel.Error);
+        }
+
+
     }
 
     private string FileExtension(string name)
